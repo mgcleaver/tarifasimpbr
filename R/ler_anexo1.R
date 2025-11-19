@@ -71,13 +71,14 @@ ler_anexo1 <- function(x) {
 
   compila_anexoi <- compila_anexoi |>
     dplyr::filter(stringr::str_detect(ncm, "\\.")) |>
+    dplyr::mutate(bkbit = stringr::str_extract(tec_percent, "BK|BIT")) |>
     dplyr::mutate(
-      bkbit = stringr::str_extract(tec_percent, "(BK|BIT)$"),
-      ncm = stringr::str_remove_all(ncm, "[\\.,]"),
-      tec_percent = readr::parse_number(
-        tec_percent,
-        locale = readr::locale(decimal_mark = ",")
-      )
+      ncm = stringr::str_remove_all(ncm, "\\."),
+      ncm = stringr::str_remove_all(ncm, ","),
+      tec_percent = stringr::str_remove(tec_percent, "BK|BIT"),
+      tec_percent = tec_percent |>
+        stringr::str_replace(",", "\\.") |>
+        as.numeric()
     ) |>
     dplyr::arrange(ncm)
 
