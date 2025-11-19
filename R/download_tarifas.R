@@ -5,8 +5,9 @@
 #' Essa função faz o download do arquivo de tarifas vigentes do Brasil em um diretorio
 #' temporario.
 #'
-#' @return o arquivo de tarifas é obtido do site da Camex
-
+#' @return o caminho temporário, onde o arquivo oficial de tarifas foi salvo
+#'
+#' @export
 download_tarifas <- function() {
   link_camex <-
     "https://www.gov.br/mdic/pt-br/assuntos/camex/se-camex/strat/tarifas/vigentes"

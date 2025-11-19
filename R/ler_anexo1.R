@@ -1,3 +1,29 @@
+#' Função auxiliar usada na função ler_anexo_formatado
+#'
+#' Esta função faz a leitura e processamento do Anexo I para obtenção
+#' da TEC a partir do arquivo oficial de tarifas disponibilizado no site da Camex.
+#'
+#' Lê a aba referente ao Anexo I da planiha excel obtida pela função
+#'  `download_tarifas`, limpa e organiza as informações.
+#'
+#' @param x Objeto retornado pela função `download_tarifas`
+#'
+#' @return Um tibble que retorna as colunas ncm, descricao_tec,
+#' descricao_tec_concatenada, bkbit, resolucoes.
+#'
+#' @details
+#' A função cria a coluna descricao_tec_concatenada, a qual apresenta a concatenação
+#' das descrições que vão da posição (4 dígitos) até o subitem da NCM (8 dígitos).
+#'
+#' @examples
+#' \dontrun{
+#' caminho_arquivo <- "dados/raw/anexo1_tec.xlsx"
+#' anexoi <- ler_anexo1(caminho_arquivo)
+#'
+#' dplyr::glimpse(anexoi)
+#' }
+#'
+#' @keywords internal
 ler_anexo1 <- function(x) {
   message("Processando Anexo I...")
 
