@@ -293,3 +293,30 @@ formata_datas <- function(x, preenche_data = NULL) {
 
   return(out)
 }
+
+#' Função para consultar nome e número dos anexos das tarifas de importação
+#'
+#' Função pode ser utilizada para consulta rápida dos nomes e números dos anexos
+#' de tarifas ou para verificar qual argumento usar na função `ler_anexo_formatado`.
+#'
+#' @return Retorna um tibble com número do anexo e nome correspondente do anexo
+#'
+#' @examples
+#' listar_anexos()
+#'
+#' @export
+listar_anexos <- function() {
+  tibble::tibble(
+    numero_anexo = c("i", "ii", "iv", "v", "vi", "viii", "ix", "x"),
+    nome_abreviado_anexo = c(
+      "Tarifa Externa Comum",
+      "Anexo II",
+      "Desabastecimento",
+      "LETEC",
+      "LEBITBK",
+      "Concessões OMC",
+      "DCC",
+      "Automotivos ACE-14"
+    )
+  )
+}
