@@ -125,23 +125,23 @@ ler_anexo_formatado <- function(
     )
   } else if (stringr::str_detect(n_anexo_lower, " iv ")) {
     message("Processando Anexo IV - Desabastecimento...")
-    pula_linhas <- 3
+    pula_linhas <- 4
   } else if (stringr::str_detect(n_anexo_lower, " v ")) {
     message("Processando Anexo V - LETEC...")
-    pula_linhas <- 3
+    pula_linhas <- 4
   } else if (stringr::str_detect(n_anexo_lower, " vi ")) {
     message("Processando Anexo VI - LEBITBK...")
-    pula_linhas <- 2
+    pula_linhas <- 3
     condicao6 <- TRUE
   } else if (stringr::str_detect(n_anexo_lower, " viii ")) {
     message("Processando Anexo VIII - Concessões OMC...")
-    pula_linhas <- 2
+    pula_linhas <- 3
   } else if (stringr::str_detect(n_anexo_lower, " ix ")) {
     message("Processando Anexo IX - DCC...")
-    pula_linhas <- 2
+    pula_linhas <- 3
   } else if (stringr::str_detect(n_anexo_lower, " x ")) {
     message("Processando Anexo X - Automotivo...")
-    pula_linhas <- 3
+    pula_linhas <- 4
   }
 
   anexo <- readxl::read_excel(
