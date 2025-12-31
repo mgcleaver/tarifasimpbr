@@ -113,11 +113,12 @@ ler_anexo_formatado <- function(
     return(ler_anexo1(x))
   } else if(stringr::str_detect(n_anexo_lower, " ii ")) {
     message("Processando Anexo II...")
+    pula_linhas <- obter_linha_cabecalho(x, numero_aba)
     return(
       readxl::read_excel(
-        teste,
-        sheet = 2,
-        skip = 2,
+        x,
+        sheet = numero_aba,
+        skip = pula_linhas,
         guess_max = 1e6,
         col_types = c("text")) |>
         janitor::clean_names() |>
@@ -125,23 +126,23 @@ ler_anexo_formatado <- function(
     )
   } else if (stringr::str_detect(n_anexo_lower, " iv ")) {
     message("Processando Anexo IV - Desabastecimento...")
-    pula_linhas <- 4
+    pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
   } else if (stringr::str_detect(n_anexo_lower, " v ")) {
     message("Processando Anexo V - LETEC...")
-    pula_linhas <- 4
+    pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
   } else if (stringr::str_detect(n_anexo_lower, " vi ")) {
     message("Processando Anexo VI - LEBITBK...")
-    pula_linhas <- 3
+    pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
     condicao6 <- TRUE
   } else if (stringr::str_detect(n_anexo_lower, " viii ")) {
     message("Processando Anexo VIII - Concessões OMC...")
-    pula_linhas <- 3
+    pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
   } else if (stringr::str_detect(n_anexo_lower, " ix ")) {
     message("Processando Anexo IX - DCC...")
-    pula_linhas <- 3
+    pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
   } else if (stringr::str_detect(n_anexo_lower, " x ")) {
     message("Processando Anexo X - Automotivo...")
-    pula_linhas <- 4
+    pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
   }
 
   anexo <- readxl::read_excel(
@@ -203,6 +204,35 @@ ler_anexo_formatado <- function(
   } else {
     return(result)
   }
+
+}
+
+#' Adivinha número de linhas a serem puladas para leitura correta do arquivo
+#' @keywords internal
+#' @noRd
+obter_linha_cabecalho <- function(path, aba = NULL) {
+
+  # Lê tudo sem nomes de coluna
+  tmp <- suppressMessages(
+    readxl::read_excel(
+      path,
+      sheet = aba,
+      col_names = FALSE
+    ))
+
+  # Procura a linha onde aparece "NCM"
+  linha_cabecalho <- tmp |>
+    dplyr::mutate(row = dplyr::row_number()) |>
+    tidyr::pivot_longer(-row) |>
+    dplyr::filter(toupper(as.character(value)) == "NCM") |>
+    dplyr::pull(row) |>
+    unique()
+
+  if (length(linha_cabecalho) == 0) {
+    stop("Erro de leitura, não há nenhuma coluna 'NCM' na planilha.")
+  }
+
+  return(linha_cabecalho - 1)
 
 }
 
