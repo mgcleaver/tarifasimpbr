@@ -9,6 +9,7 @@
 #'
 #' @export
 download_tarifas <- function() {
+  message("Iniciando download de arquivo de tarifas")
   link_camex <-
     "https://www.gov.br/mdic/pt-br/assuntos/camex/se-camex/strat/tarifas/vigentes"
 
@@ -32,6 +33,8 @@ download_tarifas <- function() {
   if(class(teste_download) == "try-error") {
     stop("Download do arquivo de tarifas falhou")
   }
+
+  message("Download de arquivo de tarifas com sucesso")
 
   return(temp_path)
 
