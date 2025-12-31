@@ -97,6 +97,15 @@ ler_anexo_formatado <- function(
     " "
   )
 
+  # regra para definir se coluna "lista" será incluída:
+  # se a consulta for para anexo i ou ii, is_lista = 0
+  is_lista <- 0
+
+  # caso a consulta seja para os demais anexos, is_lista = 1
+  if(n_anexo_lower %in% c(" iv ", " v ", " vi ", " viii ", " ix ", " x ")) {
+    tem_lista <- 1
+  }
+
   nome_abas <- readxl::excel_sheets(x) |>
     stringr::str_to_lower()
 
@@ -127,22 +136,28 @@ ler_anexo_formatado <- function(
   } else if (stringr::str_detect(n_anexo_lower, " iv ")) {
     message("Processando Anexo IV - Desabastecimento...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
+    nome_lista <- "Desabastecimento"
   } else if (stringr::str_detect(n_anexo_lower, " v ")) {
     message("Processando Anexo V - LETEC...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
+    nome_lista <- "LETEC"
   } else if (stringr::str_detect(n_anexo_lower, " vi ")) {
     message("Processando Anexo VI - LEBITBK...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
     condicao6 <- TRUE
+    nome_lista <- "LEBITBK"
   } else if (stringr::str_detect(n_anexo_lower, " viii ")) {
     message("Processando Anexo VIII - Concessões OMC...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
+    nome_lista <- "Concessões OMC"
   } else if (stringr::str_detect(n_anexo_lower, " ix ")) {
     message("Processando Anexo IX - DCC...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
+    nome_lista <- "DCC"
   } else if (stringr::str_detect(n_anexo_lower, " x ")) {
     message("Processando Anexo X - Automotivo...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
+    nome_lista <- "Automotivo"
   }
 
   anexo <- readxl::read_excel(
@@ -160,7 +175,6 @@ ler_anexo_formatado <- function(
       dplyr::select(-x10)
   }
 
-
   termino_vigencia <- stringr::str_subset(nomes_colunas, "termino_de_vigencia")
 
   processa_data_inclusao <- FALSE
@@ -171,7 +185,7 @@ ler_anexo_formatado <- function(
 
   if(purrr::is_empty(termino_vigencia)) {
     anexo <- anexo |>
-      dplyr::mutate(termino_de_vigencia = "-")
+      dplyr::mutate(termino_de_vigencia = NA)
   }
 
   inicio <- stringr::str_subset(nomes_colunas, "inicio_da_vigencia")
@@ -179,6 +193,26 @@ ler_anexo_formatado <- function(
   if(!purrr::is_empty(inicio)) {
     anexo <- anexo |>
       dplyr::rename(inicio_de_vigencia = inicio_da_vigencia)
+  }
+
+  obs <- stringr::str_subset(nomes_colunas, "obs")
+
+  if(!purrr::is_empty(obs)) {
+    anexo <- anexo |>
+      dplyr::rename(obs = all_of(obs)) |>
+      dplyr::mutate(
+        obs = obs |>
+          stringr::str_trim() |>
+          dplyr::na_if("") |>
+          dplyr::na_if("-")
+      )
+  }
+
+  unidade_quota <- stringr::str_subset(nomes_colunas, "unidade_da_quota")
+
+  if(!purrr::is_empty(unidade_quota)) {
+    anexo <- anexo |>
+      dplyr::rename(unidade_quota = unidade_da_quota)
   }
 
   result <- anexo |>
@@ -197,13 +231,37 @@ ler_anexo_formatado <- function(
       )) |>
     dplyr::mutate(ncm = stringr::str_replace_all(ncm, "\\.", ""))
 
+  if("no_ex" %in% nomes_colunas) {
+    result <- result |>
+      dplyr::mutate(
+        no_ex = no_ex |>
+          dplyr::na_if("-")
+      )
+  }
+
+  if("quota" %in% nomes_colunas) {
+    result <- result |>
+      dplyr::mutate(
+        quota = quota |> dplyr::na_if("-"),
+        unidade_quota = unidade_quota |>
+          dplyr::na_if( "-")
+      )
+  }
+
+
+
+  if(tem_lista == 1) {
+    result <- result |>
+      dplyr::mutate(lista = nome_lista)
+  }
+
   if(processa_data_inclusao) {
     return(result |>
              dplyr::mutate(data_do_ato_de_inclusao = formata_datas(data_do_ato_de_inclusao)))
 
-  } else {
-    return(result)
   }
+
+  return(result)
 
 }
 
