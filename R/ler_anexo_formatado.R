@@ -117,6 +117,10 @@ ler_anexo_formatado <- function(
   nome <- paste0("Anexo_", n_anexo)
   condicao6 <- FALSE
 
+  nome_lista <- listar_anexos() |>
+    dplyr::filter(numero_anexo == n_anexo) |>
+    dplyr::pull(nome_abreviado_anexo)
+
   # configuracao da leitura do anexo a partir da aba
   if(stringr::str_detect(n_anexo_lower, " i ")) {
     return(ler_anexo1(x))
@@ -136,28 +140,22 @@ ler_anexo_formatado <- function(
   } else if (stringr::str_detect(n_anexo_lower, " iv ")) {
     message("Processando Anexo IV - Desabastecimento...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
-    nome_lista <- "Desabastecimento"
   } else if (stringr::str_detect(n_anexo_lower, " v ")) {
     message("Processando Anexo V - LETEC...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
-    nome_lista <- "LETEC"
   } else if (stringr::str_detect(n_anexo_lower, " vi ")) {
     message("Processando Anexo VI - LEBITBK...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
     condicao6 <- TRUE
-    nome_lista <- "LEBITBK"
   } else if (stringr::str_detect(n_anexo_lower, " viii ")) {
     message("Processando Anexo VIII - Concessões OMC...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
-    nome_lista <- "Concessões OMC"
   } else if (stringr::str_detect(n_anexo_lower, " ix ")) {
     message("Processando Anexo IX - DCC...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
-    nome_lista <- "DCC"
   } else if (stringr::str_detect(n_anexo_lower, " x ")) {
     message("Processando Anexo X - Automotivo...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
-    nome_lista <- "Automotivo"
   }
 
   anexo <- readxl::read_excel(
