@@ -181,17 +181,28 @@ ler_anexo_formatado <- function(
     processa_data_inclusao <- TRUE
   }
 
-  if(purrr::is_empty(termino_vigencia)) {
-    anexo <- anexo |>
-      dplyr::mutate(termino_de_vigencia = NA)
-  }
-
   inicio <- stringr::str_subset(nomes_colunas, "inicio_da_vigencia")
 
   if(!purrr::is_empty(inicio)) {
     anexo <- anexo |>
       dplyr::rename(inicio_de_vigencia = inicio_da_vigencia)
   }
+
+  if(purrr::is_empty(termino_vigencia)) {
+
+    if (n_anexo_lower == " viii ") {
+      anexo <- anexo |>
+        dplyr::mutate(termino_de_vigencia = as.Date("9999-12-31"))
+    } else {
+      anexo <- anexo |>
+        dplyr::mutate(termino_de_vigencia = NA)
+    }
+
+    anexo <- anexo |>
+      dplyr::relocate(termino_de_vigencia, .after = inicio_de_vigencia)
+  }
+
+
 
   obs <- stringr::str_subset(nomes_colunas, "obs")
 
