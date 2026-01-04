@@ -36,6 +36,9 @@
 #'     \code{"9999-12-31"}.}
 #'   \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusão,
 #'     também formatada por `formata_datas`.}
+#'   \item{lista}{(Essa coluna vai existir se o código estiver nas seguintes
+#'    listas de exceção: Desabastecimento, LETEC, LEBITBK, Concessões da OMC,
+#'    DCC ou Automotivos ACE-14.)}
 #' }
 #' Outras colunas presentes no anexo original são mantidas, podendo variar
 #' conforme o tipo de anexo.
