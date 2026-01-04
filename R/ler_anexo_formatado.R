@@ -4,8 +4,8 @@
 #' `download_tarifas`. Para cada anexo, a função `ler_anexo_formatado` limpa
 #' e organiza os dados de cada aba do arquivo (anexo).
 #'
-#' Para o Anexo I, a função apenas delega o processamento para
-#' `ler_anexo1`. Para os demais anexos suportados, a função:
+#' Para o Anexo I, a função `download_tarifas` apenas delega o processamento para
+#' a função `ler_anexo1`. Para os demais anexos suportados, a função:
 #' \itemize{
 #'   \item identifica a aba correta com base no nome do anexo;
 #'   \item pula linhas de cabeçalho conforme o tipo de anexo;

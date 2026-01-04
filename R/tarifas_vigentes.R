@@ -1,6 +1,5 @@
 #' Filtra as tarifas vigentes de listas de exceção
 #'
-#' @description
 #' Retorna apenas os registros cuja tarifa está **vigente hoje**,
 #' considerando o intervalo entre `inicio_de_vigencia` e `termino_de_vigencia`.
 #' A depender da lista consultada e da data pode ou não haver medidas em datas
@@ -40,7 +39,6 @@ tarifas_vigentes <- function(x) {
 
 #' Filtra as tarifas futuras de listas de exceção
 #'
-#' @description
 #' Retorna apenas os registros cuja tarifa entrará em vigência no futuro. Compara
 #' a data da execução da função com a data na coluna `inicio_de_vigencia` para
 #' filtrar as tarifas futuras presentes em listas de exceção.
