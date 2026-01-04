@@ -1,3 +1,59 @@
+#' Traz os códigos NCM incluídos em listas de exceção tarifárias com indicadores
+#' de contagem, de cota, de destaque e de presença integral da ncm.
+#'
+#' @description
+#' Itera sobre as seguintes listas de exceções tarifárias: desabastecimento
+#' (\strong{IV}), Letec (\strong{V}), Lebitbk (\strong{VI}), Concessões OMC
+#' (\strong{VIII}), DCC (\strong{IX}) e Automotivos ACE-14 (\strong{X}) e produz
+#' um resumo contendo todos os códigos NCM vigentes nessas listas com contagem
+#' de cota e de destaques (Ex), bem como indicadores de presença de cota, de
+#' destaque e de inclusão da integralidade da NCM em lista de exceção.
+#'
+#' @details
+#' A função aplica, para cada anexo especificado, a combinação de
+#' [adiciona_indicador_ex_cota()] e [tarifas_vigentes()] para:
+#'
+#' * ler e formatar o anexo correspondente;
+#' * adicionar indicadores de cota, destaque (Ex) e NCM integral; e
+#' * filtrar apenas os registros vigentes na data de execução (`Sys.Date()`).
+#'
+#' Em seguida, os resultados de cada anexo são agregados por NCM e consolidados
+#' em um único `tibble`/`data.frame`, produzindo:
+#'
+#' * o número de ocorrências com cota por NCM;
+#' * o número de destaques (Ex) por NCM;
+#' * indicadores binários (0/1) informando se a NCM possui ao menos uma cota,
+#'   ao menos um destaque (Ex) ou se há medida que abrange a NCM integralmente; e
+#' * a coluna `lista`, que mantém a(s) lista(s) de exceção em que a NCM aparece..
+#'
+#' @param x deve ser o resultado da função `download_tarifas()`.
+#'
+#' @return
+#' Um `tibble` (ou `data.frame`) com uma linha por NCM e as colunas:
+#'
+#' * `ncm`: código NCM;
+#' * `contagem_cota`: número de ocorrências com cota (`cota == 1`)
+#'   associadas à NCM nas listas de exceção vigentes;
+#' * `contagem_ex`: número de destaques (Ex) (`destaque_ex == 1`)
+#'   associados à NCM nas listas de exceção vigentes;
+#' * `cota`: indicador binário (0/1) informando se a NCM possui ao menos uma
+#'   ocorrência com cota;
+#' * `destaque_ex`: indicador binário (0/1) informando se a NCM possui ao menos
+#'   um destaque (Ex) nas listas de exceção;
+#' * `ncm_integral`: indicador binário (0/1) informando se há medida que
+#'   abrange a NCM integralmente (sem cota nem destaque); e
+#' * `lista`: string com a(s) lista(s) de exceção em que a NCM aparece,
+#'   concatenadas com vírgula quando houver mais de uma.
+#'
+#' @examples
+#' \dontrun{
+#' # Exemplo hipotético de uso:
+#' x <- download_tarifas()
+#' resumo_excecoes <- detalhar_listas_excecao_vigentes(x)
+#' dplyr::glimpse(resumo_excecoes)
+#' }
+#'
+#' @export
 detalhar_listas_excecao_vigentes <- function(x) {
 
   anexos <- c("iv", "v", "vi", "viii", "ix", "x")
@@ -28,7 +84,25 @@ detalhar_listas_excecao_vigentes <- function(x) {
   return(resumo_tarifas_excecao)
 }
 
-
+#' Adiciona indicador de destaque (ex) e cota
+#'
+#' Usada dentro da função principal `detalhar_listas_excecao_vigentes` para
+#' adicionar um indicador de destaque (ex) de cota e de presença integral de uma
+#' NCM nos anexo iv, v, vi, xiii, ix, x.
+#'
+#' @param x deve ser o resultado de `tarifas_download()`. No caso o argumento
+#'    é passado para esta função interna por meio do argumento x proveniente de
+#'    `detalhar_listas_excecao_vigentes`.
+#'
+#' @param n_anexo é o número romano de um anexo relacionado com uma lista de
+#'    exceção. As opções possíveis são iv, v, vi, viii, ix, x.
+#'
+#' @return
+#' O mesmo objeto de entrada, porém com três colunas adicionais: cota, destaque_ex
+#' e ncm_integral.
+#'
+#' @keywords internal
+#' @noRd
 adiciona_indicador_ex_cota <- function(
     x,
     n_anexo = c("iv", "v", "vi", "viii", "ix", "x")) {
@@ -64,6 +138,12 @@ adiciona_indicador_ex_cota <- function(
 
 }
 
+#' Resume informações tarifárias a partir dos indicadores de destaque e cota
+#'
+#' Usada dentro da função principal `detalhar_listas_excecao_vigentes`.
+#'
+#' @keywords internal
+#' @noRd
 resume_tarifas_de_excecao <- function(x) {
   out <- x |>
     dplyr::group_by(ncm, lista) |>

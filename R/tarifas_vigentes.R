@@ -49,8 +49,7 @@ tarifas_vigentes <- function(x) {
 #'   A função utiliza as colunas `inicio_de_vigencia` e `termino_de_vigencia`
 #'   no formato `Date` para obter as tarifas vigentes.
 #'
-#' @return
-#' O mesmo objeto de entrada, porém filtrado para conter apenas
+#' @return o mesmo objeto de entrada, porém filtrado para conter apenas
 #' as tarifas vigentes na data de execução da função.
 #'
 #' @examples

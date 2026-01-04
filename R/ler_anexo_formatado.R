@@ -37,7 +37,7 @@
 #'   \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusão,
 #'     também formatada por `formata_datas`.}
 #'   \item{lista}{(Essa coluna vai existir se o código estiver nas seguintes
-#'    listas de exceção: Desabastecimento, LETEC, LEBITBK, Concessões da OMC,
+#'    listas de exceção: Desabastecimento, Letec, Lebitbk, Concessões da OMC,
 #'    DCC ou Automotivos ACE-14.)}
 #' }
 #' Outras colunas presentes no anexo original são mantidas, podendo variar
@@ -61,8 +61,8 @@
 #'   \item \code{"i"}: TEC vigente
 #'   \item \code{"ii"}: lê a aba do Anexo II
 #'   \item \code{"iv"}: lê o Anexo IV – Desabastecimento.
-#'   \item \code{"v"}: lê o Anexo V – LETEC.
-#'   \item \code{"vi"}: lê o Anexo VI – LEBITBK.
+#'   \item \code{"v"}: lê o Anexo V – Letec.
+#'   \item \code{"vi"}: lê o Anexo VI – Lebitbk.
 #'   \item \code{"viii"}: lê o Anexo VIII – Concessões OMC.
 #'   \item \code{"ix"}: lê o Anexo IX – DCC.
 #'   \item \code{"x"}: lê o Anexo X – Automotivo.
@@ -80,7 +80,7 @@
 #' # Ler Anexo I
 #' anexo_i <- ler_anexo_formatado(arquivo, n_anexo = "i")
 #'
-#' # Ler Anexo V (LETEC) já com datas e NCM padronizados
+#' # Ler Anexo V (Letec) já com datas e NCM padronizados
 #' anexo_v <- ler_anexo_formatado(arquivo, n_anexo = "v")
 #' }
 #'
@@ -144,10 +144,10 @@ ler_anexo_formatado <- function(
     message("Processando Anexo IV - Desabastecimento...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
   } else if (stringr::str_detect(n_anexo_lower, " v ")) {
-    message("Processando Anexo V - LETEC...")
+    message("Processando Anexo V - Letec...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
   } else if (stringr::str_detect(n_anexo_lower, " vi ")) {
-    message("Processando Anexo VI - LEBITBK...")
+    message("Processando Anexo VI - Lebitbk...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
     condicao6 <- TRUE
   } else if (stringr::str_detect(n_anexo_lower, " viii ")) {
@@ -412,8 +412,8 @@ listar_anexos <- function() {
       "Tarifa Externa Comum",
       "Anexo II",
       "Desabastecimento",
-      "LETEC",
-      "LEBITBK",
+      "Letec",
+      "Lebitbk",
       "Concessões OMC",
       "DCC",
       "Automotivos ACE-14"
