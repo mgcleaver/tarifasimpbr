@@ -94,9 +94,9 @@ detalhar_listas_excecao_vigentes <- function(x) {
     dplyr::summarise(
       contagem_cota = sum(contagem_cota),
       contagem_ex = sum(contagem_ex),
-      cota = as.numeric(any(cota)),
-      destaque_ex = as.numeric(any(destaque_ex)),
-      ncm_integral = as.numeric(any(ncm_integral)),
+      cota = as.integer(any(cota)),
+      destaque_ex = as.integer(any(destaque_ex)),
+      ncm_integral = as.integer(any(ncm_integral)),
       lista = {
         n_lista <- unique(lista)
         paste0(n_lista, collapse = ", ")
