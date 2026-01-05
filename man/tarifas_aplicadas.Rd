@@ -12,7 +12,7 @@ tarifas_aplicadas(x, detalhar = FALSE)
 
 \item{detalhar}{Lógico, indica se o resultado deve incluir as colunas
 detalhadas das listas de exceção. O padrão é \code{FALSE}. Se \code{TRUE},
-retorna indicadores de contagem, de cota, de destaque (Ex) e de NCM integral.}
+retorna indicadores de contagem, de quota, de destaque (Ex) e de NCM integral.}
 }
 \value{
 Um \code{tibble} (ou \code{data.frame}) com, no mínimo, as colunas:
@@ -27,14 +27,14 @@ TEB e listas de exceção.
 
 Quando \code{detalhar = TRUE}, o retorno inclui também:
 \itemize{
-\item \code{contagem_cota}, \code{contagem_ex}, \code{cota}, \code{destaque_ex}, \code{ncm_integral},
+\item \code{contagem_quota}, \code{contagem_ex}, \code{quota}, \code{destaque_ex}, \code{ncm_integral},
 conforme descrito em \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}.
 }
 }
 \description{
 Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X para calcular
 a \emph{tarifa aplicada} por código NCM. Opcionalmente,
-pode retornar um resultado detalhado com indicadores de cota, destaque (Ex)
+pode retornar um resultado detalhado com indicadores de quota, destaque (Ex)
 e presença da integralidade da NCM em uma lista de exceção.
 }
 \details{
@@ -61,9 +61,9 @@ necessárias para identificar o NCM, a descrição, a lista de exceção
 Quando \code{detalhar = TRUE}, a função amplia o resultado com colunas adicionais
 derivadas de \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}, incluindo:
 \itemize{
-\item \code{contagem_cota}: número de ocorrências com cota;
+\item \code{contagem_quota}: número de ocorrências com quota;
 \item \code{contagem_ex}: número de destaques (Ex);
-\item \code{cota}: indicador (0/1) de existência de cota para a NCM;
+\item \code{quota}: indicador (0/1) de existência de quota para a NCM;
 \item \code{destaque_ex}: indicador (0/1) de existência de destaque (Ex);
 \item \code{ncm_integral}: indicador (0/1) de medida aplicável à NCM integralmente.
 }
@@ -75,7 +75,7 @@ x <- download_tarifas()
 tarifas <- tarifas_aplicadas(x)
 dplyr::glimpse(tarifas)
 
-# Resultado detalhado, com informações de cota, Ex e NCM integral:
+# Resultado detalhado, com informações de quota, Ex e NCM integral:
 tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 dplyr::glimpse(tarifas_detalhadas)
 }

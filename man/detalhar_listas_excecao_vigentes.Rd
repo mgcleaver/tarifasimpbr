@@ -3,7 +3,7 @@
 \name{detalhar_listas_excecao_vigentes}
 \alias{detalhar_listas_excecao_vigentes}
 \title{Traz os códigos NCM incluídos em listas de exceção tarifárias com indicadores
-de contagem, de cota, de destaque e de presença integral da ncm.}
+de contagem, de quota, de destaque e de presença integral da ncm.}
 \usage{
 detalhar_listas_excecao_vigentes(x)
 }
@@ -14,16 +14,16 @@ detalhar_listas_excecao_vigentes(x)
 Um \code{tibble} (ou \code{data.frame}) com uma linha por NCM e as colunas:
 \itemize{
 \item \code{ncm}: código NCM;
-\item \code{contagem_cota}: número de ocorrências com cota (\code{cota == 1})
+\item \code{contagem_quota}: número de ocorrências com quota (\code{quota == 1})
 associadas à NCM nas listas de exceção vigentes;
 \item \code{contagem_ex}: número de destaques (Ex) (\code{destaque_ex == 1})
 associados à NCM nas listas de exceção vigentes;
-\item \code{cota}: indicador binário (0/1) informando se a NCM possui ao menos uma
-ocorrência com cota;
+\item \code{quota}: indicador binário (0/1) informando se a NCM possui ao menos uma
+ocorrência com quota;
 \item \code{destaque_ex}: indicador binário (0/1) informando se a NCM possui ao menos
 um destaque (Ex) nas listas de exceção;
 \item \code{ncm_integral}: indicador binário (0/1) informando se há medida que
-abrange a NCM integralmente (sem cota nem destaque); e
+abrange a NCM integralmente (sem quota nem destaque); e
 \item \code{lista}: string com a(s) lista(s) de exceção em que a NCM aparece,
 concatenadas com vírgula quando houver mais de uma.
 \item \code{tarifa_aplicada}: apresenta a tarifa aplicada para as ncms incluídas
@@ -35,15 +35,15 @@ Itera sobre as seguintes listas de exceções tarifárias: desabastecimento
 (\strong{IV}), Letec (\strong{V}), Lebitbk (\strong{VI}), Concessões OMC
 (\strong{VIII}), DCC (\strong{IX}) e Automotivos ACE-14 (\strong{X}) e produz
 um resumo contendo todos os códigos NCM vigentes nessas listas com contagem
-de cota e de destaques (Ex), bem como indicadores de presença de cota, de
+de quota e de destaques (Ex), bem como indicadores de presença de quota, de
 destaque e de inclusão da integralidade da NCM em lista de exceção.
 }
 \details{
 A função aplica, para cada anexo especificado, a combinação de
-\code{adiciona_indicador_ex_cota} e \code{tarifas_vigentes} para:
+\code{adiciona_indicador_ex_quota} e \code{tarifas_vigentes} para:
 \itemize{
 \item ler e formatar o anexo correspondente;
-\item adicionar indicadores de cota, destaque (Ex) e NCM integral; e
+\item adicionar indicadores de quota, destaque (Ex) e NCM integral; e
 \item filtrar apenas os registros vigentes na data de execução (\code{Sys.Date()}).
 }
 
@@ -54,9 +54,9 @@ Em seguida, os resultados de cada anexo são agregados por NCM e consolidados
 em um único \code{tibble}/\code{data.frame}. Por fim, são adicionados dados de tarifas
 aplicadas para ncms integrais, produzindo:
 \itemize{
-\item o número de ocorrências com cota por NCM;
+\item o número de ocorrências com quota por NCM;
 \item o número de destaques (Ex) por NCM;
-\item indicadores binários (0/1) informando se a NCM possui ao menos uma cota,
+\item indicadores binários (0/1) informando se a NCM possui ao menos uma quota,
 ao menos um destaque (Ex) ou se há medida que abrange a NCM integralmente; e
 \item a coluna \code{lista}, que mantém a(s) lista(s) de exceção em que a NCM aparece;
 \item a coluna \code{tarifa_aplicada} com dados apenas para as ncms incluídas
