@@ -11,7 +11,7 @@
 #'
 #' @details
 #' A função aplica, para cada anexo especificado, a combinação de
-#' [adiciona_indicador_ex_cota()] e [tarifas_vigentes()] para:
+#' `adiciona_indicador_ex_cota` e `tarifas_vigentes` para:
 #'
 #' * ler e formatar o anexo correspondente;
 #' * adicionar indicadores de cota, destaque (Ex) e NCM integral; e
