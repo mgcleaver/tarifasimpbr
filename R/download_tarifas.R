@@ -34,7 +34,7 @@ download_tarifas <- function() {
     stop("Download do arquivo de tarifas falhou")
   }
 
-  message("Download de arquivo de tarifas com sucesso")
+  message("Download realizado com sucesso")
 
   return(temp_path)
 
