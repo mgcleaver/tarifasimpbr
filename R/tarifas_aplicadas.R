@@ -4,7 +4,7 @@
 #' @description
 #' Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X para calcular
 #'  a \emph{tarifa aplicada} por código NCM. Opcionalmente,
-#' pode retornar um resultado detalhado com indicadores de cota, destaque (Ex)
+#' pode retornar um resultado detalhado com indicadores de quota, destaque (Ex)
 #' e presença da integralidade da NCM em uma lista de exceção.
 #'
 #' @details
@@ -30,16 +30,16 @@
 #' Quando `detalhar = TRUE`, a função amplia o resultado com colunas adicionais
 #' derivadas de [detalhar_listas_excecao_vigentes()], incluindo:
 #'
-#' * `contagem_cota`: número de ocorrências com cota;
+#' * `contagem_quota`: número de ocorrências com quota;
 #' * `contagem_ex`: número de destaques (Ex);
-#' * `cota`: indicador (0/1) de existência de cota para a NCM;
+#' * `quota`: indicador (0/1) de existência de quota para a NCM;
 #' * `destaque_ex`: indicador (0/1) de existência de destaque (Ex);
 #' * `ncm_integral`: indicador (0/1) de medida aplicável à NCM integralmente.
 #'
 #' @param x Objeto, é o resultado obtido a partir da função `download_tarifas()`
 #' @param detalhar Lógico, indica se o resultado deve incluir as colunas
 #'   detalhadas das listas de exceção. O padrão é `FALSE`. Se `TRUE`,
-#'   retorna indicadores de contagem, de cota, de destaque (Ex) e de NCM integral.
+#'   retorna indicadores de contagem, de quota, de destaque (Ex) e de NCM integral.
 #'
 #' @return Um `tibble` (ou `data.frame`) com, no mínimo, as colunas:
 #'
@@ -53,7 +53,7 @@
 #'
 #' Quando `detalhar = TRUE`, o retorno inclui também:
 #'
-#' * `contagem_cota`, `contagem_ex`, `cota`, `destaque_ex`, `ncm_integral`,
+#' * `contagem_quota`, `contagem_ex`, `quota`, `destaque_ex`, `ncm_integral`,
 #'   conforme descrito em [detalhar_listas_excecao_vigentes()].
 #'
 #' @seealso
@@ -67,7 +67,7 @@
 #' tarifas <- tarifas_aplicadas(x)
 #' dplyr::glimpse(tarifas)
 #'
-#' # Resultado detalhado, com informações de cota, Ex e NCM integral:
+#' # Resultado detalhado, com informações de quota, Ex e NCM integral:
 #' tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 #' dplyr::glimpse(tarifas_detalhadas)
 #' }
@@ -122,9 +122,9 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       lista,
       teb,
       tarifa_aplicada,
-      contagem_cota,
+      contagem_quota,
       contagem_ex,
-      cota,
+      quota,
       destaque_ex,
       ncm_integral
     )

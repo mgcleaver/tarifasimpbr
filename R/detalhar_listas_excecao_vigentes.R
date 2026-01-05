@@ -1,20 +1,20 @@
 #' Traz os códigos NCM incluídos em listas de exceção tarifárias com indicadores
-#' de contagem, de cota, de destaque e de presença integral da ncm.
+#' de contagem, de quota, de destaque e de presença integral da ncm.
 #'
 #' @description
 #' Itera sobre as seguintes listas de exceções tarifárias: desabastecimento
 #' (\strong{IV}), Letec (\strong{V}), Lebitbk (\strong{VI}), Concessões OMC
 #' (\strong{VIII}), DCC (\strong{IX}) e Automotivos ACE-14 (\strong{X}) e produz
 #' um resumo contendo todos os códigos NCM vigentes nessas listas com contagem
-#' de cota e de destaques (Ex), bem como indicadores de presença de cota, de
+#' de quota e de destaques (Ex), bem como indicadores de presença de quota, de
 #' destaque e de inclusão da integralidade da NCM em lista de exceção.
 #'
 #' @details
 #' A função aplica, para cada anexo especificado, a combinação de
-#' `adiciona_indicador_ex_cota` e `tarifas_vigentes` para:
+#' `adiciona_indicador_ex_quota` e `tarifas_vigentes` para:
 #'
 #' * ler e formatar o anexo correspondente;
-#' * adicionar indicadores de cota, destaque (Ex) e NCM integral; e
+#' * adicionar indicadores de quota, destaque (Ex) e NCM integral; e
 #' * filtrar apenas os registros vigentes na data de execução (`Sys.Date()`).
 #'
 #' Os anexos também são processados para obter as ncms incluídas integralmente
@@ -24,9 +24,9 @@
 #' em um único `tibble`/`data.frame`. Por fim, são adicionados dados de tarifas
 #' aplicadas para ncms integrais, produzindo:
 #'
-#' * o número de ocorrências com cota por NCM;
+#' * o número de ocorrências com quota por NCM;
 #' * o número de destaques (Ex) por NCM;
-#' * indicadores binários (0/1) informando se a NCM possui ao menos uma cota,
+#' * indicadores binários (0/1) informando se a NCM possui ao menos uma quota,
 #'   ao menos um destaque (Ex) ou se há medida que abrange a NCM integralmente; e
 #' * a coluna `lista`, que mantém a(s) lista(s) de exceção em que a NCM aparece;
 #' * a coluna `tarifa_aplicada` com dados apenas para as ncms incluídas
@@ -44,16 +44,16 @@
 #' Um `tibble` (ou `data.frame`) com uma linha por NCM e as colunas:
 #'
 #' * `ncm`: código NCM;
-#' * `contagem_cota`: número de ocorrências com cota (`cota == 1`)
+#' * `contagem_quota`: número de ocorrências com quota (`quota == 1`)
 #'   associadas à NCM nas listas de exceção vigentes;
 #' * `contagem_ex`: número de destaques (Ex) (`destaque_ex == 1`)
 #'   associados à NCM nas listas de exceção vigentes;
-#' * `cota`: indicador binário (0/1) informando se a NCM possui ao menos uma
-#'   ocorrência com cota;
+#' * `quota`: indicador binário (0/1) informando se a NCM possui ao menos uma
+#'   ocorrência com quota;
 #' * `destaque_ex`: indicador binário (0/1) informando se a NCM possui ao menos
 #'   um destaque (Ex) nas listas de exceção;
 #' * `ncm_integral`: indicador binário (0/1) informando se há medida que
-#'   abrange a NCM integralmente (sem cota nem destaque); e
+#'   abrange a NCM integralmente (sem quota nem destaque); e
 #' * `lista`: string com a(s) lista(s) de exceção em que a NCM aparece,
 #'   concatenadas com vírgula quando houver mais de uma.
 #' * `tarifa_aplicada`: apresenta a tarifa aplicada para as ncms incluídas
@@ -74,7 +74,7 @@ detalhar_listas_excecao_vigentes <- function(x) {
 
   listas_detalhadas_vigentes <- purrr::map(
     anexos,
-    ~ adiciona_indicador_ex_cota(x = x, n_anexo = .x) |>
+    ~ adiciona_indicador_ex_quota(x = x, n_anexo = .x) |>
       tarifas_vigentes()
   )
 
@@ -92,9 +92,9 @@ detalhar_listas_excecao_vigentes <- function(x) {
     dplyr::bind_rows() |>
     dplyr::group_by(ncm) |>
     dplyr::summarise(
-      contagem_cota = sum(contagem_cota),
+      contagem_quota = sum(contagem_quota),
       contagem_ex = sum(contagem_ex),
-      cota = as.integer(any(cota)),
+      quota = as.integer(any(quota)),
       destaque_ex = as.integer(any(destaque_ex)),
       ncm_integral = as.integer(any(ncm_integral)),
       lista = {
@@ -109,10 +109,10 @@ detalhar_listas_excecao_vigentes <- function(x) {
   return(resumo_tarifas_excecao)
 }
 
-#' Adiciona indicador de destaque (ex) e cota
+#' Adiciona indicador de destaque (ex) e quota
 #'
 #' Usada dentro da função principal `detalhar_listas_excecao_vigentes` para
-#' adicionar um indicador de destaque (ex) de cota e de presença integral de uma
+#' adicionar um indicador de destaque (ex) de quota e de presença integral de uma
 #' NCM nos anexo iv, v, vi, xiii, ix, x.
 #'
 #' @param x deve ser o resultado de `tarifas_download()`. No caso o argumento
@@ -123,12 +123,12 @@ detalhar_listas_excecao_vigentes <- function(x) {
 #'    exceção. As opções possíveis são iv, v, vi, viii, ix, x.
 #'
 #' @return
-#' O mesmo objeto de entrada, porém com três colunas adicionais: cota, destaque_ex
+#' O mesmo objeto de entrada, porém com três colunas adicionais: quota, destaque_ex
 #' e ncm_integral.
 #'
 #' @keywords internal
 #' @noRd
-adiciona_indicador_ex_cota <- function(
+adiciona_indicador_ex_quota <- function(
     x,
     n_anexo = c("iv", "v", "vi", "viii", "ix", "x")) {
 
@@ -151,7 +151,7 @@ adiciona_indicador_ex_cota <- function(
         no_ex = as.numeric(no_ex)
       )  |>
       dplyr::mutate(
-        cota = dplyr::if_else(is.na(quota), 0, 1),
+        quota = dplyr::if_else(is.na(quota), 0, 1),
         destaque_ex = dplyr::if_else(is.na(no_ex), 0, 1),
         ncm_integral = dplyr::if_else(
           is.na(quota) & is.na(no_ex),
@@ -163,7 +163,7 @@ adiciona_indicador_ex_cota <- function(
 
 }
 
-#' Resume informações tarifárias a partir dos indicadores de destaque e cota
+#' Resume informações tarifárias a partir dos indicadores de destaque e quota
 #'
 #' Usada dentro da função principal `detalhar_listas_excecao_vigentes`.
 #'
@@ -173,9 +173,9 @@ resume_tarifas_de_excecao <- function(x) {
   out <- x |>
     dplyr::group_by(ncm, lista) |>
     dplyr::summarise(
-      contagem_cota = sum(cota == 1),
+      contagem_quota = sum(quota == 1),
       contagem_ex = sum(destaque_ex == 1),
-      cota = any(cota == 1),
+      quota = any(quota == 1),
       destaque_ex = any(destaque_ex == 1),
       ncm_integral = any(ncm_integral == 1),
       .groups = 'drop')
