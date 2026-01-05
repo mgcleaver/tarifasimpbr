@@ -17,14 +17,26 @@
 #' * adicionar indicadores de cota, destaque (Ex) e NCM integral; e
 #' * filtrar apenas os registros vigentes na data de execução (`Sys.Date()`).
 #'
+#' Os anexos também são processados para obter as ncms incluídas integralmente
+#' em listas de exceção com suas respectivas tarifas aplicadas.
+#'
 #' Em seguida, os resultados de cada anexo são agregados por NCM e consolidados
-#' em um único `tibble`/`data.frame`, produzindo:
+#' em um único `tibble`/`data.frame`. Por fim, são adicionados dados de tarifas
+#' aplicadas para ncms integrais, produzindo:
 #'
 #' * o número de ocorrências com cota por NCM;
 #' * o número de destaques (Ex) por NCM;
 #' * indicadores binários (0/1) informando se a NCM possui ao menos uma cota,
 #'   ao menos um destaque (Ex) ou se há medida que abrange a NCM integralmente; e
-#' * a coluna `lista`, que mantém a(s) lista(s) de exceção em que a NCM aparece..
+#' * a coluna `lista`, que mantém a(s) lista(s) de exceção em que a NCM aparece;
+#' * a coluna `tarifa_aplicada` com dados apenas para as ncms incluídas
+#'   integralmente em listas de exceção. Pode ocorrer de uma NCM estar presente
+#'   em mais de uma lista de exceção, mas, nesse caso, em regra, a NCM aparece
+#'   na lista de desabastecimento e em outra lista ou na lista de concessões
+#'   da OMC e em outra lista. Como normalmente os códigos presentes na lista de
+#'   desabastecimento e na lista de concessões da OMC não são incluídos nessas
+#'   listas integralmente, nesses casos de uma NCM fazer parte de mais de uma lista
+#'   a tarifa aplicada será, provavelmente, referente à lista remanescente.
 #'
 #' @param x deve ser o resultado da função `download_tarifas()`.
 #'
@@ -44,6 +56,8 @@
 #'   abrange a NCM integralmente (sem cota nem destaque); e
 #' * `lista`: string com a(s) lista(s) de exceção em que a NCM aparece,
 #'   concatenadas com vírgula quando houver mais de uma.
+#' * `tarifa_aplicada`: apresenta a tarifa aplicada para as ncms incluídas
+#'   integralmente em lista de exceção.
 #'
 #' @examples
 #' \dontrun{
@@ -64,6 +78,13 @@ detalhar_listas_excecao_vigentes <- function(x) {
       tarifas_vigentes()
   )
 
+  ncms_integrais <- purrr::map(
+    listas_detalhadas_vigentes,
+    ~ seleciona_tarifas(.x)
+  ) |>
+    dplyr::bind_rows() |>
+    dplyr::transmute(ncm, tarifa_aplicada = as.numeric(aliquota_percent))
+
   resumo_tarifas_excecao <- purrr::map(
     listas_detalhadas_vigentes,
     ~ resume_tarifas_de_excecao(.x)
@@ -79,7 +100,11 @@ detalhar_listas_excecao_vigentes <- function(x) {
       lista = {
         n_lista <- unique(lista)
         paste0(n_lista, collapse = ", ")
-      })
+      }) |>
+    dplyr::left_join(
+      ncms_integrais,
+      by = "ncm"
+    )
 
   return(resumo_tarifas_excecao)
 }
@@ -154,6 +179,33 @@ resume_tarifas_de_excecao <- function(x) {
       destaque_ex = any(destaque_ex == 1),
       ncm_integral = any(ncm_integral == 1),
       .groups = 'drop')
+
+  return(out)
+}
+
+#' Seleciona colunas específicas das listas de exceções tarifárias
+#'
+#' Usada dentro da função principal `detalhar_listas_excecao_vigentes`.
+#'
+#' @keywords internal
+#' @noRd
+seleciona_tarifas <- function(
+    x) {
+
+  padrao <- paste(
+    "^ncm$",
+    "aliquota_percent",
+    "inicio_de_vigencia",
+    "termino_de_vigencia",
+    "ato_de_inclusao",
+    "data_do_ato_de_inclusao",
+    "lista",
+    sep = "|"
+  )
+
+  out <- x |>
+    dplyr::filter(ncm_integral == 1) |>
+    dplyr::select(dplyr::matches(padrao))
 
   return(out)
 }
