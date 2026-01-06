@@ -44,12 +44,14 @@
 #' @return Um `tibble` (ou `data.frame`) com, no mínimo, as colunas:
 #'
 #' * `ncm`: código NCM;
-#' * `descricao_tec_concatenada`: descrição associada à NCM;
-#' * `bkbit`: indicador de bem de capital/bem de informática, quando disponível;
-#' * `lista`: lista de exceção associada (quando aplicável);
-#*  * `teb`: alíquota TEB aplicável (ou TEC, quando a TEB estiver ausente);
-#' * `tarifa_aplicada`: alíquota efetivamente aplicada após considerar TEC,
-#'   TEB e listas de exceção.
+#' * `descricao_tec`: descrição da NCM (descrição no nível de oito dígitos)
+#' * `descricao_tec_concatenada`: descrição da NCM a partir da posição;
+#' * `bkbit`: indica se a NCM é grafada como bem de capital/bem de informática
+#' * `lista`: lista de exceção associada a uma NCM (quando aplicável);
+#' * `teb`: alíquota TEB aplicável;
+#' * `tarifa_aplicada`: A tarifa aplicada é o que consta na TEB, mas se estiver
+#'    integralmente em uma lista de exceção, a tarifa aplicada será a que consta
+#'    na lista de exceção.
 #'
 #' Quando `detalhar = TRUE`, o retorno inclui também:
 #'
