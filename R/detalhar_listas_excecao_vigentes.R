@@ -93,8 +93,8 @@ detalhar_listas_excecao_vigentes <- function(x) {
     dplyr::summarise(
       contagem_quota = sum(.data$contagem_quota),
       contagem_ex = sum(.data$contagem_ex),
-      quota = as.integer(any(.data$quota)),
-      destaque_ex = as.integer(any(.data$destaque_ex)),
+      tem_quota = as.integer(any(.data$tem_quota)),
+      tem_destaque_ex = as.integer(any(.data$tem_destaque_ex)),
       ncm_integral = as.integer(any(.data$ncm_integral)),
       lista = {
         n_lista <- unique(.data$lista)
@@ -150,8 +150,8 @@ adiciona_indicador_ex_quota <- function(
         no_ex = as.numeric(.data$no_ex)
       )  |>
       dplyr::mutate(
-        quota = dplyr::if_else(is.na(.data$quota), 0, 1),
-        destaque_ex = dplyr::if_else(is.na(.data$no_ex), 0, 1),
+        tem_quota = dplyr::if_else(is.na(.data$quota), 0, 1),
+        tem_destaque_ex = dplyr::if_else(is.na(.data$no_ex), 0, 1),
         ncm_integral = dplyr::if_else(
           is.na(.data$quota) & is.na(.data$no_ex),
           1,
@@ -172,10 +172,10 @@ resume_tarifas_de_excecao <- function(x) {
   out <- x |>
     dplyr::group_by(.data$ncm, .data$lista) |>
     dplyr::summarise(
-      contagem_quota = sum(.data$quota == 1),
-      contagem_ex = sum(.data$destaque_ex == 1),
-      quota = any(.data$quota == 1),
-      destaque_ex = any(.data$destaque_ex == 1),
+      contagem_quota = sum(.data$tem_quota == 1),
+      contagem_ex = sum(.data$tem_destaque_ex == 1),
+      tem_quota = any(.data$tem_quota == 1),
+      tem_destaque_ex = any(.data$tem_destaque_ex == 1),
       ncm_integral = any(.data$ncm_integral == 1),
       .groups = 'drop')
 
