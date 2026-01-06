@@ -40,8 +40,7 @@
 #'
 #' @param x deve ser o resultado da função `download_tarifas()`.
 #'
-#' @return
-#' Um `tibble` (ou `data.frame`) com uma linha por NCM e as colunas:
+#' @return um `tibble` (ou `data.frame`) com uma linha por NCM e as colunas:
 #'
 #' * `ncm`: código NCM;
 #' * `contagem_quota`: número de ocorrências com quota (`quota == 1`)
@@ -83,22 +82,22 @@ detalhar_listas_excecao_vigentes <- function(x) {
     ~ seleciona_tarifas(.x)
   ) |>
     dplyr::bind_rows() |>
-    dplyr::transmute(ncm, tarifa_aplicada = as.numeric(aliquota_percent))
+    dplyr::transmute(.data$ncm, tarifa_aplicada = as.numeric(.data$aliquota_percent))
 
   resumo_tarifas_excecao <- purrr::map(
     listas_detalhadas_vigentes,
     ~ resume_tarifas_de_excecao(.x)
   ) |>
     dplyr::bind_rows() |>
-    dplyr::group_by(ncm) |>
+    dplyr::group_by(.data$ncm) |>
     dplyr::summarise(
-      contagem_quota = sum(contagem_quota),
-      contagem_ex = sum(contagem_ex),
-      quota = as.integer(any(quota)),
-      destaque_ex = as.integer(any(destaque_ex)),
-      ncm_integral = as.integer(any(ncm_integral)),
+      contagem_quota = sum(.data$contagem_quota),
+      contagem_ex = sum(.data$contagem_ex),
+      quota = as.integer(any(.data$quota)),
+      destaque_ex = as.integer(any(.data$destaque_ex)),
+      ncm_integral = as.integer(any(.data$ncm_integral)),
       lista = {
-        n_lista <- unique(lista)
+        n_lista <- unique(.data$lista)
         paste0(n_lista, collapse = ", ")
       }) |>
     dplyr::left_join(
@@ -147,14 +146,14 @@ adiciona_indicador_ex_quota <- function(
   out <- suprime_texto(
     ler_anexo_formatado(x = x, n_anexo = n_anexo) |>
       dplyr::mutate(
-        quota = as.numeric(quota),
-        no_ex = as.numeric(no_ex)
+        quota = as.numeric(.data$quota),
+        no_ex = as.numeric(.data$no_ex)
       )  |>
       dplyr::mutate(
-        quota = dplyr::if_else(is.na(quota), 0, 1),
-        destaque_ex = dplyr::if_else(is.na(no_ex), 0, 1),
+        quota = dplyr::if_else(is.na(.data$quota), 0, 1),
+        destaque_ex = dplyr::if_else(is.na(.data$no_ex), 0, 1),
         ncm_integral = dplyr::if_else(
-          is.na(quota) & is.na(no_ex),
+          is.na(.data$quota) & is.na(.data$no_ex),
           1,
           0))
   )
@@ -171,13 +170,13 @@ adiciona_indicador_ex_quota <- function(
 #' @noRd
 resume_tarifas_de_excecao <- function(x) {
   out <- x |>
-    dplyr::group_by(ncm, lista) |>
+    dplyr::group_by(.data$ncm, .data$lista) |>
     dplyr::summarise(
-      contagem_quota = sum(quota == 1),
-      contagem_ex = sum(destaque_ex == 1),
-      quota = any(quota == 1),
-      destaque_ex = any(destaque_ex == 1),
-      ncm_integral = any(ncm_integral == 1),
+      contagem_quota = sum(.data$quota == 1),
+      contagem_ex = sum(.data$destaque_ex == 1),
+      quota = any(.data$quota == 1),
+      destaque_ex = any(.data$destaque_ex == 1),
+      ncm_integral = any(.data$ncm_integral == 1),
       .groups = 'drop')
 
   return(out)
@@ -204,7 +203,7 @@ seleciona_tarifas <- function(
   )
 
   out <- x |>
-    dplyr::filter(ncm_integral == 1) |>
+    dplyr::filter(.data$ncm_integral == 1) |>
     dplyr::select(dplyr::matches(padrao))
 
   return(out)

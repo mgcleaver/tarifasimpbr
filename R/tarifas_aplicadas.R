@@ -77,11 +77,11 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
 
   anexoi <- ler_anexo_formatado(x, "i") |>
     dplyr::select(
-      -resolucoes
+      -.data$resolucoes
     )
 
   anexoii <- ler_anexo_formatado(x, "ii") |>
-    dplyr::transmute(ncm, teb = as.numeric(aliquota_aplicada_percent))
+    dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota_aplicada_percent))
 
   message("Processando demais anexos...")
   listas_excecao <- detalhar_listas_excecao_vigentes(x)
@@ -93,18 +93,18 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       by = "ncm"
     ) |>
     dplyr::mutate(
-      tarifa_aplicada = dplyr::coalesce(tarifa_aplicada, teb, tec_percent),
-      teb = dplyr::coalesce(teb, tec_percent))
+      tarifa_aplicada = dplyr::coalesce(.data$tarifa_aplicada, .data$teb, .data$tec_percent),
+      teb = dplyr::coalesce(.data$teb, .data$tec_percent))
 
   if (!detalhar) {
     return(
       base |>
         dplyr::select(
-          ncm:descricao_tec_concatenada,
-          bkbit,
-          lista,
-          teb,
-          tarifa_aplicada
+          .data$ncm:.data$descricao_tec_concatenada,
+          .data$bkbit,
+          .data$lista,
+          .data$teb,
+          .data$tarifa_aplicada
         )
     )
   }
@@ -112,21 +112,21 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
   out <- base |>
     dplyr::mutate(
       dplyr::across(
-        where(is.numeric),
+        dplyr::where(is.numeric),
         ~ tidyr::replace_na(.x, 0)
       )
     ) |>
     dplyr::select(
-      ncm:descricao_tec_concatenada,
-      bkbit,
-      lista,
-      teb,
-      tarifa_aplicada,
-      contagem_quota,
-      contagem_ex,
-      quota,
-      destaque_ex,
-      ncm_integral
+      .data$ncm:.data$descricao_tec_concatenada,
+      .data$bkbit,
+      .data$lista,
+      .data$teb,
+      .data$tarifa_aplicada,
+      .data$contagem_quota,
+      .data$contagem_ex,
+      .data$quota,
+      .data$destaque_ex,
+      .data$ncm_integral
     )
 
     return(out)

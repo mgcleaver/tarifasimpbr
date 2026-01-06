@@ -29,12 +29,12 @@ tarifas_vigentes <- function(x) {
     dplyr::mutate(ref = hoje) |>
     dplyr::filter(
       dplyr::between(
-        ref,
-        inicio_de_vigencia,
-        termino_de_vigencia
+        .data$ref,
+        .data$inicio_de_vigencia,
+        .data$termino_de_vigencia
       )
     ) |>
-    dplyr::select(-ref)
+    dplyr::select(-.data$ref)
 }
 
 #' Filtra as tarifas futuras de listas de exceção
@@ -66,7 +66,7 @@ tarifas_futuras <- function(x) {
   x |>
     dplyr::mutate(ref = hoje) |>
     dplyr::filter(
-      ref < inicio_de_vigencia
+      .data$ref < .data$inicio_de_vigencia
     ) |>
-    dplyr::select(-ref)
+    dplyr::select(-.data$ref)
 }

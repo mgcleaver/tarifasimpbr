@@ -121,8 +121,8 @@ ler_anexo_formatado <- function(
   condicao6 <- FALSE
 
   nome_lista <- listar_anexos() |>
-    dplyr::filter(numero_anexo == n_anexo) |>
-    dplyr::pull(nome_abreviado_anexo)
+    dplyr::filter(.data$numero_anexo == n_anexo) |>
+    dplyr::pull(.data$nome_abreviado_anexo)
 
   # configuracao da leitura do anexo a partir da aba
   if(stringr::str_detect(n_anexo_lower, " i ")) {
@@ -138,7 +138,7 @@ ler_anexo_formatado <- function(
         guess_max = 1e6,
         col_types = c("text")) |>
         janitor::clean_names() |>
-        dplyr::mutate(ncm = stringr::str_replace_all(ncm, "\\.", ""))
+        dplyr::mutate(ncm = stringr::str_replace_all(.data$ncm, "\\.", ""))
     )
   } else if (stringr::str_detect(n_anexo_lower, " iv ")) {
     message("Processando Anexo IV - Desabastecimento...")
@@ -173,7 +173,7 @@ ler_anexo_formatado <- function(
 
   if(condicao6 && "x10" %in% nomes_colunas) {
     anexo <- anexo |>
-      dplyr::select(-x10)
+      dplyr::select(-.data$x10)
   }
 
   termino_vigencia <- stringr::str_subset(nomes_colunas, "termino_de_vigencia")
@@ -188,7 +188,7 @@ ler_anexo_formatado <- function(
 
   if(!purrr::is_empty(inicio)) {
     anexo <- anexo |>
-      dplyr::rename(inicio_de_vigencia = inicio_da_vigencia)
+      dplyr::rename(inicio_de_vigencia = .data$inicio_da_vigencia)
   }
 
   if(purrr::is_empty(termino_vigencia)) {
@@ -202,7 +202,7 @@ ler_anexo_formatado <- function(
     }
 
     anexo <- anexo |>
-      dplyr::relocate(termino_de_vigencia, .after = inicio_de_vigencia)
+      dplyr::relocate(.data$termino_de_vigencia, .after = .data$inicio_de_vigencia)
   }
 
 
@@ -211,7 +211,7 @@ ler_anexo_formatado <- function(
 
   if(!purrr::is_empty(obs)) {
     anexo <- anexo |>
-      dplyr::rename(obs = all_of(obs)) |>
+      dplyr::rename(obs = dplyr::all_of(obs)) |>
       dplyr::mutate(
         obs = obs |>
           stringr::str_trim() |>
@@ -224,29 +224,29 @@ ler_anexo_formatado <- function(
 
   if(!purrr::is_empty(unidade_quota)) {
     anexo <- anexo |>
-      dplyr::rename(unidade_quota = unidade_da_quota)
+      dplyr::rename(unidade_quota = .data$unidade_da_quota)
   }
 
   result <- anexo |>
     dplyr::mutate(
-      inicio_de_vigencia = formata_datas(inicio_de_vigencia),
-      termino_de_vigencia = formata_datas(termino_de_vigencia, preenche_data = "9999-12-31"),
+      inicio_de_vigencia = formata_datas(.data$inicio_de_vigencia),
+      termino_de_vigencia = formata_datas(.data$termino_de_vigencia, preenche_data = "9999-12-31"),
       no_ex = dplyr::case_when(
         stringr::str_detect(
-          no_ex, "\\d"
+          .data$no_ex, "\\d"
         ) ~ stringr::str_pad(
-          no_ex,
+          .data$no_ex,
           width = 3,
           side = 'left',
           pad = "0"),
-        TRUE ~ no_ex
+        TRUE ~ .data$no_ex
       )) |>
-    dplyr::mutate(ncm = stringr::str_replace_all(ncm, "\\.", ""))
+    dplyr::mutate(ncm = stringr::str_replace_all(.data$ncm, "\\.", ""))
 
   if("no_ex" %in% nomes_colunas) {
     result <- result |>
       dplyr::mutate(
-        no_ex = no_ex |>
+        no_ex = .data$no_ex |>
           dplyr::na_if("-")
       )
   }
@@ -254,8 +254,8 @@ ler_anexo_formatado <- function(
   if("quota" %in% nomes_colunas) {
     result <- result |>
       dplyr::mutate(
-        quota = quota |> dplyr::na_if("-"),
-        unidade_quota = unidade_quota |>
+        quota = .data$quota |> dplyr::na_if("-"),
+        unidade_quota = .data$unidade_quota |>
           dplyr::na_if( "-")
       )
   }
@@ -269,7 +269,10 @@ ler_anexo_formatado <- function(
 
   if(processa_data_inclusao) {
     return(result |>
-             dplyr::mutate(data_do_ato_de_inclusao = formata_datas(data_do_ato_de_inclusao)))
+             dplyr::mutate(
+               data_do_ato_de_inclusao = formata_datas(
+                 .data$data_do_ato_de_inclusao)
+               ))
 
   }
 
@@ -294,7 +297,7 @@ obter_linha_cabecalho <- function(path, aba = NULL) {
   linha_cabecalho <- tmp |>
     dplyr::mutate(row = dplyr::row_number()) |>
     tidyr::pivot_longer(-row) |>
-    dplyr::filter(toupper(as.character(value)) == "NCM") |>
+    dplyr::filter(toupper(as.character(.data$value)) == "NCM") |>
     dplyr::pull(row) |>
     unique()
 

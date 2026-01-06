@@ -30,7 +30,7 @@ download_tarifas <- function() {
       destfile = temp_path,
       mode = 'wb'))
 
-  if(class(teste_download) == "try-error") {
+  if(inherits(teste_download, "try-error")) {
     stop("Download do arquivo de tarifas falhou")
   }
 

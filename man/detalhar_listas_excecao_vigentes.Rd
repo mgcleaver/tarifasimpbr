@@ -11,7 +11,7 @@ detalhar_listas_excecao_vigentes(x)
 \item{x}{deve ser o resultado da função \code{download_tarifas()}.}
 }
 \value{
-Um \code{tibble} (ou \code{data.frame}) com uma linha por NCM e as colunas:
+um \code{tibble} (ou \code{data.frame}) com uma linha por NCM e as colunas:
 \itemize{
 \item \code{ncm}: código NCM;
 \item \code{contagem_quota}: número de ocorrências com quota (\code{quota == 1})

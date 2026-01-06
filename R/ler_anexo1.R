@@ -39,11 +39,11 @@ ler_anexo1 <- function(x) {
 
   resolucoes <- raw |>
     janitor::clean_names() |>
-    dplyr::rename(ncm = x1, resolucoes = x4) |>
+    dplyr::rename(ncm = .data$x1, resolucoes = .data$x4) |>
     dplyr::filter(!is.na(resolucoes)) |>
-    dplyr::mutate(ncm = stringr::str_remove_all(ncm, "\\.")) |>
-    dplyr::filter(nchar(ncm) == 8) |>
-    dplyr::select(ncm, resolucoes)
+    dplyr::mutate(ncm = stringr::str_remove_all(.data$ncm, "\\.")) |>
+    dplyr::filter(nchar(.data$ncm) == 8) |>
+    dplyr::select(.data$ncm, resolucoes)
 
   df <- raw |>
     dplyr::select(1:3)
@@ -96,17 +96,17 @@ ler_anexo1 <- function(x) {
     janitor::clean_names()
 
   compila_anexoi <- compila_anexoi |>
-    dplyr::filter(stringr::str_detect(ncm, "\\.")) |>
-    dplyr::mutate(bkbit = stringr::str_extract(tec_percent, "BK|BIT")) |>
+    dplyr::filter(stringr::str_detect(.data$ncm, "\\.")) |>
+    dplyr::mutate(bkbit = stringr::str_extract(.data$tec_percent, "BK|BIT")) |>
     dplyr::mutate(
-      ncm = stringr::str_remove_all(ncm, "\\."),
-      ncm = stringr::str_remove_all(ncm, ","),
-      tec_percent = stringr::str_remove(tec_percent, "BK|BIT"),
-      tec_percent = tec_percent |>
+      ncm = stringr::str_remove_all(.data$ncm, "\\."),
+      ncm = stringr::str_remove_all(.data$ncm, ","),
+      tec_percent = stringr::str_remove(.data$tec_percent, "BK|BIT"),
+      tec_percent = .data$tec_percent |>
         stringr::str_replace(",", "\\.") |>
         as.numeric()
     ) |>
-    dplyr::arrange(ncm)
+    dplyr::arrange(.data$ncm)
 
   #### concatena descricoes ####
 
@@ -114,29 +114,29 @@ ler_anexo1 <- function(x) {
   # digitos da ncm
   cria_tabelas <- function(x) {
     compila_anexoi |>
-      dplyr::filter(nchar(ncm) == x) |>
-      dplyr::select(-tec_percent, -bkbit)
+      dplyr::filter(nchar(.data$ncm) == x) |>
+      dplyr::select(-.data$tec_percent, -.data$bkbit)
   }
 
   # cria tabelas de descricao para 4, 5, 6, 7 e 8 digitos
   anexoi_4d <- cria_tabelas(4) |>
-    dplyr::rename(sh4 = ncm, descricao_4 = descricao)
+    dplyr::rename(sh4 = .data$ncm, descricao_4 = .data$descricao)
   anexoi_5d <- cria_tabelas(5) |>
-    dplyr::rename(sh5 = ncm, descricao_5 = descricao)
+    dplyr::rename(sh5 = .data$ncm, descricao_5 = .data$descricao)
   anexoi_6d <- cria_tabelas(6) |>
-    dplyr::rename(sh6 = ncm, descricao_6 = descricao)
+    dplyr::rename(sh6 = .data$ncm, descricao_6 = .data$descricao)
   anexoi_7d <- cria_tabelas(7) |>
-    dplyr::rename(sh7 = ncm, descricao_7 = descricao)
+    dplyr::rename(sh7 = .data$ncm, descricao_7 = .data$descricao)
   anexoi_8d <- compila_anexoi |>
-    dplyr::filter(nchar(ncm) == 8) |>
-    dplyr::mutate(sh7 = stringr::str_sub(ncm, 1, 7))
+    dplyr::filter(nchar(.data$ncm) == 8) |>
+    dplyr::mutate(sh7 = stringr::str_sub(.data$ncm, 1, 7))
 
   anexoi_8d <- anexoi_8d |>
-    dplyr::rename(descricao_8 = descricao) |>
+    dplyr::rename(descricao_8 = .data$descricao) |>
     dplyr::mutate(
-      sh6 = stringr::str_sub(ncm, 1, 6),
-      sh5 = stringr::str_sub(ncm, 1, 5),
-      sh4 = stringr::str_sub(ncm, 1, 4)
+      sh6 = stringr::str_sub(.data$ncm, 1, 6),
+      sh5 = stringr::str_sub(.data$ncm, 1, 5),
+      sh4 = stringr::str_sub(.data$ncm, 1, 4)
     )
 
   # funcao auxiliar para concatenar descricoes sh4, sh5, sh6, sh7, sh8
@@ -169,21 +169,21 @@ ler_anexo1 <- function(x) {
     dplyr::left_join(anexoi_4d, by = "sh4") |>
     dplyr::rowwise() |>
     dplyr::transmute(
-      ncm,
-      descricao_tec = descricao_8,
+      .data$ncm,
+      descricao_tec = .data$descricao_8,
       descricao_tec_concatenada = concatena_texto(
-        descricao_4,
-        descricao_5,
-        descricao_6,
-        descricao_7,
-        descricao_8
+        .data$descricao_4,
+        .data$descricao_5,
+        .data$descricao_6,
+        .data$descricao_7,
+        .data$descricao_8
       ),
-      tec_percent,
-      bkbit
+      .data$tec_percent,
+      .data$bkbit
     ) |>
     dplyr::mutate(
       descricao_tec_concatenada = stringr::str_replace_all(
-        descricao_tec_concatenada,
+        .data$descricao_tec_concatenada,
         "\\.\\.",
         "\\."
       )
