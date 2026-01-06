@@ -18,11 +18,14 @@ retorna indicadores de contagem, de quota, de destaque (Ex) e de NCM integral.}
 Um \code{tibble} (ou \code{data.frame}) com, no mínimo, as colunas:
 \itemize{
 \item \code{ncm}: código NCM;
-\item \code{descricao_tec_concatenada}: descrição associada à NCM;
-\item \code{bkbit}: indicador de bem de capital/bem de informática, quando disponível;
-\item \code{lista}: lista de exceção associada (quando aplicável);
-\item \code{tarifa_aplicada}: alíquota efetivamente aplicada após considerar TEC,
-TEB e listas de exceção.
+\item \code{descricao_tec}: descrição da NCM (descrição no nível de oito dígitos)
+\item \code{descricao_tec_concatenada}: descrição da NCM a partir da posição;
+\item \code{bkbit}: indica se a NCM é grafada como bem de capital/bem de informática
+\item \code{lista}: lista de exceção associada a uma NCM (quando aplicável);
+\item \code{teb}: alíquota TEB aplicável;
+\item \code{tarifa_aplicada}: A tarifa aplicada é o que consta na TEB, mas se estiver
+integralmente em uma lista de exceção, a tarifa aplicada será a que consta
+na lista de exceção.
 }
 
 Quando \code{detalhar = TRUE}, o retorno inclui também:
