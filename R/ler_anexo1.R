@@ -9,11 +9,13 @@
 #' @param x Objeto retornado pela função `download_tarifas`
 #'
 #' @return Um tibble que retorna as colunas ncm, descricao_tec,
-#' descricao_tec_concatenada, bkbit, resolucoes.
+#' descricao_tec_concatenada, tec_percent, bkbit, resolucoes.
 #'
 #' @details
 #' A função cria a coluna descricao_tec_concatenada, a qual apresenta a concatenação
 #' das descrições que vão da posição (4 dígitos) até o subitem da NCM (8 dígitos).
+#' A coluna tec_percent representa a Tarifa Externa Comum e os seus valores estão em
+#' porcentagens.
 #'
 #' @examples
 #' \dontrun{
