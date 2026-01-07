@@ -79,7 +79,7 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
 
   anexoi <- ler_anexo_formatado(x, "i") |>
     dplyr::select(
-      -.data$resolucoes
+      -resolucoes
     )
 
   anexoii <- ler_anexo_formatado(x, "ii") |>
@@ -98,15 +98,17 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       tarifa_aplicada = dplyr::coalesce(.data$tarifa_aplicada, .data$teb, .data$tec_percent),
       teb = dplyr::coalesce(.data$teb, .data$tec_percent))
 
+  message("Tarifas aplicadas geradas com sucesso")
+
   if (!detalhar) {
     return(
       base |>
         dplyr::select(
-          .data$ncm:.data$descricao_tec_concatenada,
-          .data$bkbit,
-          .data$lista,
-          .data$teb,
-          .data$tarifa_aplicada
+          ncm:descricao_tec_concatenada,
+          bkbit,
+          lista,
+          teb,
+          tarifa_aplicada
         )
     )
   }
@@ -119,17 +121,17 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       )
     ) |>
     dplyr::select(
-      .data$ncm:.data$descricao_tec_concatenada,
-      .data$bkbit,
-      .data$lista,
-      .data$teb,
-      .data$tarifa_aplicada,
-      .data$contagem_quota,
-      .data$contagem_ex,
-      .data$quota,
-      .data$destaque_ex,
-      .data$ncm_integral
+      ncm:descricao_tec_concatenada,
+      bkbit,
+      lista,
+      teb,
+      tarifa_aplicada,
+      contagem_quota,
+      contagem_ex,
+      quota,
+      destaque_ex,
+      ncm_integral
     )
 
-    return(out)
-  }
+  return(out)
+}
