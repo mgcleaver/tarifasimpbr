@@ -9,14 +9,14 @@
 #' \itemize{
 #'   \item identifica a aba correta com base no nome do anexo;
 #'   \item pula linhas de cabeçalho conforme o tipo de anexo;
-#'   \item padroniza nomes de colunas com `janitor::clean_names`;
-#'   \item garante a existência de colunas de vigência;
+#'   \item padroniza nomes de colunas com `janitor::clean_names` e a partir de outras regras;
+#'   \item garante a existência de colunas de início e término de vigência;
 #'   \item formata datas com a função auxiliar `formata_datas`;
 #'   \item padroniza códigos \code{ncm} e \code{no_ex}
 #' }
 #'
 #' @param x Objeto retornado por `download_tarifas`, que no caso é o caminho
-#' temporário em que o arquivo com as tarifas de importação vigentes foi baixado.
+#' temporário do arquivo de tarifas de importação vigentes baixado.
 #' @param n_anexo String indicando qual anexo deve ser lido. Deve ser
 #'   um dos:
 #'   \code{"i"}, \code{"ii"}, \code{"iv"}, \code{"v"},
@@ -75,13 +75,13 @@
 #'
 #' @examples
 #' \dontrun{
-#' arquivo <- download_tarifas()
+#' x <- download_tarifas()
 #'
 #' # Ler Anexo I
-#' anexo_i <- ler_anexo_formatado(arquivo, n_anexo = "i")
+#' anexo_i <- ler_anexo_formatado(x, n_anexo = "i")
 #'
 #' # Ler Anexo V (Letec) já com datas e NCM padronizados
-#' anexo_v <- ler_anexo_formatado(arquivo, n_anexo = "v")
+#' anexo_v <- ler_anexo_formatado(x, n_anexo = "v")
 #' }
 #'
 #' @export
