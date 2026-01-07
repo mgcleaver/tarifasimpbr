@@ -11,7 +11,7 @@ ler_anexo1(x)
 }
 \value{
 Um tibble que retorna as colunas ncm, descricao_tec,
-descricao_tec_concatenada, bkbit, resolucoes.
+descricao_tec_concatenada, tec_percent, bkbit, resolucoes.
 }
 \description{
 Esta função faz a leitura e processamento do Anexo I para obtenção
@@ -23,6 +23,8 @@ Lê a aba referente ao Anexo I da planiha excel obtida pela função
 
 A função cria a coluna descricao_tec_concatenada, a qual apresenta a concatenação
 das descrições que vão da posição (4 dígitos) até o subitem da NCM (8 dígitos).
+A coluna tec_percent representa a Tarifa Externa Comum e os seus valores estão em
+porcentagens.
 }
 \examples{
 \dontrun{
