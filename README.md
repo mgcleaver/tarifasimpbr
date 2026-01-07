@@ -27,8 +27,8 @@ x <- download_tarifas()
 listar_anexos()
 
 # ler o anexo tarifário formatado
-tec <- ler_anexo_formatado(x, "i")
-letec <- ler_anexo_formatado(x, "v")
+tec <- ler_anexo(x, "i")
+letec <- ler_anexo(x, "v")
 
 # obter tabela completa das tarifas aplicadas vigentes
 tarifas <- tarifas_aplicadas(x)

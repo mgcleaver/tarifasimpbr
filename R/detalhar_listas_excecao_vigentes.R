@@ -68,7 +68,6 @@
 #'
 #' @export
 detalhar_listas_excecao_vigentes <- function(x) {
-
   anexos <- c("iv", "v", "vi", "viii", "ix", "x")
 
   listas_detalhadas_vigentes <- purrr::map(
@@ -82,7 +81,10 @@ detalhar_listas_excecao_vigentes <- function(x) {
     ~ seleciona_tarifas(.x)
   ) |>
     dplyr::bind_rows() |>
-    dplyr::transmute(.data$ncm, tarifa_aplicada = as.numeric(.data$aliquota_percent))
+    dplyr::transmute(
+      .data$ncm,
+      tarifa_aplicada = as.numeric(.data$aliquota_percent)
+    )
 
   resumo_tarifas_excecao <- purrr::map(
     listas_detalhadas_vigentes,
@@ -99,7 +101,8 @@ detalhar_listas_excecao_vigentes <- function(x) {
       lista = {
         n_lista <- unique(.data$lista)
         paste0(n_lista, collapse = ", ")
-      }) |>
+      }
+    ) |>
     dplyr::left_join(
       ncms_integrais,
       by = "ncm"
@@ -128,9 +131,9 @@ detalhar_listas_excecao_vigentes <- function(x) {
 #' @keywords internal
 #' @noRd
 adiciona_indicador_ex_quota <- function(
-    x,
-    n_anexo = c("iv", "v", "vi", "viii", "ix", "x")) {
-
+  x,
+  n_anexo = c("iv", "v", "vi", "viii", "ix", "x")
+) {
   n_anexo <- match.arg(
     n_anexo
   )
@@ -144,22 +147,23 @@ adiciona_indicador_ex_quota <- function(
   }
 
   out <- suprime_texto(
-    ler_anexo_formatado(x = x, n_anexo = n_anexo) |>
+    ler_anexo(x = x, n_anexo = n_anexo) |>
       dplyr::mutate(
         quota = as.numeric(.data$quota),
         no_ex = as.numeric(.data$no_ex)
-      )  |>
+      ) |>
       dplyr::mutate(
         tem_quota = dplyr::if_else(is.na(.data$quota), 0, 1),
         tem_destaque_ex = dplyr::if_else(is.na(.data$no_ex), 0, 1),
         ncm_integral = dplyr::if_else(
           is.na(.data$quota) & is.na(.data$no_ex),
           1,
-          0))
+          0
+        )
+      )
   )
 
   return(out)
-
 }
 
 #' Resume informações tarifárias a partir dos indicadores de destaque e quota
@@ -177,7 +181,8 @@ resume_tarifas_de_excecao <- function(x) {
       tem_quota = any(.data$tem_quota == 1),
       tem_destaque_ex = any(.data$tem_destaque_ex == 1),
       ncm_integral = any(.data$ncm_integral == 1),
-      .groups = 'drop')
+      .groups = 'drop'
+    )
 
   return(out)
 }
@@ -189,8 +194,8 @@ resume_tarifas_de_excecao <- function(x) {
 #' @keywords internal
 #' @noRd
 seleciona_tarifas <- function(
-    x) {
-
+  x
+) {
   padrao <- paste(
     "^ncm$",
     "aliquota_percent",

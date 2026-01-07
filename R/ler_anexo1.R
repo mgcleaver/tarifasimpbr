@@ -1,4 +1,4 @@
-#' Função auxiliar usada na função ler_anexo_formatado
+#' Função auxiliar usada na função ler_anexo
 #'
 #' Esta função faz a leitura e processamento do Anexo I para obtenção
 #' da TEC a partir do arquivo oficial de tarifas disponibilizado no site da Camex.

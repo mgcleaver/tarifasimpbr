@@ -7,7 +7,7 @@
 tarifas_futuras(x)
 }
 \arguments{
-\item{x}{uma lista de exceção obtida a partir da função \code{ler_anexo_formatado}.
+\item{x}{uma lista de exceção obtida a partir da função \code{ler_anexo}.
 A função utiliza as colunas \code{inicio_de_vigencia} e \code{termino_de_vigencia}
 no formato \code{Date} para obter as tarifas vigentes.}
 }
@@ -25,7 +25,7 @@ vazio.
 \examples{
 \dontrun{
 x <- download_tarifas()
-desabastecimento <- ler_anexo_formatado(x, "iv") # ler anexoi iv - desabastecimento
+desabastecimento <- ler_anexo(x, "iv") # ler anexoi iv - desabastecimento
 tarifas_futuras(desabastecimento)
 }
 

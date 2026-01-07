@@ -1,7 +1,7 @@
 #' Ler anexos do arquivo excel obtido por meio da função `download_tarifas`.
 #'
 #' Lê o anexo desejado do arquivo de tarifas obtido por meio da função
-#' `download_tarifas`. Para cada anexo, a função `ler_anexo_formatado` limpa
+#' `download_tarifas`. Para cada anexo, a função `ler_anexo` limpa
 #' e organiza os dados de cada aba do arquivo (anexo).
 #'
 #' Para o Anexo I, a função `download_tarifas` apenas delega o processamento para
@@ -78,14 +78,14 @@
 #' x <- download_tarifas()
 #'
 #' # Ler Anexo I
-#' anexo_i <- ler_anexo_formatado(x, n_anexo = "i")
+#' anexo_i <- ler_anexo(x, n_anexo = "i")
 #'
 #' # Ler Anexo V (Letec) já com datas e NCM padronizados
-#' anexo_v <- ler_anexo_formatado(x, n_anexo = "v")
+#' anexo_v <- ler_anexo(x, n_anexo = "v")
 #' }
 #'
 #' @export
-ler_anexo_formatado <- function(
+ler_anexo <- function(
     x,
     n_anexo = c("i", "ii", "iv", "v", "vi", "viii", "ix", "x")
 ) {
@@ -316,7 +316,7 @@ obter_linha_cabecalho <- function(path, aba = NULL) {
 #' datas no formato numérico do Excel (serial number) ou valores
 #' especiais representados por hífen (`"-"`).
 #'
-#' Esta função é usada internamente por `ler_anexo_formatado` e
+#' Esta função é usada internamente por `ler_anexo` e
 #' outras funções de limpeza dos anexos.
 #'
 #' @param x Vetor de caracteres contendo datas em diferentes formatos:
@@ -400,7 +400,7 @@ formata_datas <- function(x, preenche_data = NULL) {
 #' Função para consultar nome e número dos anexos das tarifas de importação
 #'
 #' Função pode ser utilizada para consulta rápida dos nomes e números dos anexos
-#' de tarifas ou para verificar qual argumento usar na função `ler_anexo_formatado`.
+#' de tarifas ou para verificar qual argumento usar na função `ler_anexo`.
 #'
 #' @return Retorna um tibble com número do anexo e nome correspondente do anexo
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ler_anexo1.R
 \name{ler_anexo1}
 \alias{ler_anexo1}
-\title{Função auxiliar usada na função ler_anexo_formatado}
+\title{Função auxiliar usada na função ler_anexo}
 \usage{
 ler_anexo1(x)
 }

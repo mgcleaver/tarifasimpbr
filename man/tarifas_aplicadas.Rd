@@ -43,9 +43,9 @@ e presença da integralidade da NCM em uma lista de exceção.
 \details{
 A função:
 \enumerate{
-\item Lê o anexo I por meio de \code{\link[=ler_anexo_formatado]{ler_anexo_formatado()}} com \code{n_anexo = "i"},
+\item Lê o anexo I por meio de \code{\link[=ler_anexo]{ler_anexo()}} com \code{n_anexo = "i"},
 removendo a coluna \code{resolucoes};
-\item Lê o anexo II por meio de \code{\link[=ler_anexo_formatado]{ler_anexo_formatado()}} com \code{n_anexo = "ii"},
+\item Lê o anexo II por meio de \code{\link[=ler_anexo]{ler_anexo()}} com \code{n_anexo = "ii"},
 obtendo a Tarifa Externa Brasileira (\code{aliquota_aplicada_percent})
 como coluna numérica \code{teb};
 \item Processa os demais anexos de exceção por meio de
@@ -85,6 +85,6 @@ dplyr::glimpse(tarifas_detalhadas)
 
 }
 \seealso{
-\code{\link[=ler_anexo_formatado]{ler_anexo_formatado()}}, \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}},
+\code{\link[=ler_anexo]{ler_anexo()}}, \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}},
 \code{\link[=tarifas_vigentes]{tarifas_vigentes()}}.
 }

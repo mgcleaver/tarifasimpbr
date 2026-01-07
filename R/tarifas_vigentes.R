@@ -6,7 +6,7 @@
 #' futuras. No caso de não haver medidas em datas futuras, não haverá diferença
 #' em aplicar ou não está função, uma vez que os dados serão idênticos.
 #'
-#' @param x uma lista de exceção obtida a partir da função `ler_anexo_formatado`.
+#' @param x uma lista de exceção obtida a partir da função `ler_anexo`.
 #'   A função utiliza as colunas `inicio_de_vigencia` e `termino_de_vigencia`
 #'   no formato `Date` para obter as tarifas vigentes.
 #'
@@ -17,7 +17,7 @@
 #' @examples
 #' \dontrun{
 #' x <- download_tarifas()
-#' desabastecimento <- ler_anexo_formatado(x, "iv") # ler anexoi iv - desabastecimento
+#' desabastecimento <- ler_anexo(x, "iv") # ler anexoi iv - desabastecimento
 #' tarifas_vigentes(desabastecimento)
 #' }
 #'
@@ -45,7 +45,7 @@ tarifas_vigentes <- function(x) {
 #'  No caso de não haver medidas em datas futuras, a função retornará um tibble
 #'  vazio.
 #'
-#' @param x uma lista de exceção obtida a partir da função `ler_anexo_formatado`.
+#' @param x uma lista de exceção obtida a partir da função `ler_anexo`.
 #'   A função utiliza as colunas `inicio_de_vigencia` e `termino_de_vigencia`
 #'   no formato `Date` para obter as tarifas vigentes.
 #'
@@ -55,7 +55,7 @@ tarifas_vigentes <- function(x) {
 #' @examples
 #' \dontrun{
 #' x <- download_tarifas()
-#' desabastecimento <- ler_anexo_formatado(x, "iv") # ler anexoi iv - desabastecimento
+#' desabastecimento <- ler_anexo(x, "iv") # ler anexoi iv - desabastecimento
 #' tarifas_futuras(desabastecimento)
 #' }
 #'

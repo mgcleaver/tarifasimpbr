@@ -10,9 +10,9 @@
 #' @details
 #' A função:
 #'
-#' 1. Lê o anexo I por meio de [ler_anexo_formatado()] com `n_anexo = "i"`,
+#' 1. Lê o anexo I por meio de [ler_anexo()] com `n_anexo = "i"`,
 #'    removendo a coluna `resolucoes`;
-#' 2. Lê o anexo II por meio de [ler_anexo_formatado()] com `n_anexo = "ii"`,
+#' 2. Lê o anexo II por meio de [ler_anexo()] com `n_anexo = "ii"`,
 #'    obtendo a Tarifa Externa Brasileira (`aliquota_aplicada_percent`)
 #'    como coluna numérica `teb`;
 #' 3. Processa os demais anexos de exceção por meio de
@@ -59,7 +59,7 @@
 #'   conforme descrito em [detalhar_listas_excecao_vigentes()].
 #'
 #' @seealso
-#' [ler_anexo_formatado()], [detalhar_listas_excecao_vigentes()],
+#' [ler_anexo()], [detalhar_listas_excecao_vigentes()],
 #' [tarifas_vigentes()].
 #'
 #' @examples
@@ -77,12 +77,12 @@
 #' @export
 tarifas_aplicadas <- function(x, detalhar = FALSE) {
 
-  anexoi <- ler_anexo_formatado(x, "i") |>
+  anexoi <- ler_anexo(x, "i") |>
     dplyr::select(
       -resolucoes
     )
 
-  anexoii <- ler_anexo_formatado(x, "ii") |>
+  anexoii <- ler_anexo(x, "ii") |>
     dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota_aplicada_percent))
 
   message("Processando demais anexos...")
