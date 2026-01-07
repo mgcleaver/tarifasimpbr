@@ -1,0 +1,14 @@
+utils::globalVariables(c(
+  "resolucoes",
+  "ncm",
+  "descricao_tec_concatenada",
+  "bkbit",
+  "lista",
+  "teb",
+  "tarifa_aplicada",
+  "contagem_quota",
+  "contagem_ex",
+  "quota",
+  "destaque_ex",
+  "ncm_integral"
+))
