@@ -34,3 +34,13 @@ letec <- ler_anexo(x, "v")
 tarifas <- tarifas_aplicadas(x)
 
 ```
+
+## Outras informações
+
+Os nomes das colunas aliquota, tec, teb e tarifa_aplicada estão em porcentagem.
+
+A tarifa_aplicada é obtida a partir da teb e das listas de exceção. A lista
+de exceção tem prioridade sobre a teb somente quando a tarifa da NCM foi
+alterada integralmente pela lista. No caso de uma lista de exceção alterar 
+somente parte do código (por meio de destaque), constará a teb no resultado 
+da tarifa_aplicada.
