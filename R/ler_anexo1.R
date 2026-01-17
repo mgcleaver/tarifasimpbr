@@ -26,6 +26,7 @@
 #' }
 #'
 #' @keywords internal
+#' @noRd
 ler_anexo1 <- function(x) {
   message("Processando Anexo I...")
 
