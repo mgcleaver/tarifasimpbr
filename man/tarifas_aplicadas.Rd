@@ -22,6 +22,7 @@ Um \code{tibble} (ou \code{data.frame}) com, no mínimo, as colunas:
 \item \code{descricao_tec_concatenada}: descrição da NCM a partir da posição;
 \item \code{bkbit}: indica se a NCM é grafada como bem de capital/bem de informática
 \item \code{lista}: lista de exceção associada a uma NCM (quando aplicável);
+\item \code{tec}: alíquota da Tarifa Externa Comum;
 \item \code{teb}: alíquota TEB aplicável;
 \item \code{tarifa_aplicada}: A tarifa aplicada é o que consta na TEB, mas se estiver
 integralmente em uma lista de exceção, a tarifa aplicada será a que consta

@@ -48,6 +48,7 @@
 #' * `descricao_tec_concatenada`: descrição da NCM a partir da posição;
 #' * `bkbit`: indica se a NCM é grafada como bem de capital/bem de informática
 #' * `lista`: lista de exceção associada a uma NCM (quando aplicável);
+#' * `tec`: alíquota da Tarifa Externa Comum;
 #' * `teb`: alíquota TEB aplicável;
 #' * `tarifa_aplicada`: A tarifa aplicada é o que consta na TEB, mas se estiver
 #'    integralmente em uma lista de exceção, a tarifa aplicada será a que consta
@@ -105,6 +106,7 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
           ncm:descricao_tec_concatenada,
           bkbit,
           lista,
+          tec,
           teb,
           tarifa_aplicada
         )
@@ -122,6 +124,7 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       ncm:descricao_tec_concatenada,
       bkbit,
       lista,
+      tec,
       teb,
       tarifa_aplicada,
       contagem_quota,
