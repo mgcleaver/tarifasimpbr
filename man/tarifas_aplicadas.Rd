@@ -46,14 +46,14 @@ A função:
 \item Lê o anexo I por meio de \code{\link[=ler_anexo]{ler_anexo()}} com \code{n_anexo = "i"},
 removendo a coluna \code{resolucoes};
 \item Lê o anexo II por meio de \code{\link[=ler_anexo]{ler_anexo()}} com \code{n_anexo = "ii"},
-obtendo a Tarifa Externa Brasileira (\code{aliquota_aplicada_percent})
+obtendo a Tarifa Externa Brasileira (\code{aliquota_aplicada})
 como coluna numérica \code{teb};
 \item Processa os demais anexos de exceção por meio de
 \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}, obtendo, entre outros, a coluna
 \code{tarifa_aplicada} para NCM incluídas integralmente em listas de exceção;
 \item Calcula a coluna \code{tarifa_aplicada} e prioriza, nessa ordem, a tarifa das
-listas de exceção, a TEB e, na ausência dessas, a alíquota TEC (\code{tec_percent});
-\item Ajusta a coluna \code{teb} para assumir a \code{tec_percent} quando a TEB estiver
+listas de exceção, a TEB e, na ausência dessas, a alíquota TEC (\code{tec});
+\item Ajusta a coluna \code{teb} para assumir a \code{tec} quando a TEB estiver
 ausente.
 }
 
@@ -72,7 +72,6 @@ derivadas de \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_exce
 }
 }
 \examples{
-\dontrun{
 # Resultado enxuto, apenas com tarifa aplicada e TEB:
 x <- download_tarifas()
 tarifas <- tarifas_aplicadas(x)
@@ -81,7 +80,6 @@ dplyr::glimpse(tarifas)
 # Resultado detalhado, com informações de quota, Ex e NCM integral:
 tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 dplyr::glimpse(tarifas_detalhadas)
-}
 
 }
 \seealso{

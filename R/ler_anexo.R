@@ -74,7 +74,6 @@
 #'   e `formata_datas` para limpeza e padronização de datas.
 #'
 #' @examples
-#' \dontrun{
 #' x <- download_tarifas()
 #'
 #' # Ler Anexo I
@@ -82,7 +81,6 @@
 #'
 #' # Ler Anexo V (Letec) já com datas e NCM padronizados
 #' anexo_v <- ler_anexo(x, n_anexo = "v")
-#' }
 #'
 #' @export
 ler_anexo <- function(
@@ -138,6 +136,10 @@ ler_anexo <- function(
         guess_max = 1e6,
         col_types = c("text")) |>
         janitor::clean_names() |>
+        dplyr::rename(
+          tec = .data$tec_percent,
+          aliquota_aplicada = .data$aliquota_aplicada_percent
+        ) |>
         dplyr::mutate(ncm = stringr::str_replace_all(.data$ncm, "\\.", ""))
     )
   } else if (stringr::str_detect(n_anexo_lower, " iv ")) {
@@ -169,12 +171,17 @@ ler_anexo <- function(
     col_types = c("text")) |>
     janitor::clean_names()
 
-  nomes_colunas <- names(anexo)
-
-  if(condicao6 && "x10" %in% nomes_colunas) {
+  if(condicao6 && "x10" %in% names(anexo)) {
     anexo <- anexo |>
       dplyr::select(-.data$x10)
   }
+
+  if ("aliquota_percent" %in% names(anexo)) {
+    anexo <- anexo |>
+      dplyr::rename(aliquota = .data$aliquota_percent)
+  }
+
+  nomes_colunas <- names(anexo)
 
   termino_vigencia <- stringr::str_subset(nomes_colunas, "termino_de_vigencia")
 

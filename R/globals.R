@@ -8,7 +8,7 @@ utils::globalVariables(c(
   "tarifa_aplicada",
   "contagem_quota",
   "contagem_ex",
-  "quota",
-  "destaque_ex",
+  "tem_quota",
+  "tem_destaque_ex",
   "ncm_integral"
 ))

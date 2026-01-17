@@ -80,7 +80,6 @@ em seguida, aplica \code{\link[=formata_datas]{formata_datas()}} com o argumento
 }
 
 \examples{
-\dontrun{
 x <- download_tarifas()
 
 # Ler Anexo I
@@ -88,7 +87,6 @@ anexo_i <- ler_anexo(x, n_anexo = "i")
 
 # Ler Anexo V (Letec) já com datas e NCM padronizados
 anexo_v <- ler_anexo(x, n_anexo = "v")
-}
 
 }
 \seealso{

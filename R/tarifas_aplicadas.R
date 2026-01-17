@@ -13,14 +13,14 @@
 #' 1. Lê o anexo I por meio de [ler_anexo()] com `n_anexo = "i"`,
 #'    removendo a coluna `resolucoes`;
 #' 2. Lê o anexo II por meio de [ler_anexo()] com `n_anexo = "ii"`,
-#'    obtendo a Tarifa Externa Brasileira (`aliquota_aplicada_percent`)
+#'    obtendo a Tarifa Externa Brasileira (`aliquota_aplicada`)
 #'    como coluna numérica `teb`;
 #' 3. Processa os demais anexos de exceção por meio de
 #'    [detalhar_listas_excecao_vigentes()], obtendo, entre outros, a coluna
 #'    `tarifa_aplicada` para NCM incluídas integralmente em listas de exceção;
 #' 4. Calcula a coluna `tarifa_aplicada` e prioriza, nessa ordem, a tarifa das
-#'    listas de exceção, a TEB e, na ausência dessas, a alíquota TEC (`tec_percent`);
-#' 5. Ajusta a coluna `teb` para assumir a `tec_percent` quando a TEB estiver
+#'    listas de exceção, a TEB e, na ausência dessas, a alíquota TEC (`tec`);
+#' 5. Ajusta a coluna `teb` para assumir a `tec` quando a TEB estiver
 #'    ausente.
 #'
 #' Quando `detalhar = FALSE` (padrão), a função retorna apenas as colunas
@@ -63,7 +63,6 @@
 #' [tarifas_vigentes()].
 #'
 #' @examples
-#' \dontrun{
 #' # Resultado enxuto, apenas com tarifa aplicada e TEB:
 #' x <- download_tarifas()
 #' tarifas <- tarifas_aplicadas(x)
@@ -72,7 +71,6 @@
 #' # Resultado detalhado, com informações de quota, Ex e NCM integral:
 #' tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 #' dplyr::glimpse(tarifas_detalhadas)
-#' }
 #'
 #' @export
 tarifas_aplicadas <- function(x, detalhar = FALSE) {
@@ -83,7 +81,7 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
     )
 
   anexoii <- ler_anexo(x, "ii") |>
-    dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota_aplicada_percent))
+    dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota_aplicada))
 
   message("Processando demais anexos...")
   listas_excecao <- detalhar_listas_excecao_vigentes(x)
@@ -95,8 +93,8 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       by = "ncm"
     ) |>
     dplyr::mutate(
-      tarifa_aplicada = dplyr::coalesce(.data$tarifa_aplicada, .data$teb, .data$tec_percent),
-      teb = dplyr::coalesce(.data$teb, .data$tec_percent))
+      tarifa_aplicada = dplyr::coalesce(.data$tarifa_aplicada, .data$teb, .data$tec),
+      teb = dplyr::coalesce(.data$teb, .data$tec))
 
   message("Tarifas aplicadas geradas com sucesso")
 

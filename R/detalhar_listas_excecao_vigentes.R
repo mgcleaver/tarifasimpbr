@@ -59,12 +59,10 @@
 #'   integralmente em lista de exceção.
 #'
 #' @examples
-#' \dontrun{
-#' # Exemplo hipotético de uso:
+#' # Exemplo de uso:
 #' x <- download_tarifas()
 #' resumo_excecoes <- detalhar_listas_excecao_vigentes(x)
 #' dplyr::glimpse(resumo_excecoes)
-#' }
 #'
 #' @export
 detalhar_listas_excecao_vigentes <- function(x) {
@@ -83,7 +81,7 @@ detalhar_listas_excecao_vigentes <- function(x) {
     dplyr::bind_rows() |>
     dplyr::transmute(
       .data$ncm,
-      tarifa_aplicada = as.numeric(.data$aliquota_percent)
+      tarifa_aplicada = as.numeric(.data$aliquota)
     )
 
   resumo_tarifas_excecao <- purrr::map(
@@ -198,7 +196,7 @@ seleciona_tarifas <- function(
 ) {
   padrao <- paste(
     "^ncm$",
-    "aliquota_percent",
+    "aliquota",
     "inicio_de_vigencia",
     "termino_de_vigencia",
     "ato_de_inclusao",

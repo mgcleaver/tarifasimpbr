@@ -70,11 +70,9 @@ a tarifa aplicada será, provavelmente, referente à lista remanescente.
 }
 }
 \examples{
-\dontrun{
-# Exemplo hipotético de uso:
+# Exemplo de uso:
 x <- download_tarifas()
 resumo_excecoes <- detalhar_listas_excecao_vigentes(x)
 dplyr::glimpse(resumo_excecoes)
-}
 
 }
