@@ -4,6 +4,7 @@ utils::globalVariables(c(
   "descricao_tec_concatenada",
   "bkbit",
   "lista",
+  "tec",
   "teb",
   "tarifa_aplicada",
   "contagem_quota",
