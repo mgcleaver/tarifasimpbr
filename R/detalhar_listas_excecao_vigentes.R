@@ -1,5 +1,7 @@
 #' Traz os códigos NCM incluídos em listas de exceção tarifárias com indicadores
-#' de contagem, de quota, de destaque e de presença integral da ncm.
+#' de contagem de quota e de destaque, com indicadores de contagem de quota e de 
+#' destaques tarifários bem como indicadores de presença de quota, de destaques 
+#' tarifários e de presença integral da ncm na lista de exceção.
 #'
 #' @description
 #' Itera sobre as seguintes listas de exceções tarifárias: desabastecimento
