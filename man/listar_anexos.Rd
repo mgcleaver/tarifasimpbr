@@ -2,16 +2,16 @@
 % Please edit documentation in R/ler_anexo.R
 \name{listar_anexos}
 \alias{listar_anexos}
-\title{Função para consultar nome e número dos anexos das tarifas de importação}
+\title{Funcao para consultar nome e numero dos anexos das tarifas de importacao}
 \usage{
 listar_anexos()
 }
 \value{
-Retorna um tibble com número do anexo e nome correspondente do anexo
+Retorna um tibble com numero do anexo e nome correspondente do anexo
 }
 \description{
-Função pode ser utilizada para consulta rápida dos nomes e números dos anexos
-de tarifas ou para verificar qual argumento usar na função \code{ler_anexo}.
+Funcao pode ser utilizada para consulta rapida dos nomes e numeros dos anexos
+de tarifas ou para verificar qual argumento usar na funcao \code{ler_anexo}.
 }
 \examples{
 listar_anexos()

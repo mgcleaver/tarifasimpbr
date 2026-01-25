@@ -2,13 +2,13 @@
 % Please edit documentation in R/ler_anexo.R
 \name{ler_anexo}
 \alias{ler_anexo}
-\title{Ler anexos do arquivo excel obtido por meio da função \code{download_tarifas}.}
+\title{Ler anexos do arquivo excel obtido por meio da funcao \code{download_tarifas}.}
 \usage{
 ler_anexo(x, n_anexo = c("i", "ii", "iv", "v", "vi", "viii", "ix", "x"))
 }
 \arguments{
-\item{x}{Objeto retornado por \code{download_tarifas}, que no caso é o caminho
-temporário do arquivo de tarifas de importação vigentes baixado.}
+\item{x}{Objeto retornado por \code{download_tarifas}, que no caso e o caminho
+temporario do arquivo de tarifas de importacao vigentes baixado.}
 
 \item{n_anexo}{String indicando qual anexo deve ser lido. Deve ser
 um dos:
@@ -18,50 +18,50 @@ um dos:
 \value{
 Para \code{n_anexo = "i"}, retorna o tibble produzido por \code{ler_anexo1}.
 
-Para os demais anexos, retorna um tibble com, no mínimo, as colunas:
+Para os demais anexos, retorna um tibble com, no minimo, as colunas:
 \describe{
-\item{ncm}{Código NCM, como texto.}
-\item{no_ex}{Número do \emph{ex} padronizado com 3 dígitos}
-\item{inicio_de_vigencia}{Data de início de vigência em formato
+\item{ncm}{Codigo NCM, como texto.}
+\item{no_ex}{Numero do \emph{ex} padronizado com 3 digitos}
+\item{inicio_de_vigencia}{Data de inicio de vigencia em formato
 padronizado, conforme \code{formata_datas}.}
-\item{termino_de_vigencia}{Data de término de vigência em formato
-padronizado; quando ausente no arquivo, é preenchida com
+\item{termino_de_vigencia}{Data de termino de vigencia em formato
+padronizado; quando ausente no arquivo, e preenchida com
 \code{"9999-12-31"}.}
-\item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusão,
-também formatada por \code{formata_datas}.}
-\item{lista}{(Essa coluna vai existir se o código estiver nas seguintes
-listas de exceção: Desabastecimento, Letec, Lebitbk, Concessões da OMC,
+\item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
+tambem formatada por \code{formata_datas}.}
+\item{lista}{(Essa coluna vai existir se o codigo estiver nas seguintes
+listas de excecao: Desabastecimento, Letec, Lebitbk, Concessoes da OMC,
 DCC ou Automotivos ACE-14.)}
 }
-Outras colunas presentes no anexo original são mantidas, podendo variar
+Outras colunas presentes no anexo original sao mantidas, podendo variar
 conforme o tipo de anexo.
 }
 \description{
-Lê o anexo desejado do arquivo de tarifas obtido por meio da função
-\code{download_tarifas}. Para cada anexo, a função \code{ler_anexo} limpa
+Le o anexo desejado do arquivo de tarifas obtido por meio da funcao
+\code{download_tarifas}. Para cada anexo, a funcao \code{ler_anexo} limpa
 e organiza os dados de cada aba do arquivo (anexo).
 }
 \details{
-Para o Anexo I, a função \code{download_tarifas} apenas delega o processamento para
-a função \code{ler_anexo1}. Para os demais anexos suportados, a função:
+Para o Anexo I, a funcao \code{download_tarifas} apenas delega o processamento para
+a funcao \code{ler_anexo1}. Para os demais anexos suportados, a funcao:
 \itemize{
 \item identifica a aba correta com base no nome do anexo;
-\item pula linhas de cabeçalho conforme o tipo de anexo;
+\item pula linhas de cabecalho conforme o tipo de anexo;
 \item padroniza nomes de colunas com \code{janitor::clean_names} e a partir de outras regras;
-\item garante a existência de colunas de início e término de vigência;
-\item formata datas com a função auxiliar \code{formata_datas};
-\item padroniza códigos \code{ncm} e \code{no_ex}
+\item garante a existencia de colunas de inicio e termino de vigencia;
+\item formata datas com a funcao auxiliar \code{formata_datas};
+\item padroniza codigos \code{ncm} e \code{no_ex}
 }
 
-A seleção da aba é feita com base nos nomes das planilhas do arquivo Excel,
-convertidos para minúsculas, procurando um padrão que contenha o número
+A selecao da aba e feita com base nos nomes das planilhas do arquivo Excel,
+convertidos para minusculas, procurando um padrao que contenha o numero
 romano do anexo (por exemplo, \code{" iv "} para o Anexo IV).
 
-Para o Anexo VI, caso exista uma coluna \code{x10}, ela é removida
+Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 automaticamente antes do processamento.
 
-Quando não há coluna de término de vigência no anexo, a função cria
-a coluna \code{termino_de_vigencia} com valor padrão \code{"-"} e,
+Quando nao ha coluna de termino de vigencia no anexo, a funcao cria
+a coluna \code{termino_de_vigencia} com valor padrao \code{"-"} e,
 em seguida, aplica \code{\link[=formata_datas]{formata_datas()}} com o argumento
 \code{preenche_data = "9999-12-31"}.
 }
@@ -69,13 +69,13 @@ em seguida, aplica \code{\link[=formata_datas]{formata_datas()}} com o argumento
 
 \itemize{
 \item \code{"i"}: TEC vigente
-\item \code{"ii"}: lê a aba do Anexo II
-\item \code{"iv"}: lê o Anexo IV – Desabastecimento.
-\item \code{"v"}: lê o Anexo V – Letec.
-\item \code{"vi"}: lê o Anexo VI – Lebitbk.
-\item \code{"viii"}: lê o Anexo VIII – Concessões OMC.
-\item \code{"ix"}: lê o Anexo IX – DCC.
-\item \code{"x"}: lê o Anexo X – Automotivo.
+\item \code{"ii"}: le a aba do Anexo II
+\item \code{"iv"}: le o Anexo IV - Desabastecimento.
+\item \code{"v"}: le o Anexo V - Letec.
+\item \code{"vi"}: le o Anexo VI - Lebitbk.
+\item \code{"viii"}: le o Anexo VIII - Concessoes OMC.
+\item \code{"ix"}: le o Anexo IX - DCC.
+\item \code{"x"}: le o Anexo X - Automotivo.
 }
 }
 
@@ -85,12 +85,12 @@ x <- download_tarifas()
 # Ler Anexo I
 anexo_i <- ler_anexo(x, n_anexo = "i")
 
-# Ler Anexo V (Letec) já com datas e NCM padronizados
+# Ler Anexo V (Letec) ja com datas e NCM padronizados
 anexo_v <- ler_anexo(x, n_anexo = "v")
 
 }
 \seealso{
-\code{download_tarifas} para obtenção do arquivo de tarifas,
-\code{ler_anexo1} para o processamento específico do Anexo I
-e \code{formata_datas} para limpeza e padronização de datas.
+\code{download_tarifas} para obtencao do arquivo de tarifas,
+\code{ler_anexo1} para o processamento especifico do Anexo I
+e \code{formata_datas} para limpeza e padronizacao de datas.
 }

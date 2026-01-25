@@ -1,22 +1,22 @@
-#' Ler anexos do arquivo excel obtido por meio da função `download_tarifas`.
+#' Ler anexos do arquivo excel obtido por meio da funcao `download_tarifas`.
 #'
-#' Lê o anexo desejado do arquivo de tarifas obtido por meio da função
-#' `download_tarifas`. Para cada anexo, a função `ler_anexo` limpa
+#' Le o anexo desejado do arquivo de tarifas obtido por meio da funcao
+#' `download_tarifas`. Para cada anexo, a funcao `ler_anexo` limpa
 #' e organiza os dados de cada aba do arquivo (anexo).
 #'
-#' Para o Anexo I, a função `download_tarifas` apenas delega o processamento para
-#' a função `ler_anexo1`. Para os demais anexos suportados, a função:
+#' Para o Anexo I, a funcao `download_tarifas` apenas delega o processamento para
+#' a funcao `ler_anexo1`. Para os demais anexos suportados, a funcao:
 #' \itemize{
 #'   \item identifica a aba correta com base no nome do anexo;
-#'   \item pula linhas de cabeçalho conforme o tipo de anexo;
+#'   \item pula linhas de cabecalho conforme o tipo de anexo;
 #'   \item padroniza nomes de colunas com `janitor::clean_names` e a partir de outras regras;
-#'   \item garante a existência de colunas de início e término de vigência;
-#'   \item formata datas com a função auxiliar `formata_datas`;
-#'   \item padroniza códigos \code{ncm} e \code{no_ex}
+#'   \item garante a existencia de colunas de inicio e termino de vigencia;
+#'   \item formata datas com a funcao auxiliar `formata_datas`;
+#'   \item padroniza codigos \code{ncm} e \code{no_ex}
 #' }
 #'
-#' @param x Objeto retornado por `download_tarifas`, que no caso é o caminho
-#' temporário do arquivo de tarifas de importação vigentes baixado.
+#' @param x Objeto retornado por `download_tarifas`, que no caso e o caminho
+#' temporario do arquivo de tarifas de importacao vigentes baixado.
 #' @param n_anexo String indicando qual anexo deve ser lido. Deve ser
 #'   um dos:
 #'   \code{"i"}, \code{"ii"}, \code{"iv"}, \code{"v"},
@@ -25,53 +25,53 @@
 #' @return
 #' Para \code{n_anexo = "i"}, retorna o tibble produzido por `ler_anexo1`.
 #'
-#' Para os demais anexos, retorna um tibble com, no mínimo, as colunas:
+#' Para os demais anexos, retorna um tibble com, no minimo, as colunas:
 #' \describe{
-#'   \item{ncm}{Código NCM, como texto.}
-#'   \item{no_ex}{Número do \emph{ex} padronizado com 3 dígitos}
-#'   \item{inicio_de_vigencia}{Data de início de vigência em formato
+#'   \item{ncm}{Codigo NCM, como texto.}
+#'   \item{no_ex}{Numero do \emph{ex} padronizado com 3 digitos}
+#'   \item{inicio_de_vigencia}{Data de inicio de vigencia em formato
 #'     padronizado, conforme `formata_datas`.}
-#'   \item{termino_de_vigencia}{Data de término de vigência em formato
-#'     padronizado; quando ausente no arquivo, é preenchida com
+#'   \item{termino_de_vigencia}{Data de termino de vigencia em formato
+#'     padronizado; quando ausente no arquivo, e preenchida com
 #'     \code{"9999-12-31"}.}
-#'   \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusão,
-#'     também formatada por `formata_datas`.}
-#'   \item{lista}{(Essa coluna vai existir se o código estiver nas seguintes
-#'    listas de exceção: Desabastecimento, Letec, Lebitbk, Concessões da OMC,
+#'   \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
+#'     tambem formatada por `formata_datas`.}
+#'   \item{lista}{(Essa coluna vai existir se o codigo estiver nas seguintes
+#'    listas de excecao: Desabastecimento, Letec, Lebitbk, Concessoes da OMC,
 #'    DCC ou Automotivos ACE-14.)}
 #' }
-#' Outras colunas presentes no anexo original são mantidas, podendo variar
+#' Outras colunas presentes no anexo original sao mantidas, podendo variar
 #' conforme o tipo de anexo.
 #'
 #' @details
-#' A seleção da aba é feita com base nos nomes das planilhas do arquivo Excel,
-#' convertidos para minúsculas, procurando um padrão que contenha o número
+#' A selecao da aba e feita com base nos nomes das planilhas do arquivo Excel,
+#' convertidos para minusculas, procurando um padrao que contenha o numero
 #' romano do anexo (por exemplo, \code{" iv "} para o Anexo IV).
 #'
-#' Para o Anexo VI, caso exista uma coluna \code{x10}, ela é removida
+#' Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 #' automaticamente antes do processamento.
 #'
-#' Quando não há coluna de término de vigência no anexo, a função cria
-#' a coluna \code{termino_de_vigencia} com valor padrão \code{"-"} e,
+#' Quando nao ha coluna de termino de vigencia no anexo, a funcao cria
+#' a coluna \code{termino_de_vigencia} com valor padrao \code{"-"} e,
 #' em seguida, aplica [formata_datas()] com o argumento
 #' \code{preenche_data = "9999-12-31"}.
 #'
 #' @section Anexos suportados:
 #' \itemize{
 #'   \item \code{"i"}: TEC vigente
-#'   \item \code{"ii"}: lê a aba do Anexo II
-#'   \item \code{"iv"}: lê o Anexo IV – Desabastecimento.
-#'   \item \code{"v"}: lê o Anexo V – Letec.
-#'   \item \code{"vi"}: lê o Anexo VI – Lebitbk.
-#'   \item \code{"viii"}: lê o Anexo VIII – Concessões OMC.
-#'   \item \code{"ix"}: lê o Anexo IX – DCC.
-#'   \item \code{"x"}: lê o Anexo X – Automotivo.
+#'   \item \code{"ii"}: le a aba do Anexo II
+#'   \item \code{"iv"}: le o Anexo IV - Desabastecimento.
+#'   \item \code{"v"}: le o Anexo V - Letec.
+#'   \item \code{"vi"}: le o Anexo VI - Lebitbk.
+#'   \item \code{"viii"}: le o Anexo VIII - Concessoes OMC.
+#'   \item \code{"ix"}: le o Anexo IX - DCC.
+#'   \item \code{"x"}: le o Anexo X - Automotivo.
 #' }
 #'
 #' @seealso
-#'   `download_tarifas` para obtenção do arquivo de tarifas,
-#'   `ler_anexo1` para o processamento específico do Anexo I
-#'   e `formata_datas` para limpeza e padronização de datas.
+#'   `download_tarifas` para obtencao do arquivo de tarifas,
+#'   `ler_anexo1` para o processamento especifico do Anexo I
+#'   e `formata_datas` para limpeza e padronizacao de datas.
 #'
 #' @examples
 #' x <- download_tarifas()
@@ -79,7 +79,7 @@
 #' # Ler Anexo I
 #' anexo_i <- ler_anexo(x, n_anexo = "i")
 #'
-#' # Ler Anexo V (Letec) já com datas e NCM padronizados
+#' # Ler Anexo V (Letec) ja com datas e NCM padronizados
 #' anexo_v <- ler_anexo(x, n_anexo = "v")
 #'
 #' @export
@@ -98,7 +98,7 @@ ler_anexo <- function(
     " "
   )
 
-  # regra para definir se coluna "lista" será incluída:
+  # regra para definir se coluna "lista" sera incluida:
   # se a consulta for para anexo i ou ii, is_lista = 0
   is_lista <- 0
 
@@ -153,7 +153,7 @@ ler_anexo <- function(
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
     condicao6 <- TRUE
   } else if (stringr::str_detect(n_anexo_lower, " viii ")) {
-    message("Processando Anexo VIII - Concessões OMC...")
+    message("Processando Anexo VIII - Concessoes OMC...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 3
   } else if (stringr::str_detect(n_anexo_lower, " ix ")) {
     message("Processando Anexo IX - DCC...")
@@ -287,12 +287,12 @@ ler_anexo <- function(
 
 }
 
-#' Adivinha número de linhas a serem puladas para leitura correta do arquivo
+#' Adivinha numero de linhas a serem puladas para leitura correta do arquivo
 #' @keywords internal
 #' @noRd
 obter_linha_cabecalho <- function(path, aba = NULL) {
 
-  # Lê tudo sem nomes de coluna
+  # Le tudo sem nomes de coluna
   tmp <- suppressMessages(
     readxl::read_excel(
       path,
@@ -309,7 +309,7 @@ obter_linha_cabecalho <- function(path, aba = NULL) {
     unique()
 
   if (length(linha_cabecalho) == 0) {
-    stop("Erro de leitura, não há nenhuma coluna 'NCM' na planilha.")
+    stop("Erro de leitura, nao ha nenhuma coluna 'NCM' na planilha.")
   }
 
   return(linha_cabecalho - 1)
@@ -318,47 +318,47 @@ obter_linha_cabecalho <- function(path, aba = NULL) {
 
 #' Formatar datas provenientes dos anexos de tarifas
 #'
-#' Função auxiliar para padronizar datas que podem vir em formatos
-#' heterogêneos nos anexos de tarifas: datas escritas como texto,
-#' datas no formato numérico do Excel (serial number) ou valores
-#' especiais representados por hífen (`"-"`).
+#' Funcao auxiliar para padronizar datas que podem vir em formatos
+#' heterogeneos nos anexos de tarifas: datas escritas como texto,
+#' datas no formato numerico do Excel (serial number) ou valores
+#' especiais representados por hifen (`"-"`).
 #'
-#' Esta função é usada internamente por `ler_anexo` e
-#' outras funções de limpeza dos anexos.
+#' Esta funcao e usada internamente por `ler_anexo` e
+#' outras funcoes de limpeza dos anexos.
 #'
 #' @param x Vetor de caracteres contendo datas em diferentes formatos:
 #'   \itemize{
-#'     \item números inteiros representando datas no padrão Excel
+#'     \item numeros inteiros representando datas no padrao Excel
 #'       (serial date);
 #'     \item datas textuais (ex.: `"01/02/2024"`, `"2024-02-01"`);
-#'     \item hífen (`"-"`), indicando ausência de data.
+#'     \item hifen (`"-"`), indicando ausencia de data.
 #'   }
 #' @param preenche_data Valor opcional usado para substituir entradas iguais
-#'   a `"-"`. Se `NULL` (padrão), o hífen é convertido para `NA`.
-#'   Caso contrário, o hífen é substituído pelo valor informado antes da
-#'   tentativa de conversão (por exemplo: `"9999-12-31"`).
+#'   a `"-"`. Se `NULL` (padrao), o hifen e convertido para `NA`.
+#'   Caso contrario, o hifen e substituido pelo valor informado antes da
+#'   tentativa de conversao (por exemplo: `"9999-12-31"`).
 #'
 #' @return
-#' Um vetor de classe `Date` com as datas convertidas. Entradas inválidas
-#' ou impossíveis de interpretar retornam `NA`.
+#' Um vetor de classe `Date` com as datas convertidas. Entradas invalidas
+#' ou impossiveis de interpretar retornam `NA`.
 #'
 #' @details
-#' A função segue três passos principais:
+#' A funcao segue tres passos principais:
 #' \itemize{
-#'   \item remoção de espaços em branco nas extremidades;
-#'   \item substituição opcional do hífen (`"-"`) pelo valor definido
+#'   \item remocao de espacos em branco nas extremidades;
+#'   \item substituicao opcional do hifen (`"-"`) pelo valor definido
 #'     em `preenche_data`;
-#'   \item identificação e conversão de datas em formato Excel (números
+#'   \item identificacao e conversao de datas em formato Excel (numeros
 #'     inteiros) e de datas textuais, usando
-#'     `lubridate::parse_date_time` com múltiplas ordens possíveis
+#'     `lubridate::parse_date_time` com multiplas ordens possiveis
 #'     (\code{"dmy"}, \code{"dmY"}, \code{"ymd"}, \code{"Ymd"}).
 #' }
 #'
 #' Notas:
 #' \itemize{
-#'   \item A origem do Excel usada é `"1899-12-30"`, compatível com o
-#'     comportamento padrão do Excel no Windows.
-#'   \item Conflitos de parsing são suprimidos com \code{suppressWarnings()}.
+#'   \item A origem do Excel usada e `"1899-12-30"`, compativel com o
+#'     comportamento padrao do Excel no Windows.
+#'   \item Conflitos de parsing sao suprimidos com \code{suppressWarnings()}.
 #' }
 #'
 #' @examples
@@ -370,7 +370,7 @@ obter_linha_cabecalho <- function(path, aba = NULL) {
 #'
 #' @keywords internal
 formata_datas <- function(x, preenche_data = NULL) {
-  # Remove espaços extras
+  # Remove espacos extras
   x <- trimws(x)
 
   # Substitui "-" pelo definido no argumento
@@ -380,18 +380,18 @@ formata_datas <- function(x, preenche_data = NULL) {
     x <- gsub("^-$", preenche_data, x)
   }
 
-  # Verifica se é número (mesmo se veio como texto)
+  # Verifica se e numero (mesmo se veio como texto)
   is_num <- grepl("^[0-9]+$", x)
 
-  # Inicializa vetor de saída
+  # Inicializa vetor de saida
   out <- rep(as.Date(NA), length(x))
 
-  # Converte os números inteiros (Excel serial date)
+  # Converte os numeros inteiros (Excel serial date)
   if (any(is_num)) {
     out[is_num] <- as.Date(as.numeric(x[is_num]), origin = "1899-12-30")
   }
 
-  # Converte os que são textos de data
+  # Converte os que sao textos de data
   if (any(!is_num)) {
     out[!is_num] <- suppressWarnings(
       lubridate::parse_date_time(
@@ -404,12 +404,12 @@ formata_datas <- function(x, preenche_data = NULL) {
   return(out)
 }
 
-#' Função para consultar nome e número dos anexos das tarifas de importação
+#' Funcao para consultar nome e numero dos anexos das tarifas de importacao
 #'
-#' Função pode ser utilizada para consulta rápida dos nomes e números dos anexos
-#' de tarifas ou para verificar qual argumento usar na função `ler_anexo`.
+#' Funcao pode ser utilizada para consulta rapida dos nomes e numeros dos anexos
+#' de tarifas ou para verificar qual argumento usar na funcao `ler_anexo`.
 #'
-#' @return Retorna um tibble com número do anexo e nome correspondente do anexo
+#' @return Retorna um tibble com numero do anexo e nome correspondente do anexo
 #'
 #' @examples
 #' listar_anexos()
@@ -424,7 +424,7 @@ listar_anexos <- function() {
       "Desabastecimento",
       "Letec",
       "Lebitbk",
-      "Concessões OMC",
+      "Concessoes OMC",
       "DCC",
       "Automotivos ACE-14"
     )

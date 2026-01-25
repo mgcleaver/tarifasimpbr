@@ -9,47 +9,47 @@ formata_datas(x, preenche_data = NULL)
 \arguments{
 \item{x}{Vetor de caracteres contendo datas em diferentes formatos:
 \itemize{
-\item números inteiros representando datas no padrão Excel
+\item numeros inteiros representando datas no padrao Excel
 (serial date);
 \item datas textuais (ex.: \code{"01/02/2024"}, \code{"2024-02-01"});
-\item hífen (\code{"-"}), indicando ausência de data.
+\item hifen (\code{"-"}), indicando ausencia de data.
 }}
 
 \item{preenche_data}{Valor opcional usado para substituir entradas iguais
-a \code{"-"}. Se \code{NULL} (padrão), o hífen é convertido para \code{NA}.
-Caso contrário, o hífen é substituído pelo valor informado antes da
-tentativa de conversão (por exemplo: \code{"9999-12-31"}).}
+a \code{"-"}. Se \code{NULL} (padrao), o hifen e convertido para \code{NA}.
+Caso contrario, o hifen e substituido pelo valor informado antes da
+tentativa de conversao (por exemplo: \code{"9999-12-31"}).}
 }
 \value{
-Um vetor de classe \code{Date} com as datas convertidas. Entradas inválidas
-ou impossíveis de interpretar retornam \code{NA}.
+Um vetor de classe \code{Date} com as datas convertidas. Entradas invalidas
+ou impossiveis de interpretar retornam \code{NA}.
 }
 \description{
-Função auxiliar para padronizar datas que podem vir em formatos
-heterogêneos nos anexos de tarifas: datas escritas como texto,
-datas no formato numérico do Excel (serial number) ou valores
-especiais representados por hífen (\code{"-"}).
+Funcao auxiliar para padronizar datas que podem vir em formatos
+heterogeneos nos anexos de tarifas: datas escritas como texto,
+datas no formato numerico do Excel (serial number) ou valores
+especiais representados por hifen (\code{"-"}).
 }
 \details{
-Esta função é usada internamente por \code{ler_anexo} e
-outras funções de limpeza dos anexos.
+Esta funcao e usada internamente por \code{ler_anexo} e
+outras funcoes de limpeza dos anexos.
 
-A função segue três passos principais:
+A funcao segue tres passos principais:
 \itemize{
-\item remoção de espaços em branco nas extremidades;
-\item substituição opcional do hífen (\code{"-"}) pelo valor definido
+\item remocao de espacos em branco nas extremidades;
+\item substituicao opcional do hifen (\code{"-"}) pelo valor definido
 em \code{preenche_data};
-\item identificação e conversão de datas em formato Excel (números
+\item identificacao e conversao de datas em formato Excel (numeros
 inteiros) e de datas textuais, usando
-\code{lubridate::parse_date_time} com múltiplas ordens possíveis
+\code{lubridate::parse_date_time} com multiplas ordens possiveis
 (\code{"dmy"}, \code{"dmY"}, \code{"ymd"}, \code{"Ymd"}).
 }
 
 Notas:
 \itemize{
-\item A origem do Excel usada é \code{"1899-12-30"}, compatível com o
-comportamento padrão do Excel no Windows.
-\item Conflitos de parsing são suprimidos com \code{suppressWarnings()}.
+\item A origem do Excel usada e \code{"1899-12-30"}, compativel com o
+comportamento padrao do Excel no Windows.
+\item Conflitos de parsing sao suprimidos com \code{suppressWarnings()}.
 }
 }
 \examples{

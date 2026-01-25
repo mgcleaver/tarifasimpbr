@@ -1,20 +1,20 @@
-#' Função auxiliar usada na função ler_anexo
+#' Funcao auxiliar usada na funcao ler_anexo
 #'
-#' Esta função faz a leitura e processamento do Anexo I para obtenção
+#' Esta funcao faz a leitura e processamento do Anexo I para obtencao
 #' da TEC a partir do arquivo oficial de tarifas disponibilizado no site da Camex.
 #'
-#' Lê a aba referente ao Anexo I da planiha excel obtida pela função
-#'  `download_tarifas`, limpa e organiza as informações.
+#' Le a aba referente ao Anexo I da planiha excel obtida pela funcao
+#'  `download_tarifas`, limpa e organiza as informacoes.
 #'
-#' @param x Objeto retornado pela função `download_tarifas`
+#' @param x Objeto retornado pela funcao `download_tarifas`
 #'
 #' @return Um tibble que retorna as colunas ncm, descricao_tec,
 #' descricao_tec_concatenada, tec, bkbit, resolucoes.
 #'
 #' @details
-#' A função cria a coluna descricao_tec_concatenada, a qual apresenta a concatenação
-#' das descrições que vão da posição (4 dígitos) até o subitem da NCM (8 dígitos).
-#' A coluna tec representa a Tarifa Externa Comum e os seus valores estão em
+#' A funcao cria a coluna descricao_tec_concatenada, a qual apresenta a concatenacao
+#' das descricoes que vao da posicao (4 digitos) ate o subitem da NCM (8 digitos).
+#' A coluna tec representa a Tarifa Externa Comum e os seus valores estao em
 #' porcentagens.
 #'
 #' @keywords internal
@@ -43,9 +43,9 @@ ler_anexo1 <- function(x) {
     dplyr::select(1:3)
 
   # definir cabecalhos
-  cabecalhos <- c("NCM", "DESCRIÇÃO", "TEC(%)")
+  cabecalhos <- c("NCM", "DESCRI\u00c7\u00c3O", "TEC(%)")
 
-  # iniciar variáveis para identificar inicio e fim de tabelas
+  # iniciar variaveis para identificar inicio e fim de tabelas
   na_tabela <- FALSE
   inicio_tabela <- 0
 
@@ -57,7 +57,7 @@ ler_anexo1 <- function(x) {
     linha <- df[i, ]
 
     if (all(linha == cabecalhos)) {
-      # começar nova tabela
+      # comecar nova tabela
       na_tabela <- TRUE
       inicio_tabela <- i + 1
     }
@@ -104,7 +104,7 @@ ler_anexo1 <- function(x) {
 
   #### concatena descricoes ####
 
-  # funcao auxiliar para criar tabelas ao nível de diferentes
+  # funcao auxiliar para criar tabelas ao nivel de diferentes
   # digitos da ncm
   cria_tabelas <- function(x) {
     compila_anexoi |>

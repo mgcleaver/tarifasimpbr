@@ -2,28 +2,28 @@
 % Please edit documentation in R/ler_anexo1.R
 \name{ler_anexo1}
 \alias{ler_anexo1}
-\title{Função auxiliar usada na função ler_anexo}
+\title{Funcao auxiliar usada na funcao ler_anexo}
 \usage{
 ler_anexo1(x)
 }
 \arguments{
-\item{x}{Objeto retornado pela função \code{download_tarifas}}
+\item{x}{Objeto retornado pela funcao \code{download_tarifas}}
 }
 \value{
 Um tibble que retorna as colunas ncm, descricao_tec,
 descricao_tec_concatenada, tec, bkbit, resolucoes.
 }
 \description{
-Esta função faz a leitura e processamento do Anexo I para obtenção
+Esta funcao faz a leitura e processamento do Anexo I para obtencao
 da TEC a partir do arquivo oficial de tarifas disponibilizado no site da Camex.
 }
 \details{
-Lê a aba referente ao Anexo I da planiha excel obtida pela função
-\code{download_tarifas}, limpa e organiza as informações.
+Le a aba referente ao Anexo I da planiha excel obtida pela funcao
+\code{download_tarifas}, limpa e organiza as informacoes.
 
-A função cria a coluna descricao_tec_concatenada, a qual apresenta a concatenação
-das descrições que vão da posição (4 dígitos) até o subitem da NCM (8 dígitos).
-A coluna tec representa a Tarifa Externa Comum e os seus valores estão em
+A funcao cria a coluna descricao_tec_concatenada, a qual apresenta a concatenacao
+das descricoes que vao da posicao (4 digitos) ate o subitem da NCM (8 digitos).
+A coluna tec representa a Tarifa Externa Comum e os seus valores estao em
 porcentagens.
 }
 \keyword{internal}
