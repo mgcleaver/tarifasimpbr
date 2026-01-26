@@ -1,5 +1,6 @@
 # tarifasimpbr
 
+![Lifecycle: Experimental](https://img.shields.io/badge/lifecycle-experimental-orange)
 [![R-CMD-check](https://github.com/mgcleaver/tarifasimpbr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mgcleaver/tarifasimpbr/actions/workflows/R-CMD-check.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
