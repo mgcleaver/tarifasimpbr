@@ -1,6 +1,6 @@
 #' Traz os códigos NCM incluídos em listas de exceção tarifárias com indicadores
-#' de contagem de quota e de destaque, com indicadores de contagem de quota e de 
-#' destaques tarifários bem como indicadores de presença de quota, de destaques 
+#' de contagem de quota e de destaque, com indicadores de contagem de quota e de
+#' destaques tarifários bem como indicadores de presença de quota, de destaques
 #' tarifários e de presença integral da ncm na lista de exceção.
 #'
 #' @description
@@ -54,7 +54,7 @@
 #' * `destaque_ex`: indicador binário (0/1) informando se a NCM possui ao menos
 #'   um destaque (Ex) nas listas de exceção;
 #' * `ncm_integral`: indicador binário (0/1) informando se há medida que
-#'   abrange a NCM integralmente (sem quota nem destaque); e
+#'   abrange a NCM integralmente (sem destaque); e
 #' * `lista`: string com a(s) lista(s) de exceção em que a NCM aparece,
 #'   concatenadas com vírgula quando houver mais de uma.
 #' * `tarifa_aplicada`: apresenta a tarifa aplicada para as ncms incluídas
@@ -156,7 +156,7 @@ adiciona_indicador_ex_quota <- function(
         tem_quota = dplyr::if_else(is.na(.data$quota), 0, 1),
         tem_destaque_ex = dplyr::if_else(is.na(.data$no_ex), 0, 1),
         ncm_integral = dplyr::if_else(
-          is.na(.data$quota) & is.na(.data$no_ex),
+          is.na(.data$no_ex),
           1,
           0
         )
