@@ -362,9 +362,11 @@ obter_linha_cabecalho <- function(path, aba = NULL) {
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' formata_datas(c("01/02/2024", "2024-02-01"))
 #' formata_datas(c("45210", "45211"))  # datas em formato Excel
 #' formata_datas(c("-", "01/01/2024"), preenche_data = "9999-12-31")
+#' }
 #'
 #' @keywords internal
 formata_datas <- function(x, preenche_data = NULL) {

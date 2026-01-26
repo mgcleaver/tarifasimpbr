@@ -3,9 +3,8 @@
 \name{detalhar_listas_excecao_vigentes}
 \alias{detalhar_listas_excecao_vigentes}
 \title{Traz os códigos NCM incluídos em listas de exceção tarifárias com indicadores
-de contagem de quota e de destaque, com indicadores de contagem de quota e de
-destaques tarifários bem como indicadores de presença de quota, de destaques
-tarifários e de presença integral da ncm na lista de exceção.}
+de contagem de quota e de destaques tarifário, bem como indicadores de presença
+de quota, de destaques tarifários e de presença integral da ncm na lista de exceção.}
 \usage{
 detalhar_listas_excecao_vigentes(x)
 }
@@ -25,7 +24,7 @@ ocorrência com quota;
 \item \code{destaque_ex}: indicador binário (0/1) informando se a NCM possui ao menos
 um destaque (Ex) nas listas de exceção;
 \item \code{ncm_integral}: indicador binário (0/1) informando se há medida que
-abrange a NCM integralmente (sem quota nem destaque); e
+abrange a NCM integralmente (sem destaque); e
 \item \code{lista}: string com a(s) lista(s) de exceção em que a NCM aparece,
 concatenadas com vírgula quando houver mais de uma.
 \item \code{tarifa_aplicada}: apresenta a tarifa aplicada para as ncms incluídas
