@@ -1,7 +1,7 @@
-#' Seleciona colunas específicas das listas de exceções tarifárias e filtra
-#' observações das listas de exceção que impactam a tarifa aplicada.
+#' Seleciona colunas especificas das listas de excecoes tarifarias e filtra
+#' observacoes das listas de excecao que modificam a tarifa aplicada.
 #'
-#' Usada dentro da função principal `detalhar_listas_excecao_vigentes`.
+#' Usada dentro da funcao principal `detalhar_listas_excecao_vigentes`.
 #'
 #' @keywords internal
 #' @noRd

@@ -7,7 +7,7 @@
 - Simplificação do resultado de detalhar_listas_excecao_vigentes.R: remoção de indicadores
   de presença de ex tarifário e de quota por conta de redundância.
 - Implementação de testes (a fazer)
-- Reorganiza arquivos de funções (a fazer)
+- Reorganiza arquivos de funções.
 
 ## Compatibilidade
 

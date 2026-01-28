@@ -1,5 +1,5 @@
 #' Download de tarifas de importação do Brasil do site oficial da
-#' Camara de Comerio Exterior (Camex)
+#' Camara de Comercio Exterior (Camex)
 #'
 #' @description
 #' Essa função faz o download do arquivo de tarifas vigentes do Brasil em um diretorio

@@ -1,19 +1,17 @@
 #' Adiciona indicador de destaque (ex) e quota
 #'
 #' Usada dentro da função principal `detalhar_listas_excecao_vigentes` para
-#' adicionar um indicador de destaque (ex) de quota e de presença integral de uma
-#' NCM nos anexo iv, v, vi, xiii, ix, x.
+#' adicionar, por NCM, a contagem de destaques (ex), a contagem de quotas, um indicador de presença
+#' integral de NCM em lista de exceção e um indicador de alteração de tarifa aplicada
+#' nos anexo iv, v, vi, xiii, ix, x.
 #'
-#' @param x deve ser o resultado de `tarifas_download()`. No caso o argumento
-#'    é passado para esta função interna por meio do argumento x proveniente de
-#'    `detalhar_listas_excecao_vigentes`.
+#' @param x deve ser o resultado de `tarifas_download()`.
 #'
 #' @param n_anexo é o número romano de um anexo relacionado com uma lista de
 #'    exceção. As opções possíveis são iv, v, vi, viii, ix, x.
 #'
-#' @return
-#' O mesmo objeto de entrada, porém com três colunas adicionais: quota, destaque_ex
-#' e ncm_integral.
+#' @return um tibble com adiciona as colunas tem_quota, tem_destque_ex, ncm_integral
+#' e altera_tarifa_aplicada.
 #'
 #' @keywords internal
 #' @noRd

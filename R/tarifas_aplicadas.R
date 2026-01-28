@@ -4,8 +4,9 @@
 #' @description
 #' Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X para calcular
 #'  a \emph{tarifa aplicada} por código NCM. Opcionalmente,
-#' pode retornar um resultado detalhado com indicadores de quota, destaque (Ex)
-#' e presença da integralidade da NCM em uma lista de exceção.
+#' pode retornar um resultado detalhado por NCM com contagem de quota e de
+#' destaque (Ex), além de indicar se a NCM se encontra integralmente em uma lista
+#' de exceção.
 #'
 #' @details
 #' A função:
@@ -32,9 +33,8 @@
 #'
 #' * `contagem_quota`: número de ocorrências com quota;
 #' * `contagem_ex`: número de destaques (Ex);
-#' * `quota`: indicador (0/1) de existência de quota para a NCM;
-#' * `destaque_ex`: indicador (0/1) de existência de destaque (Ex);
-#' * `ncm_integral`: indicador (0/1) de medida aplicável à NCM integralmente.
+#' * `ncm_integral`: indicador (0/1) de medida e lista de exceção
+#'    aplicável à NCM integralmente.
 #'
 #' @param x Objeto, é o resultado obtido a partir da função `download_tarifas()`
 #' @param detalhar Lógico, indica se o resultado deve incluir as colunas
@@ -56,7 +56,7 @@
 #'
 #' Quando `detalhar = TRUE`, o retorno inclui também:
 #'
-#' * `contagem_quota`, `contagem_ex`, `quota`, `destaque_ex`, `ncm_integral`,
+#' * `contagem_quota`, `contagem_ex`, `ncm_integral`,
 #'   conforme descrito em [detalhar_listas_excecao_vigentes()].
 #'
 #' @seealso
@@ -69,7 +69,8 @@
 #' tarifas <- tarifas_aplicadas(x)
 #' dplyr::glimpse(tarifas)
 #'
-#' # Resultado detalhado, com informações de quota, Ex e NCM integral:
+#' # Resultado detalhado, com informações, por NCM, de contagem de quota, de Ex
+#' e indicador de NCM integral:
 #' tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 #' dplyr::glimpse(tarifas_detalhadas)
 #'
