@@ -129,8 +129,6 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       tarifa_aplicada,
       contagem_quota,
       contagem_ex,
-      tem_quota,
-      tem_destaque_ex,
       ncm_integral
     )
 
