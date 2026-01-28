@@ -158,6 +158,11 @@ adiciona_indicador_ex_quota <- function(
           is.na(.data$no_ex),
           1,
           0
+        ),
+        altera_tarifa_aplicada = dplyr::if_else(
+          is.na(.data$quota) & is.na(.data$no_ex),
+          1,
+          0
         )
       )
   )
@@ -186,7 +191,8 @@ resume_tarifas_de_excecao <- function(x) {
   return(out)
 }
 
-#' Seleciona colunas específicas das listas de exceções tarifárias
+#' Seleciona colunas específicas das listas de exceções tarifárias e filtra
+#' observações das listas de exceção que impactam a tarifa aplicada.
 #'
 #' Usada dentro da função principal `detalhar_listas_excecao_vigentes`.
 #'
@@ -207,7 +213,7 @@ seleciona_tarifas <- function(
   )
 
   out <- x |>
-    dplyr::filter(.data$ncm_integral == 1) |>
+    dplyr::filter(.data$altera_tarifa_aplicada == 1) |>
     dplyr::select(dplyr::matches(padrao))
 
   return(out)
