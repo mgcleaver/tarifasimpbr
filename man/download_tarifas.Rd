@@ -3,7 +3,7 @@
 \name{download_tarifas}
 \alias{download_tarifas}
 \title{Download de tarifas de importação do Brasil do site oficial da
-Camara de Comerio Exterior (Camex)}
+Camara de Comercio Exterior (Camex)}
 \usage{
 download_tarifas()
 }

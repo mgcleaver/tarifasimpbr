@@ -29,9 +29,9 @@ padronizado; quando ausente no arquivo, e preenchida com
 \code{"9999-12-31"}.}
 \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
 tambem formatada por \code{formata_datas}.}
-\item{lista}{(Essa coluna vai existir se o codigo estiver nas seguintes
-listas de excecao: Desabastecimento, Letec, Lebitbk, Concessoes da OMC,
-DCC ou Automotivos ACE-14.)}
+\item{lista}{(Coluna criada para indicar a presença de uma NCM nos anexos
+IV (Desabastecimento), V (Letec), VI (Lebitbk), VIII (Concessoes OMC), IX
+(DCC) e X (Automotivo))}
 }
 Outras colunas presentes no anexo original sao mantidas, podendo variar
 conforme o tipo de anexo.
@@ -42,13 +42,14 @@ Le o anexo desejado do arquivo de tarifas obtido por meio da funcao
 e organiza os dados de cada aba do arquivo (anexo).
 }
 \details{
-Para o Anexo I, a funcao \code{download_tarifas} apenas delega o processamento para
+Para o Anexo I, a funcao \code{ler_anexo} apenas delega o processamento para
 a funcao \code{ler_anexo1}. Para os demais anexos suportados, a funcao:
 \itemize{
 \item identifica a aba correta com base no nome do anexo;
 \item pula linhas de cabecalho conforme o tipo de anexo;
 \item padroniza nomes de colunas com \code{janitor::clean_names} e a partir de outras regras;
-\item garante a existencia de colunas de inicio e termino de vigencia;
+\item garante a existencia da coluna de termino_de_vigencia e renomeia
+inicio_da_vigencia para inicio_de_vigencia quando for o caso;
 \item formata datas com a funcao auxiliar \code{formata_datas};
 \item padroniza codigos \code{ncm} e \code{no_ex}
 }
@@ -61,9 +62,12 @@ Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 automaticamente antes do processamento.
 
 Quando nao ha coluna de termino de vigencia no anexo, a funcao cria
-a coluna \code{termino_de_vigencia} com valor padrao \code{"-"} e,
-em seguida, aplica \code{\link[=formata_datas]{formata_datas()}} com o argumento
-\code{preenche_data = "9999-12-31"}.
+a coluna \code{termino_de_vigencia} e preenche dados faltantes com a data
+"9999-12-31".
+
+Se existir a coluna \code{inicio_da_vigencia}, ela e renomeada para
+\code{inicio_de_vigencia}. Caso contrario, a funcao espera que
+\code{inicio_de_vigencia} ja exista no anexo.
 }
 \section{Anexos suportados}{
 

@@ -69,8 +69,8 @@
 #' tarifas <- tarifas_aplicadas(x)
 #' dplyr::glimpse(tarifas)
 #'
-#' # Resultado detalhado, com informações, por NCM, de contagem de quota, de Ex
-#' e indicador de NCM integral:
+#' # Resultado detalhado, com informacoes, por NCM, de contagem de quota, de Ex
+#' # e indicador de NCM integral:
 #' tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 #' dplyr::glimpse(tarifas_detalhadas)
 #'

@@ -31,15 +31,16 @@ na lista de exceção.
 
 Quando \code{detalhar = TRUE}, o retorno inclui também:
 \itemize{
-\item \code{contagem_quota}, \code{contagem_ex}, \code{quota}, \code{destaque_ex}, \code{ncm_integral},
+\item \code{contagem_quota}, \code{contagem_ex}, \code{ncm_integral},
 conforme descrito em \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}.
 }
 }
 \description{
 Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X para calcular
 a \emph{tarifa aplicada} por código NCM. Opcionalmente,
-pode retornar um resultado detalhado com indicadores de quota, destaque (Ex)
-e presença da integralidade da NCM em uma lista de exceção.
+pode retornar um resultado detalhado por NCM com contagem de quota e de
+destaque (Ex), além de indicar se a NCM se encontra integralmente em uma lista
+de exceção.
 }
 \details{
 A função:
@@ -67,9 +68,8 @@ derivadas de \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_exce
 \itemize{
 \item \code{contagem_quota}: número de ocorrências com quota;
 \item \code{contagem_ex}: número de destaques (Ex);
-\item \code{quota}: indicador (0/1) de existência de quota para a NCM;
-\item \code{destaque_ex}: indicador (0/1) de existência de destaque (Ex);
-\item \code{ncm_integral}: indicador (0/1) de medida aplicável à NCM integralmente.
+\item \code{ncm_integral}: indicador (0/1) de medida e lista de exceção
+aplicável à NCM integralmente.
 }
 }
 \examples{
@@ -78,7 +78,8 @@ x <- download_tarifas()
 tarifas <- tarifas_aplicadas(x)
 dplyr::glimpse(tarifas)
 
-# Resultado detalhado, com informações de quota, Ex e NCM integral:
+# Resultado detalhado, com informacoes, por NCM, de contagem de quota, de Ex
+# e indicador de NCM integral:
 tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 dplyr::glimpse(tarifas_detalhadas)
 
