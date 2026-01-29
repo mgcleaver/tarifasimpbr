@@ -8,6 +8,7 @@
   de presença de ex tarifário e de quota por conta de redundância.
 - Implementação de testes (a fazer)
 - Reorganiza arquivos de funções.
+- Altera lógica da tarifa aplicada. Há alterações em anexo i sem atualizar anexo ii (a fazer).
 
 ## Compatibilidade
 
