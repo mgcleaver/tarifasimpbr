@@ -2,25 +2,25 @@
 % Please edit documentation in R/tarifas_vigentes.R
 \name{tarifas_vigentes}
 \alias{tarifas_vigentes}
-\title{Filtra as tarifas vigentes de listas de exceção}
+\title{Filtra as tarifas vigentes de listas de excecao}
 \usage{
 tarifas_vigentes(x)
 }
 \arguments{
-\item{x}{uma lista de exceção obtida a partir da função \code{ler_anexo}.
-A função utiliza as colunas \code{inicio_de_vigencia} e \code{termino_de_vigencia}
+\item{x}{uma lista de excecao obtida a partir da funcao \code{ler_anexo}.
+A funcao utiliza as colunas \code{inicio_de_vigencia} e \code{termino_de_vigencia}
 no formato \code{Date} para obter as tarifas vigentes.}
 }
 \value{
-O mesmo objeto de entrada, porém filtrado para conter apenas
-as tarifas vigentes na data de execução da função.
+O mesmo objeto de entrada, porem filtrado para conter apenas
+as tarifas vigentes na data de execucao da funcao.
 }
 \description{
-Retorna apenas os registros cuja tarifa está \strong{vigente hoje},
+Retorna apenas os registros cuja tarifa esta \strong{vigente hoje},
 considerando o intervalo entre \code{inicio_de_vigencia} e \code{termino_de_vigencia}.
-A depender da lista consultada e da data pode ou não haver medidas em datas
-futuras. No caso de não haver medidas em datas futuras, não haverá diferença
-em aplicar ou não está função, uma vez que os dados serão idênticos.
+A depender da lista consultada e da data pode ou nao haver medidas em datas
+futuras. No caso de nao haver medidas em datas futuras, nao havera diferenca
+em aplicar ou nao esta funcao, uma vez que os dados serao identicos.
 }
 \examples{
 \dontrun{

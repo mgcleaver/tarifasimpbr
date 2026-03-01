@@ -2,24 +2,24 @@
 % Please edit documentation in R/tarifas_vigentes.R
 \name{tarifas_futuras}
 \alias{tarifas_futuras}
-\title{Filtra as tarifas futuras de listas de exceção}
+\title{Filtra as tarifas futuras de listas de excecao}
 \usage{
 tarifas_futuras(x)
 }
 \arguments{
-\item{x}{uma lista de exceção obtida a partir da função \code{ler_anexo}.
-A função utiliza as colunas \code{inicio_de_vigencia} e \code{termino_de_vigencia}
-no formato \code{Date} para obter as tarifas vigentes.}
+\item{x}{uma lista de excecao obtida a partir da funcao \code{ler_anexo}.
+A funcao utiliza a coluna \code{inicio_de_vigencia} no formato \code{Date}
+para obter as tarifas futuras.}
 }
 \value{
-o mesmo objeto de entrada, porém filtrado para conter apenas
-as tarifas vigentes na data de execução da função.
+o mesmo objeto de entrada, porem filtrado para conter apenas
+as tarifas futuras na data de execucao da funcao.
 }
 \description{
-Retorna apenas os registros cuja tarifa entrará em vigência no futuro. Compara
-a data da execução da função com a data na coluna \code{inicio_de_vigencia} para
-filtrar as tarifas futuras presentes em listas de exceção.
-No caso de não haver medidas em datas futuras, a função retornará um tibble
+Retorna apenas os registros cuja tarifa entrara em vigencia no futuro. Compara
+a data da execucao da funcao com a data na coluna \code{inicio_de_vigencia} para
+filtrar as tarifas futuras presentes em listas de excecao.
+No caso de nao haver medidas em datas futuras, a funcao retornara um tibble
 vazio.
 }
 \examples{

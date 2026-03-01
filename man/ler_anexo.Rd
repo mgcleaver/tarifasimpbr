@@ -18,7 +18,12 @@ um dos:
 \value{
 Para \code{n_anexo = "i"}, retorna o tibble produzido por \code{ler_anexo1}.
 
-Para os demais anexos, retorna um tibble com, no minimo, as colunas:
+Para \code{n_anexo = "ii"}, retorna um tibble com as colunas
+\code{ncm}, \code{tec} e \code{aliquota_aplicada}, alem de outras
+colunas eventualmente presentes na aba.
+
+Para os anexos \code{"iv"}, \code{"v"}, \code{"vi"}, \code{"viii"},
+\code{"ix"} e \code{"x"}, retorna um tibble com, no minimo, as colunas:
 \describe{
 \item{ncm}{Codigo NCM, como texto.}
 \item{no_ex}{Numero do \emph{ex} padronizado com 3 digitos}
@@ -43,7 +48,9 @@ e organiza os dados de cada aba do arquivo (anexo).
 }
 \details{
 Para o Anexo I, a funcao \code{ler_anexo} apenas delega o processamento para
-a funcao \code{ler_anexo1}. Para os demais anexos suportados, a funcao:
+a funcao \code{ler_anexo1}. Para o Anexo II, le a aba correspondente e
+padroniza as colunas \code{tec} e \code{aliquota_aplicada}. Para os anexos
+IV, V, VI, VIII, IX e X, a funcao:
 \itemize{
 \item identifica a aba correta com base no nome do anexo;
 \item pula linhas de cabecalho conforme o tipo de anexo;
@@ -51,7 +58,7 @@ a funcao \code{ler_anexo1}. Para os demais anexos suportados, a funcao:
 \item garante a existencia da coluna de termino_de_vigencia e renomeia
 inicio_da_vigencia para inicio_de_vigencia quando for o caso;
 \item formata datas com a funcao auxiliar \code{formata_datas};
-\item padroniza codigos \code{ncm} e \code{no_ex}
+\item padroniza codigos \code{ncm} e, quando existente, \code{no_ex}
 }
 
 A selecao da aba e feita com base nos nomes das planilhas do arquivo Excel,
