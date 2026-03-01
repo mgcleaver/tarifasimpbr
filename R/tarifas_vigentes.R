@@ -1,18 +1,18 @@
-#' Filtra as tarifas vigentes de listas de exceção
+#' Filtra as tarifas vigentes de listas de excecao
 #'
-#' Retorna apenas os registros cuja tarifa está **vigente hoje**,
+#' Retorna apenas os registros cuja tarifa esta **vigente hoje**,
 #' considerando o intervalo entre `inicio_de_vigencia` e `termino_de_vigencia`.
-#' A depender da lista consultada e da data pode ou não haver medidas em datas
-#' futuras. No caso de não haver medidas em datas futuras, não haverá diferença
-#' em aplicar ou não está função, uma vez que os dados serão idênticos.
+#' A depender da lista consultada e da data pode ou nao haver medidas em datas
+#' futuras. No caso de nao haver medidas em datas futuras, nao havera diferenca
+#' em aplicar ou nao esta funcao, uma vez que os dados serao identicos.
 #'
-#' @param x uma lista de exceção obtida a partir da função `ler_anexo`.
-#'   A função utiliza as colunas `inicio_de_vigencia` e `termino_de_vigencia`
+#' @param x uma lista de excecao obtida a partir da funcao `ler_anexo`.
+#'   A funcao utiliza as colunas `inicio_de_vigencia` e `termino_de_vigencia`
 #'   no formato `Date` para obter as tarifas vigentes.
 #'
 #' @return
-#' O mesmo objeto de entrada, porém filtrado para conter apenas
-#' as tarifas vigentes na data de execução da função.
+#' O mesmo objeto de entrada, porem filtrado para conter apenas
+#' as tarifas vigentes na data de execucao da funcao.
 #'
 #' @examples
 #' \dontrun{
@@ -37,20 +37,20 @@ tarifas_vigentes <- function(x) {
     dplyr::select(-ref)
 }
 
-#' Filtra as tarifas futuras de listas de exceção
+#' Filtra as tarifas futuras de listas de excecao
 #'
-#' Retorna apenas os registros cuja tarifa entrará em vigência no futuro. Compara
-#' a data da execução da função com a data na coluna `inicio_de_vigencia` para
-#' filtrar as tarifas futuras presentes em listas de exceção.
-#'  No caso de não haver medidas em datas futuras, a função retornará um tibble
+#' Retorna apenas os registros cuja tarifa entrara em vigencia no futuro. Compara
+#' a data da execucao da funcao com a data na coluna `inicio_de_vigencia` para
+#' filtrar as tarifas futuras presentes em listas de excecao.
+#'  No caso de nao haver medidas em datas futuras, a funcao retornara um tibble
 #'  vazio.
 #'
-#' @param x uma lista de exceção obtida a partir da função `ler_anexo`.
-#'   A função utiliza as colunas `inicio_de_vigencia` e `termino_de_vigencia`
-#'   no formato `Date` para obter as tarifas vigentes.
+#' @param x uma lista de excecao obtida a partir da funcao `ler_anexo`.
+#'   A funcao utiliza a coluna `inicio_de_vigencia` no formato `Date`
+#'   para obter as tarifas futuras.
 #'
-#' @return o mesmo objeto de entrada, porém filtrado para conter apenas
-#' as tarifas vigentes na data de execução da função.
+#' @return o mesmo objeto de entrada, porem filtrado para conter apenas
+#' as tarifas futuras na data de execucao da funcao.
 #'
 #' @examples
 #' \dontrun{

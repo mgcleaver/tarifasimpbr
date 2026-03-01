@@ -5,7 +5,9 @@
 #' e organiza os dados de cada aba do arquivo (anexo).
 #'
 #' Para o Anexo I, a funcao `ler_anexo` apenas delega o processamento para
-#' a funcao `ler_anexo1`. Para os demais anexos suportados, a funcao:
+#' a funcao `ler_anexo1`. Para o Anexo II, le a aba correspondente e
+#' padroniza as colunas `tec` e `aliquota_aplicada`. Para os anexos
+#' IV, V, VI, VIII, IX e X, a funcao:
 #' \itemize{
 #'   \item identifica a aba correta com base no nome do anexo;
 #'   \item pula linhas de cabecalho conforme o tipo de anexo;
@@ -13,7 +15,7 @@
 #'   \item garante a existencia da coluna de termino_de_vigencia e renomeia
 #'     inicio_da_vigencia para inicio_de_vigencia quando for o caso;
 #'   \item formata datas com a funcao auxiliar `formata_datas`;
-#'   \item padroniza codigos \code{ncm} e \code{no_ex}
+#'   \item padroniza codigos \code{ncm} e, quando existente, \code{no_ex}
 #' }
 #'
 #' @param x Objeto retornado por `download_tarifas`, que no caso e o caminho
@@ -26,7 +28,12 @@
 #' @return
 #' Para \code{n_anexo = "i"}, retorna o tibble produzido por `ler_anexo1`.
 #'
-#' Para os demais anexos, retorna um tibble com, no minimo, as colunas:
+#' Para \code{n_anexo = "ii"}, retorna um tibble com as colunas
+#' \code{ncm}, \code{tec} e \code{aliquota_aplicada}, alem de outras
+#' colunas eventualmente presentes na aba.
+#'
+#' Para os anexos \code{"iv"}, \code{"v"}, \code{"vi"}, \code{"viii"},
+#' \code{"ix"} e \code{"x"}, retorna um tibble com, no minimo, as colunas:
 #' \describe{
 #'   \item{ncm}{Codigo NCM, como texto.}
 #'   \item{no_ex}{Numero do \emph{ex} padronizado com 3 digitos}

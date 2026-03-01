@@ -3,15 +3,15 @@
 #' Usada dentro da função principal `detalhar_listas_excecao_vigentes` para
 #' adicionar, por NCM, a contagem de destaques (ex), a contagem de quotas, um indicador de presença
 #' integral de NCM em lista de exceção e um indicador de alteração de tarifa aplicada
-#' nos anexo iv, v, vi, xiii, ix, x.
+#' nos anexos iv, v, vi, viii, ix e x.
 #'
-#' @param x deve ser o resultado de `tarifas_download()`.
+#' @param x deve ser o resultado de `download_tarifas()`.
 #'
 #' @param n_anexo é o número romano de um anexo relacionado com uma lista de
 #'    exceção. As opções possíveis são iv, v, vi, viii, ix, x.
 #'
-#' @return um tibble com adiciona as colunas tem_quota, tem_destque_ex, ncm_integral
-#' e altera_tarifa_aplicada.
+#' @return um tibble com as colunas originais e as colunas adicionadas
+#' tem_quota, tem_destaque_ex, ncm_integral e altera_tarifa_aplicada.
 #'
 #' @keywords internal
 #' @noRd
