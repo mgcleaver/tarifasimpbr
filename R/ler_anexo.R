@@ -141,8 +141,8 @@ ler_anexo <- function(
         col_types = c("text")) |>
         janitor::clean_names() |>
         dplyr::rename(
-          tec = .data$tec_percent,
-          aliquota_aplicada = .data$aliquota_aplicada_percent
+          tec = tec_percent,
+          aliquota_aplicada = aliquota_aplicada_percent
         ) |>
         dplyr::mutate(ncm = stringr::str_replace_all(.data$ncm, "\\.", ""))
     )
@@ -177,12 +177,12 @@ ler_anexo <- function(
 
   if(condicao6 && "x10" %in% names(anexo)) {
     anexo <- anexo |>
-      dplyr::select(-.data$x10)
+      dplyr::select(-x10)
   }
 
   if ("aliquota_percent" %in% names(anexo)) {
     anexo <- anexo |>
-      dplyr::rename(aliquota = .data$aliquota_percent)
+      dplyr::rename(aliquota = aliquota_percent)
   }
 
   nomes_colunas <- names(anexo)
@@ -199,7 +199,7 @@ ler_anexo <- function(
 
   if(!purrr::is_empty(inicio)) {
     anexo <- anexo |>
-      dplyr::rename(inicio_de_vigencia = .data$inicio_da_vigencia)
+      dplyr::rename(inicio_de_vigencia = inicio_da_vigencia)
   }
 
   if(purrr::is_empty(termino_vigencia)) {
@@ -213,7 +213,7 @@ ler_anexo <- function(
     }
 
     anexo <- anexo |>
-      dplyr::relocate(.data$termino_de_vigencia, .after = .data$inicio_de_vigencia)
+      dplyr::relocate(termino_de_vigencia, .after = inicio_de_vigencia)
   }
 
 
@@ -235,7 +235,7 @@ ler_anexo <- function(
 
   if(!purrr::is_empty(unidade_quota)) {
     anexo <- anexo |>
-      dplyr::rename(unidade_quota = .data$unidade_da_quota)
+      dplyr::rename(unidade_quota = unidade_da_quota)
   }
 
   result <- anexo |>

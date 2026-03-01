@@ -33,11 +33,11 @@ ler_anexo1 <- function(x) {
 
   resolucoes <- raw |>
     janitor::clean_names() |>
-    dplyr::rename(ncm = .data$x1, resolucoes = .data$x4) |>
+    dplyr::rename(ncm = x1, resolucoes = x4) |>
     dplyr::filter(!is.na(resolucoes)) |>
     dplyr::mutate(ncm = stringr::str_remove_all(.data$ncm, "\\.")) |>
     dplyr::filter(nchar(.data$ncm) == 8) |>
-    dplyr::select(.data$ncm, resolucoes)
+    dplyr::select(ncm, resolucoes)
 
   df <- raw |>
     dplyr::select(1:3)
@@ -109,24 +109,24 @@ ler_anexo1 <- function(x) {
   cria_tabelas <- function(x) {
     compila_anexoi |>
       dplyr::filter(nchar(.data$ncm) == x) |>
-      dplyr::select(-.data$tec_percent, -.data$bkbit)
+      dplyr::select(-tec_percent, -bkbit)
   }
 
   # cria tabelas de descricao para 4, 5, 6, 7 e 8 digitos
   anexoi_4d <- cria_tabelas(4) |>
-    dplyr::rename(sh4 = .data$ncm, descricao_4 = .data$descricao)
+    dplyr::rename(sh4 = ncm, descricao_4 = descricao)
   anexoi_5d <- cria_tabelas(5) |>
-    dplyr::rename(sh5 = .data$ncm, descricao_5 = .data$descricao)
+    dplyr::rename(sh5 = ncm, descricao_5 = descricao)
   anexoi_6d <- cria_tabelas(6) |>
-    dplyr::rename(sh6 = .data$ncm, descricao_6 = .data$descricao)
+    dplyr::rename(sh6 = ncm, descricao_6 = descricao)
   anexoi_7d <- cria_tabelas(7) |>
-    dplyr::rename(sh7 = .data$ncm, descricao_7 = .data$descricao)
+    dplyr::rename(sh7 = ncm, descricao_7 = descricao)
   anexoi_8d <- compila_anexoi |>
     dplyr::filter(nchar(.data$ncm) == 8) |>
     dplyr::mutate(sh7 = stringr::str_sub(.data$ncm, 1, 7))
 
   anexoi_8d <- anexoi_8d |>
-    dplyr::rename(descricao_8 = .data$descricao) |>
+    dplyr::rename(descricao_8 = descricao) |>
     dplyr::mutate(
       sh6 = stringr::str_sub(.data$ncm, 1, 6),
       sh5 = stringr::str_sub(.data$ncm, 1, 5),
@@ -184,5 +184,5 @@ ler_anexo1 <- function(x) {
     ) |>
     dplyr::ungroup() |>
     dplyr::left_join(resolucoes, by = "ncm") |>
-    dplyr::rename(tec = .data$tec_percent)
+    dplyr::rename(tec = tec_percent)
 }
