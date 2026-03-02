@@ -6,7 +6,7 @@
 - Correção da lógica da coluna ncm_integral resultante da função detalhar_listas_excecao_vigentes.R
 - Simplificação do resultado de detalhar_listas_excecao_vigentes.R: remoção de indicadores
   de presença de ex tarifário e de quota por conta de redundância.
-- Implementação de testes (a fazer)
+- Implementação de testes.
 - Reorganiza arquivos de funções.
 
 ## Compatibilidade
