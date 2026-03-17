@@ -21,7 +21,6 @@
 #'   \item{data_do_ato_de_inclusao}{Data do ato de inclusao, quando houver.}
 #'   \item{inicio_de_vigencia}{Inicio da vigencia do registro.}
 #'   \item{termino_de_vigencia}{Termino da vigencia do registro.}
-#'   \item{vigente_hoje}{Indicador logico calculado com base em `Sys.Date()`.}
 #'   \item{obs}{Observacoes presentes no anexo, quando houver.}
 #' }
 #'
@@ -84,8 +83,6 @@ ex_tarifarios <- function(x) {
           data_do_ato_de_inclusao = .data$data_do_ato_de_inclusao,
           inicio_de_vigencia = .data$inicio_de_vigencia,
           termino_de_vigencia = .data$termino_de_vigencia,
-          vigente_hoje = Sys.Date() >= .data$inicio_de_vigencia &
-            Sys.Date() <= .data$termino_de_vigencia,
           obs = .data$obs
         )
     }

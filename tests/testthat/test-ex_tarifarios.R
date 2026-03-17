@@ -68,7 +68,6 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
         "data_do_ato_de_inclusao",
         "inicio_de_vigencia",
         "termino_de_vigencia",
-        "vigente_hoje",
         "obs"
       ) %in% names(ex_tarifarios)
     )
@@ -80,7 +79,6 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
   testthat::expect_true(is.na(ex_tarifarios$data_do_ato_de_inclusao[[1]]))
   testthat::expect_equal(ex_tarifarios$obs[[2]], "Observacao")
   testthat::expect_true(is.na(ex_tarifarios$obs[[1]]))
-  testthat::expect_true(all(ex_tarifarios$vigente_hoje))
 })
 
 testthat::test_that("integration: ex_tarifarios retorna ex-tarifarios dos anexos IV a X", {
@@ -105,6 +103,5 @@ testthat::test_that("integration: ex_tarifarios retorna ex-tarifarios dos anexos
     )
   )
   testthat::expect_true(all(!is.na(ex_tarifarios$tarifa_ex)))
-  testthat::expect_true(is.logical(ex_tarifarios$vigente_hoje))
   testthat::expect_true(all(ex_tarifarios$inicio_de_vigencia <= ex_tarifarios$termino_de_vigencia))
 })

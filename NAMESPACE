@@ -2,6 +2,7 @@
 
 export(detalhar_listas_excecao_vigentes)
 export(download_tarifas)
+export(ex_tarifarios)
 export(ler_anexo)
 export(listar_anexos)
 export(tarifas_aplicadas)
