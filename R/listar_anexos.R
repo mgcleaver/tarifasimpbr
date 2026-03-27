@@ -11,10 +11,11 @@
 #' @export
 listar_anexos <- function() {
   tibble::tibble(
-    numero_anexo = c("i", "ii", "iv", "v", "vi", "viii", "ix", "x"),
+    numero_anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x"),
     nome_abreviado_anexo = c(
       "Tarifa Externa Comum",
       "Anexo II",
+      "Setor Aeronautico",
       "Desabastecimento",
       "Letec",
       "Lebitbk",

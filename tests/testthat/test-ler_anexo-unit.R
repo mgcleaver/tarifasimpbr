@@ -36,6 +36,63 @@ testthat::test_that("unit: ler_anexo ii padroniza nomes e ncm", {
   testthat::expect_false(any(stringr::str_detect(anexo_ii$ncm, "\\.")))
 })
 
+testthat::test_that("unit: ler_anexo iii empilha tabelas, limpa ncm e atribui obs", {
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) c("Anexo III - Setor Aeronautico"),
+    read_excel = function(...) {
+      tibble::tibble(
+        ...1 = c(
+          "TABELA 1",
+          "NCM",
+          "2710.12",
+          "8517.14*",
+          "* Exceto os compreendidos no subitem 8517.14.31",
+          "TABELA 2",
+          "NCM",
+          "8443.32",
+          "8517.14"
+        ),
+        ...2 = c(
+          NA, NA, "4009.22", "8539.51", NA, NA, NA, "8517.13", NA
+        ),
+        ...3 = c(
+          NA, NA, NA, NA, NA, NA, NA, NA, NA
+        )
+      )
+    },
+    .package = "readxl"
+  )
+
+  anexo_iii <- ler_anexo("arquivo_mock.xlsx", "iii")
+
+  testthat::expect_s3_class(anexo_iii, "tbl_df")
+  testthat::expect_identical(names(anexo_iii), c("ncm", "regra", "obs"))
+  testthat::expect_equal(
+    anexo_iii$ncm,
+    c("271012", "400922", "851714", "853951", "844332", "851713", "851714")
+  )
+  testthat::expect_equal(
+    anexo_iii$regra,
+    c(
+      rep("Setor aeronáutico", 4),
+      rep("Setor aeronáutico BIT/BK", 3)
+    )
+  )
+  testthat::expect_equal(
+    anexo_iii$obs,
+    c(
+      NA_character_,
+      NA_character_,
+      "Exceto os compreendidos no subitem 8517.14.31",
+      NA_character_,
+      NA_character_,
+      NA_character_,
+      NA_character_
+    )
+  )
+  testthat::expect_false(any(stringr::str_detect(anexo_iii$ncm, "\\.|\\*")))
+})
+
 testthat::test_that("unit: ler_anexo iv aplica regras de padronizacao", {
   testthat::local_mocked_bindings(
     excel_sheets = function(...) c("Anexo IV - Desabastecimento"),

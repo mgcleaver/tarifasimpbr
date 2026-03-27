@@ -6,8 +6,11 @@
 #'
 #' Para o Anexo I, a funcao `ler_anexo` apenas delega o processamento para
 #' a funcao `ler_anexo1`. Para o Anexo II, le a aba correspondente e
-#' padroniza as colunas `tec` e `aliquota_aplicada`. Para os anexos
-#' IV, V, VI, VIII, IX e X, a funcao:
+#' padroniza as colunas `tec` e `aliquota_aplicada`. Para o Anexo III,
+#' localiza duas tabelas de codigos NCM na mesma aba, empilha os codigos em
+#' uma unica coluna e adiciona `regra` e `obs` conforme a tabela de origem e
+#' a marcacao com asterisco. Para os anexos IV, V, VI, VIII, IX e X, a
+#' funcao:
 #' \itemize{
 #'   \item identifica a aba correta com base no nome do anexo;
 #'   \item pula linhas de cabecalho conforme o tipo de anexo;
@@ -22,7 +25,7 @@
 #' temporario do arquivo de tarifas de importacao vigentes baixado.
 #' @param n_anexo String indicando qual anexo deve ser lido. Deve ser
 #'   um dos:
-#'   \code{"i"}, \code{"ii"}, \code{"iv"}, \code{"v"},
+#'   \code{"i"}, \code{"ii"}, \code{"iii"}, \code{"iv"}, \code{"v"},
 #'   \code{"vi"}, \code{"viii"}, \code{"ix"}, \code{"x"}.
 #'
 #' @return
@@ -31,6 +34,13 @@
 #' Para \code{n_anexo = "ii"}, retorna um tibble com as colunas
 #' \code{ncm}, \code{tec} e \code{aliquota_aplicada}, alem de outras
 #' colunas eventualmente presentes na aba.
+#'
+#' Para \code{n_anexo = "iii"}, retorna um tibble com as colunas
+#' \code{ncm}, \code{regra} e \code{obs}. Os codigos sao lidos das duas
+#' tabelas da aba, empilhados em uma unica coluna e devolvidos sem pontuacao.
+#' A coluna \code{obs} recebe a mensagem "Exceto os compreendidos no subitem
+#' 8517.14.31" somente para os codigos marcados com asterisco na primeira
+#' tabela.
 #'
 #' Para os anexos \code{"iv"}, \code{"v"}, \code{"vi"}, \code{"viii"},
 #' \code{"ix"} e \code{"x"}, retorna um tibble com, no minimo, as colunas:
@@ -71,6 +81,7 @@
 #' \itemize{
 #'   \item \code{"i"}: TEC vigente
 #'   \item \code{"ii"}: le a aba do Anexo II
+#'   \item \code{"iii"}: le o Anexo III - Setor Aeronautico.
 #'   \item \code{"iv"}: le o Anexo IV - Desabastecimento.
 #'   \item \code{"v"}: le o Anexo V - Letec.
 #'   \item \code{"vi"}: le o Anexo VI - Lebitbk.
@@ -96,7 +107,7 @@
 #' @export
 ler_anexo <- function(
     x,
-    n_anexo = c("i", "ii", "iv", "v", "vi", "viii", "ix", "x")
+    n_anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x")
 ) {
 
   n_anexo <- match.arg(
@@ -110,8 +121,8 @@ ler_anexo <- function(
   )
 
   # regra para definir se coluna "lista" sera incluida:
-  # se a consulta for para anexo i ou ii, is_lista = 0
-  is_lista <- 0
+  # se a consulta for para anexo i, ii ou iii, tem_lista = 0
+  tem_lista <- 0
 
   # caso a consulta seja para os demais anexos, is_lista = 1
   if(n_anexo_lower %in% c(" iv ", " v ", " vi ", " viii ", " ix ", " x ")) {
@@ -153,6 +164,9 @@ ler_anexo <- function(
         ) |>
         dplyr::mutate(ncm = stringr::str_replace_all(.data$ncm, "\\.", ""))
     )
+  } else if (stringr::str_detect(n_anexo_lower, " iii ")) {
+    message("Processando Anexo III - Setor Aeronautico...")
+    return(ler_anexo3(x, numero_aba))
   } else if (stringr::str_detect(n_anexo_lower, " iv ")) {
     message("Processando Anexo IV - Desabastecimento...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba) # 4
@@ -296,4 +310,123 @@ ler_anexo <- function(
 
   return(result)
 
+}
+
+ler_anexo3 <- function(x, numero_aba) {
+  anexo_bruto <- suppressMessages(
+    readxl::read_excel(
+      x,
+      sheet = numero_aba,
+      col_names = FALSE,
+      guess_max = 1e6,
+      col_types = "text"
+    )
+  )
+
+  linhas_ncm <- localiza_linhas_anexo3(
+    anexo_bruto = anexo_bruto,
+    padrao = "^NCM$"
+  )
+
+  if(length(linhas_ncm) < 2) {
+    stop("Erro de leitura do Anexo III: nao foi possivel localizar as duas tabelas de NCM.")
+  }
+
+  linha_obs <- localiza_linhas_anexo3(
+    anexo_bruto = anexo_bruto,
+    padrao = "^\\*\\s*Exceto os compreendidos no subitem 8517\\.14\\.31$"
+  )
+
+  if(length(linha_obs) != 1) {
+    stop("Erro de leitura do Anexo III: nao foi possivel localizar a observacao da Tabela 1.")
+  }
+
+  ultima_linha_nao_vazia <- anexo_bruto |>
+    dplyr::mutate(linha = dplyr::row_number()) |>
+    tidyr::pivot_longer(
+      cols = -linha,
+      names_to = "coluna",
+      values_to = "valor"
+    ) |>
+    dplyr::mutate(valor = stringr::str_trim(as.character(.data$valor))) |>
+    dplyr::filter(!is.na(.data$valor), .data$valor != "") |>
+    dplyr::summarise(ultima_linha = max(.data$linha)) |>
+    dplyr::pull(.data$ultima_linha)
+
+  tabela_1 <- extrai_codigos_anexo3(
+    anexo_bruto = anexo_bruto,
+    linha_inicial = linhas_ncm[[1]] + 1,
+    linha_final = linha_obs[[1]] - 1,
+    regra = "Setor aeronáutico",
+    obs_asterisco = "Exceto os compreendidos no subitem 8517.14.31"
+  )
+
+  tabela_2 <- extrai_codigos_anexo3(
+    anexo_bruto = anexo_bruto,
+    linha_inicial = linhas_ncm[[2]] + 1,
+    linha_final = ultima_linha_nao_vazia,
+    regra = "Setor aeronáutico BIT/BK"
+  )
+
+  dplyr::bind_rows(tabela_1, tabela_2)
+}
+
+localiza_linhas_anexo3 <- function(anexo_bruto, padrao) {
+  anexo_bruto |>
+    dplyr::mutate(linha = dplyr::row_number()) |>
+    tidyr::pivot_longer(
+      cols = -linha,
+      names_to = "coluna",
+      values_to = "valor"
+    ) |>
+    dplyr::mutate(valor = stringr::str_squish(as.character(.data$valor))) |>
+    dplyr::filter(stringr::str_detect(.data$valor, padrao)) |>
+    dplyr::pull(.data$linha) |>
+    unique()
+}
+
+extrai_codigos_anexo3 <- function(
+    anexo_bruto,
+    linha_inicial,
+    linha_final,
+    regra,
+    obs_asterisco = NA_character_
+) {
+  if(linha_inicial > linha_final) {
+    return(
+      tibble::tibble(
+        ncm = character(),
+        regra = character(),
+        obs = character()
+      )
+    )
+  }
+
+  anexo_bruto |>
+    dplyr::slice(linha_inicial:linha_final) |>
+    dplyr::mutate(linha = dplyr::row_number()) |>
+    tidyr::pivot_longer(
+      cols = -linha,
+      names_to = "coluna",
+      values_to = "ncm"
+    ) |>
+    dplyr::mutate(
+      coluna = factor(.data$coluna, levels = names(anexo_bruto)),
+      ncm = stringr::str_trim(as.character(.data$ncm)),
+      tem_asterisco = stringr::str_detect(.data$ncm, stringr::fixed("*"))
+    ) |>
+    dplyr::filter(!is.na(.data$ncm), .data$ncm != "") |>
+    dplyr::arrange(.data$linha, .data$coluna) |>
+    dplyr::transmute(
+      ncm = .data$ncm |>
+        stringr::str_replace_all("\\s+", "") |>
+        stringr::str_replace_all("\\*", "") |>
+        stringr::str_replace_all("\\.", ""),
+      regra = regra,
+      obs = dplyr::if_else(
+        .data$tem_asterisco,
+        obs_asterisco,
+        NA_character_
+      )
+    )
 }

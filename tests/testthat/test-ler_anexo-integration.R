@@ -41,6 +41,35 @@ testthat::test_that("integration: ler_anexo ii padroniza estrutura e ncm", {
   testthat::expect_false(any(stringr::str_detect(anexo_ii$ncm, "\\.")))
 })
 
+testthat::test_that("integration: ler_anexo iii retorna estrutura esperada", {
+  x <- get_tarifas_path()
+
+  anexo_iii <- ler_anexo(x, "iii")
+
+  testthat::expect_s3_class(anexo_iii, "tbl_df")
+  testthat::expect_identical(names(anexo_iii), c("ncm", "regra", "obs"))
+  testthat::expect_gt(nrow(anexo_iii), 0)
+  testthat::expect_true(all(!stringr::str_detect(anexo_iii$ncm, "\\.|\\*")))
+  testthat::expect_true(
+    all(
+      c("Setor aeronáutico", "Setor aeronáutico BIT/BK") %in%
+        unique(anexo_iii$regra)
+    )
+  )
+
+  codigo_com_obs <- anexo_iii |>
+    dplyr::filter(
+      .data$ncm == "851714",
+      .data$regra == "Setor aeronáutico"
+    ) |>
+    dplyr::pull(.data$obs)
+
+  testthat::expect_true(length(codigo_com_obs) >= 1)
+  testthat::expect_true(all(
+    codigo_com_obs == "Exceto os compreendidos no subitem 8517.14.31"
+  ))
+})
+
 testthat::test_that("integration: ler_anexo iv e validacao basica", {
   x <- get_tarifas_path()
 

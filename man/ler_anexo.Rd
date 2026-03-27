@@ -4,7 +4,7 @@
 \alias{ler_anexo}
 \title{Ler anexos do arquivo excel obtido por meio da funcao \code{download_tarifas}.}
 \usage{
-ler_anexo(x, n_anexo = c("i", "ii", "iv", "v", "vi", "viii", "ix", "x"))
+ler_anexo(x, n_anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x"))
 }
 \arguments{
 \item{x}{Objeto retornado por \code{download_tarifas}, que no caso e o caminho
@@ -12,7 +12,7 @@ temporario do arquivo de tarifas de importacao vigentes baixado.}
 
 \item{n_anexo}{String indicando qual anexo deve ser lido. Deve ser
 um dos:
-\code{"i"}, \code{"ii"}, \code{"iv"}, \code{"v"},
+\code{"i"}, \code{"ii"}, \code{"iii"}, \code{"iv"}, \code{"v"},
 \code{"vi"}, \code{"viii"}, \code{"ix"}, \code{"x"}.}
 }
 \value{
@@ -21,6 +21,13 @@ Para \code{n_anexo = "i"}, retorna o tibble produzido por \code{ler_anexo1}.
 Para \code{n_anexo = "ii"}, retorna um tibble com as colunas
 \code{ncm}, \code{tec} e \code{aliquota_aplicada}, alem de outras
 colunas eventualmente presentes na aba.
+
+Para \code{n_anexo = "iii"}, retorna um tibble com as colunas
+\code{ncm}, \code{regra} e \code{obs}. Os codigos sao lidos das duas
+tabelas da aba, empilhados em uma unica coluna e devolvidos sem pontuacao.
+A coluna \code{obs} recebe a mensagem "Exceto os compreendidos no subitem
+8517.14.31" somente para os codigos marcados com asterisco na primeira
+tabela.
 
 Para os anexos \code{"iv"}, \code{"v"}, \code{"vi"}, \code{"viii"},
 \code{"ix"} e \code{"x"}, retorna um tibble com, no minimo, as colunas:
@@ -49,8 +56,11 @@ e organiza os dados de cada aba do arquivo (anexo).
 \details{
 Para o Anexo I, a funcao \code{ler_anexo} apenas delega o processamento para
 a funcao \code{ler_anexo1}. Para o Anexo II, le a aba correspondente e
-padroniza as colunas \code{tec} e \code{aliquota_aplicada}. Para os anexos
-IV, V, VI, VIII, IX e X, a funcao:
+padroniza as colunas \code{tec} e \code{aliquota_aplicada}. Para o Anexo III,
+localiza duas tabelas de codigos NCM na mesma aba, empilha os codigos em
+uma unica coluna e adiciona \code{regra} e \code{obs} conforme a tabela de origem e
+a marcacao com asterisco. Para os anexos IV, V, VI, VIII, IX e X, a
+funcao:
 \itemize{
 \item identifica a aba correta com base no nome do anexo;
 \item pula linhas de cabecalho conforme o tipo de anexo;
@@ -81,6 +91,7 @@ Se existir a coluna \code{inicio_da_vigencia}, ela e renomeada para
 \itemize{
 \item \code{"i"}: TEC vigente
 \item \code{"ii"}: le a aba do Anexo II
+\item \code{"iii"}: le o Anexo III - Setor Aeronautico.
 \item \code{"iv"}: le o Anexo IV - Desabastecimento.
 \item \code{"v"}: le o Anexo V - Letec.
 \item \code{"vi"}: le o Anexo VI - Lebitbk.
