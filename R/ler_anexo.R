@@ -54,7 +54,7 @@
 #'     \code{"9999-12-31"}.}
 #'   \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
 #'     tambem formatada por `formata_datas`.}
-#'   \item{lista}{(Coluna criada para indicar a presença de uma NCM nos anexos
+#'   \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
 #'   IV (Desabastecimento), V (Letec), VI (Lebitbk), VIII (Concessoes OMC), IX
 #'   (DCC) e X (Automotivo))}
 #' }
@@ -344,7 +344,7 @@ ler_anexo3 <- function(x, numero_aba) {
   ultima_linha_nao_vazia <- anexo_bruto |>
     dplyr::mutate(linha = dplyr::row_number()) |>
     tidyr::pivot_longer(
-      cols = -linha,
+      cols = -dplyr::all_of("linha"),
       names_to = "coluna",
       values_to = "valor"
     ) |>
@@ -357,7 +357,7 @@ ler_anexo3 <- function(x, numero_aba) {
     anexo_bruto = anexo_bruto,
     linha_inicial = linhas_ncm[[1]] + 1,
     linha_final = linha_obs[[1]] - 1,
-    regra = "Setor aeronáutico",
+    regra = "Setor aeron\u00e1utico",
     obs_asterisco = "Exceto os compreendidos no subitem 8517.14.31"
   )
 
@@ -365,7 +365,7 @@ ler_anexo3 <- function(x, numero_aba) {
     anexo_bruto = anexo_bruto,
     linha_inicial = linhas_ncm[[2]] + 1,
     linha_final = ultima_linha_nao_vazia,
-    regra = "Setor aeronáutico BIT/BK"
+    regra = "Setor aeron\u00e1utico BIT/BK"
   )
 
   dplyr::bind_rows(tabela_1, tabela_2)
@@ -375,7 +375,7 @@ localiza_linhas_anexo3 <- function(anexo_bruto, padrao) {
   anexo_bruto |>
     dplyr::mutate(linha = dplyr::row_number()) |>
     tidyr::pivot_longer(
-      cols = -linha,
+      cols = -dplyr::all_of("linha"),
       names_to = "coluna",
       values_to = "valor"
     ) |>
@@ -406,7 +406,7 @@ extrai_codigos_anexo3 <- function(
     dplyr::slice(linha_inicial:linha_final) |>
     dplyr::mutate(linha = dplyr::row_number()) |>
     tidyr::pivot_longer(
-      cols = -linha,
+      cols = -dplyr::all_of("linha"),
       names_to = "coluna",
       values_to = "ncm"
     ) |>

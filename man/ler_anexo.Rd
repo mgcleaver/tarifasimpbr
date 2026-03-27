@@ -41,7 +41,7 @@ padronizado; quando ausente no arquivo, e preenchida com
 \code{"9999-12-31"}.}
 \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
 tambem formatada por \code{formata_datas}.}
-\item{lista}{(Coluna criada para indicar a presença de uma NCM nos anexos
+\item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
 IV (Desabastecimento), V (Letec), VI (Lebitbk), VIII (Concessoes OMC), IX
 (DCC) e X (Automotivo))}
 }

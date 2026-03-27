@@ -23,5 +23,6 @@ utils::globalVariables(c(
   "contagem_ex",
   "tem_quota",
   "tem_destaque_ex",
-  "ncm_integral"
+  "ncm_integral",
+  "linha"
 ))
