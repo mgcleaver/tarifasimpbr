@@ -8,6 +8,8 @@
   de presença de ex tarifário e de quota por conta de redundância.
 - Implementação de testes.
 - Reorganiza arquivos de funções.
+- Função nova para listar ex-tarifários das listas de instrumentos tarifários (anexos iv a x)
+- Suporte ao Anexo III em `ler_anexo()`, com leitura das duas tabelas da aba do setor aeronautico e retorno padronizado das colunas `ncm`, `regra` e `obs`.
 
 ## Compatibilidade
 
