@@ -26,16 +26,34 @@ library(tarifasimpbr)
 
 # baixar arquivo temporário de tarifas de importação
 x <- download_tarifas()
+```
 
+Com a função `listar_anexos()` é possível obter uma tabela com as referências para cada
+um dos anexos. A coluna numero_anexo que resulta de `listas_anexos()` deve ser utilizada 
+para consultar um anexo específico na função `ler_anexo()`.
+
+```
 # consultar os anexos tarifários disponíveis para leitura
 listar_anexos()
 
-# ler o anexo tarifário formatado
+# ler o anexo i formatado
 tec <- ler_anexo(x, "i")
+
+# ler letec formatada
 letec <- ler_anexo(x, "v")
+
+# ler dcc formatada
+dcc <- ler_anexo(x, "ix")
+
+# ver listas de dcc com vigência futura (se houver)
+dcc |>
+    tarifas_futuras()
 
 # obter tabela completa das tarifas aplicadas vigentes
 tarifas <- tarifas_aplicadas(x)
+
+# obter lista com todos os ex-tarifários presentes nos anexos entre iv e x.
+lista_ex <- ex_tarifarios()
 ```
 
 ## Outras informações
@@ -48,3 +66,6 @@ lista de exceção tem prioridade sobre a teb somente quando a tarifa da
 NCM foi alterada integralmente pela lista. No caso de uma lista de
 exceção alterar somente parte do código (por meio de destaque), constará
 a teb no resultado da tarifa_aplicada.
+
+Por sua vez, a teb é formada entre a combinação do anexo ii com o anexo i. O anexo ii
+tem prioridade sobre o anexo i.
