@@ -237,8 +237,6 @@ ler_anexo <- function(
       dplyr::relocate(termino_de_vigencia, .after = inicio_de_vigencia)
   }
 
-
-
   obs <- stringr::str_subset(nomes_colunas, "obs")
 
   if(!purrr::is_empty(obs)) {
@@ -291,8 +289,6 @@ ler_anexo <- function(
           dplyr::na_if( "-")
       )
   }
-
-
 
   if(tem_lista == 1) {
     result <- result |>
