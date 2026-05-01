@@ -45,6 +45,7 @@ ler_anexo1_com_cache <- function(x) {
     )
 
     if (!is.null(resultado_cache)) {
+      message("Obtendo Anexo I do cache...")
       return(resultado_cache)
     }
   }

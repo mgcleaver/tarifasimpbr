@@ -30,6 +30,31 @@ testthat::test_that("unit: ler_anexo i reutiliza cache para o mesmo arquivo", {
   testthat::expect_identical(primeira_leitura, segunda_leitura)
 })
 
+testthat::test_that("unit: ler_anexo i informa quando usa cache", {
+  limpar_cache_tarifas()
+  on.exit(limpar_cache_tarifas(), add = TRUE)
+
+  arquivo <- tempfile(fileext = ".xlsx")
+  file.create(arquivo)
+
+  testthat::local_mocked_bindings(
+    ler_anexo1 = function(x) {
+      message("Processando Anexo I...")
+      tibble::tibble(ncm = "12345678", tec = 1)
+    },
+    .package = "tarifasimpbr"
+  )
+
+  testthat::expect_message(
+    ler_anexo(arquivo, "i"),
+    "Processando Anexo I..."
+  )
+  testthat::expect_message(
+    ler_anexo(arquivo, "i"),
+    "Obtendo Anexo I do cache..."
+  )
+})
+
 testthat::test_that("unit: limpar_cache_tarifas forca novo processamento", {
   limpar_cache_tarifas()
   on.exit(limpar_cache_tarifas(), add = TRUE)
