@@ -6,6 +6,103 @@ testthat::test_that("unit: ler_anexo falha quando arquivo nao existe", {
   testthat::expect_error(ler_anexo("arquivo_que_nao_existe.xlsx", "ii"))
 })
 
+testthat::test_that("unit: ler_anexo i reutiliza cache para o mesmo arquivo", {
+  limpar_cache_tarifas()
+  on.exit(limpar_cache_tarifas(), add = TRUE)
+
+  arquivo <- tempfile(fileext = ".xlsx")
+  file.create(arquivo)
+
+  contador <- 0L
+
+  testthat::local_mocked_bindings(
+    ler_anexo1 = function(x) {
+      contador <<- contador + 1L
+      tibble::tibble(ncm = "12345678", tec = contador)
+    },
+    .package = "tarifasimpbr"
+  )
+
+  primeira_leitura <- ler_anexo(arquivo, "i")
+  segunda_leitura <- ler_anexo(arquivo, "i")
+
+  testthat::expect_equal(contador, 1L)
+  testthat::expect_identical(primeira_leitura, segunda_leitura)
+})
+
+testthat::test_that("unit: limpar_cache_tarifas forca novo processamento", {
+  limpar_cache_tarifas()
+  on.exit(limpar_cache_tarifas(), add = TRUE)
+
+  arquivo <- tempfile(fileext = ".xlsx")
+  file.create(arquivo)
+
+  contador <- 0L
+
+  testthat::local_mocked_bindings(
+    ler_anexo1 = function(x) {
+      contador <<- contador + 1L
+      tibble::tibble(ncm = "12345678", tec = contador)
+    },
+    .package = "tarifasimpbr"
+  )
+
+  primeira_leitura <- ler_anexo(arquivo, "i")
+  limpar_cache_tarifas()
+  segunda_leitura <- ler_anexo(arquivo, "i")
+
+  testthat::expect_equal(contador, 2L)
+  testthat::expect_false(identical(primeira_leitura, segunda_leitura))
+})
+
+testthat::test_that("unit: ler_anexo i nao compartilha cache entre arquivos", {
+  limpar_cache_tarifas()
+  on.exit(limpar_cache_tarifas(), add = TRUE)
+
+  arquivo_1 <- tempfile(fileext = ".xlsx")
+  arquivo_2 <- tempfile(fileext = ".xlsx")
+  file.create(arquivo_1)
+  file.create(arquivo_2)
+
+  contador <- 0L
+
+  testthat::local_mocked_bindings(
+    ler_anexo1 = function(x) {
+      contador <<- contador + 1L
+      tibble::tibble(ncm = basename(x), tec = contador)
+    },
+    .package = "tarifasimpbr"
+  )
+
+  primeira_leitura <- ler_anexo(arquivo_1, "i")
+  segunda_leitura <- ler_anexo(arquivo_2, "i")
+
+  testthat::expect_equal(contador, 2L)
+  testthat::expect_false(identical(primeira_leitura, segunda_leitura))
+})
+
+testthat::test_that("unit: ler_anexo i segue sem cache quando chave falha", {
+  limpar_cache_tarifas()
+  on.exit(limpar_cache_tarifas(), add = TRUE)
+
+  contador <- 0L
+
+  testthat::local_mocked_bindings(
+    cria_chave_cache_anexo_i = function(x) NA_character_,
+    ler_anexo1 = function(x) {
+      contador <<- contador + 1L
+      tibble::tibble(ncm = "12345678", tec = contador)
+    },
+    .package = "tarifasimpbr"
+  )
+
+  primeira_leitura <- ler_anexo("arquivo_sem_cache.xlsx", "i")
+  segunda_leitura <- ler_anexo("arquivo_sem_cache.xlsx", "i")
+
+  testthat::expect_equal(contador, 2L)
+  testthat::expect_false(identical(primeira_leitura, segunda_leitura))
+})
+
 testthat::test_that("unit: ler_anexo ii padroniza nomes e ncm", {
   testthat::local_mocked_bindings(
     excel_sheets = function(...) c("Anexo II"),
