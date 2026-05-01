@@ -3,6 +3,7 @@
 ## Em desenvolvimento
 
 - Inicia ciclo de desenvolvimento pós-release 0.2.0.
+- Adiciona cache em memória por sessão para acelerar leituras repetidas do Anexo I.
 
 # tarifasimpbr 0.2.0
 
