@@ -5,12 +5,12 @@
 #' e organiza os dados de cada aba do arquivo (anexo).
 #'
 #' Para o Anexo I, a funcao `ler_anexo` apenas delega o processamento para
-#' a funcao `ler_anexo1`. Para o Anexo II, le a aba correspondente e
-#' padroniza as colunas `tec` e `aliquota_aplicada`. Para o Anexo III,
-#' localiza duas tabelas de codigos NCM na mesma aba, empilha os codigos em
-#' uma unica coluna e adiciona `regra` e `obs` conforme a tabela de origem e
-#' a marcacao com asterisco. Para os anexos IV, V, VI, VIII, IX e X, a
-#' funcao:
+#' a funcao `ler_anexo1` com cache em memoria durante a sessao do R. Para o
+#' Anexo II, le a aba correspondente e padroniza as colunas `tec` e
+#' `aliquota_aplicada`. Para o Anexo III, localiza duas tabelas de codigos NCM
+#' na mesma aba, empilha os codigos em uma unica coluna e adiciona `regra` e
+#' `obs` conforme a tabela de origem e a marcacao com asterisco. Para os anexos
+#' IV, V, VI, VIII, IX e X, a funcao:
 #' \itemize{
 #'   \item identifica a aba correta com base no nome do anexo;
 #'   \item pula linhas de cabecalho conforme o tipo de anexo;
@@ -114,6 +114,10 @@ ler_anexo <- function(
     n_anexo
   )
 
+  if (n_anexo == "i") {
+    return(ler_anexo1_com_cache(x))
+  }
+
   n_anexo_lower <- paste0(
     " ",
     n_anexo,
@@ -145,9 +149,7 @@ ler_anexo <- function(
     dplyr::pull(.data$nome_abreviado_anexo)
 
   # configuracao da leitura do anexo a partir da aba
-  if(stringr::str_detect(n_anexo_lower, " i ")) {
-    return(ler_anexo1(x))
-  } else if(stringr::str_detect(n_anexo_lower, " ii ")) {
+  if(stringr::str_detect(n_anexo_lower, " ii ")) {
     message("Processando Anexo II...")
     pula_linhas <- obter_linha_cabecalho(x, numero_aba)
     return(
