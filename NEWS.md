@@ -1,5 +1,11 @@
 # tarifasimpbr 0.2.0.9000
 
+## Em desenvolvimento
+
+- Inicia ciclo de desenvolvimento pós-release 0.2.0.
+
+# tarifasimpbr 0.2.0
+
 ## Mudanças
 
 - Alteração de caracteres não ASCII para ASCII na documentação
