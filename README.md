@@ -19,6 +19,13 @@ A fonte das informações tarifárias deste pacote pode ser encontrada em:
 pak::pak("mgcleaver/tarifasimpbr")
 ```
 
+Observação: em alguns sistemas, a instalação via `pak::pak()` pode exigir
+ferramentas de compilação para instalar dependências a partir do código-fonte.
+No Windows, verifique se o Rtools compatível com a sua versão do R está
+instalado. No macOS, pode ser necessário instalar as Xcode Command Line Tools.
+No Linux, pode ser necessário instalar compiladores e bibliotecas de sistema
+usadas por dependências do R.
+
 ## Uso
 
 ```         
