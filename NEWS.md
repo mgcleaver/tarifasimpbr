@@ -4,6 +4,7 @@
 
 - Inicia ciclo de desenvolvimento pós-release 0.2.0.
 - Adiciona cache em memória por sessão para acelerar leituras repetidas do Anexo I.
+- Adiciona `buscar_ncm()` para consultar uma NCM nos anexos tarifários.
 
 # tarifasimpbr 0.2.0
 
