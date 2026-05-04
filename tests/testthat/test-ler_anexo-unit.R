@@ -51,7 +51,7 @@ testthat::test_that("unit: ler_anexo i informa quando usa cache", {
   )
   testthat::expect_message(
     ler_anexo(arquivo, "i"),
-    "Obtendo Anexo I do cache..."
+    "Obtendo Anexo I processado do cache..."
   )
 })
 
