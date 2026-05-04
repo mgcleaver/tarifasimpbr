@@ -253,7 +253,7 @@ buscar_ncm <- function(x, ncm) {
     dplyr::select(dplyr::all_of(colunas_resultado))
 
   if (nrow(resultado) == 0) {
-    message("NCM n\u00e3o encontrada na busca")
+    warning("NCM n\u00e3o encontrada na busca")
     return(resultado_vazio)
   }
 
