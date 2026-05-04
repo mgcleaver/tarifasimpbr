@@ -228,7 +228,7 @@ testthat::test_that("unit: buscar_ncm inclui codigos raiz do anexo iii", {
   testthat::expect_true(all(is.na(resultado_anexo_iii$aliquota)))
 })
 
-testthat::test_that("unit: buscar_ncm retorna vazio com mensagem quando ncm nao existe", {
+testthat::test_that("unit: buscar_ncm retorna vazio com warning quando ncm nao existe", {
   testthat::local_mocked_bindings(
     listar_anexos = mock_listar_anexos_buscar_ncm,
     ler_anexo = function(x, n_anexo) {
@@ -237,7 +237,7 @@ testthat::test_that("unit: buscar_ncm retorna vazio com mensagem quando ncm nao 
     .package = "tarifasimpbr"
   )
 
-  testthat::expect_message(
+  testthat::expect_warning(
     resultado <- buscar_ncm(x = "arquivo_mock.xlsx", ncm = "99990000"),
     "NCM não encontrada na busca"
   )
