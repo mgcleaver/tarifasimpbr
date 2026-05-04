@@ -30,7 +30,9 @@ maiusculas e minusculas.
 \examples{
 \dontrun{
 x <- download_tarifas()
-buscar_ato(x, ato = 68)
-buscar_ato(x, ato = "Res. 68")
+buscar_ato(x, ato = 800)
+buscar_ato(x, ato = "272")
+buscar_ato(x, ato = "gecex")
 }
+
 }
