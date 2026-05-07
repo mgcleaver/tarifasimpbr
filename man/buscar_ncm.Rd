@@ -7,27 +7,32 @@
 buscar_ncm(x, ncm)
 }
 \arguments{
-\item{x}{Objeto retornado por \code{\link[=download_tarifas]{download_tarifas()}}, que no caso e o caminho
-temporario do arquivo de tarifas de importacao vigentes baixado.}
+\item{x}{Caminho do arquivo de tarifas, normalmente o objeto retornado por
+\code{\link[=download_tarifas]{download_tarifas()}}.}
 
-\item{ncm}{Codigo NCM com 8 digitos. Pontos, hifens e espacos sao ignorados.}
+\item{ncm}{Codigo NCM com 8 digitos. Pontos, hifens e espacos sao aceitos e
+ignorados na busca.}
 }
 \value{
-Um \code{tibble} com uma linha por ocorrencia encontrada nos anexos e as
-colunas \code{anexo}, \code{nome_anexo}, \code{ncm}, \code{no_ex}, \code{descricao},
+Um \code{tibble} com uma linha por ocorrencia encontrada e as colunas
+\code{anexo}, \code{nome_anexo}, \code{ncm}, \code{no_ex}, \code{descricao},
 \code{descricao_tec_concatenada}, \code{bkbit}, \code{aliquota}, \code{quota},
 \code{unidade_quota}, \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato},
-\code{data_do_ato} e \code{obs}.
+\code{data_do_ato} e \code{obs}. Quando a NCM nao e encontrada, retorna um tibble
+vazio com essas colunas e emite um aviso.
 }
 \description{
-Consulta uma NCM nos anexos tarifarios e retorna uma tabela padronizada com
-as informacoes encontradas em cada anexo. O Anexo I e usado como fonte das
-descricoes para os demais anexos quando houver correspondencia exata da NCM.
+Consulta uma NCM nos anexos tarifarios e retorna as ocorrencias encontradas
+em formato padronizado. A busca usa correspondencia exata nos anexos com NCM
+completa e, no Anexo III, tambem retorna codigos raiz que abrangem a NCM
+pesquisada. Quando houver correspondencia exata no Anexo I, suas descricoes
+sao usadas como referencia para os demais anexos.
 }
 \examples{
 \dontrun{
 x <- download_tarifas()
 buscar_ncm(x, ncm = "11090000")
+buscar_ncm(x, ncm = "85394900")
 }
 
 }

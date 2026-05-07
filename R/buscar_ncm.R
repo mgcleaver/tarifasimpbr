@@ -1,23 +1,28 @@
 #' Buscar informacoes de uma NCM nos anexos tarifarios
 #'
-#' Consulta uma NCM nos anexos tarifarios e retorna uma tabela padronizada com
-#' as informacoes encontradas em cada anexo. O Anexo I e usado como fonte das
-#' descricoes para os demais anexos quando houver correspondencia exata da NCM.
+#' Consulta uma NCM nos anexos tarifarios e retorna as ocorrencias encontradas
+#' em formato padronizado. A busca usa correspondencia exata nos anexos com NCM
+#' completa e, no Anexo III, tambem retorna codigos raiz que abrangem a NCM
+#' pesquisada. Quando houver correspondencia exata no Anexo I, suas descricoes
+#' sao usadas como referencia para os demais anexos.
 #'
-#' @param x Objeto retornado por [download_tarifas()], que no caso e o caminho
-#'   temporario do arquivo de tarifas de importacao vigentes baixado.
-#' @param ncm Codigo NCM com 8 digitos. Pontos, hifens e espacos sao ignorados.
+#' @param x Caminho do arquivo de tarifas, normalmente o objeto retornado por
+#'   [download_tarifas()].
+#' @param ncm Codigo NCM com 8 digitos. Pontos, hifens e espacos sao aceitos e
+#'   ignorados na busca.
 #'
-#' @return Um `tibble` com uma linha por ocorrencia encontrada nos anexos e as
-#'   colunas `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao`,
+#' @return Um `tibble` com uma linha por ocorrencia encontrada e as colunas
+#'   `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao`,
 #'   `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
 #'   `unidade_quota`, `inicio_de_vigencia`, `termino_de_vigencia`, `ato`,
-#'   `data_do_ato` e `obs`.
+#'   `data_do_ato` e `obs`. Quando a NCM nao e encontrada, retorna um tibble
+#'   vazio com essas colunas e emite um aviso.
 #'
 #' @examples
 #' \dontrun{
 #' x <- download_tarifas()
 #' buscar_ncm(x, ncm = "11090000")
+#' buscar_ncm(x, ncm = "85394900")
 #' }
 #'
 #' @export

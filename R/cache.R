@@ -64,7 +64,8 @@ ler_anexo1_com_cache <- function(x) {
 #'
 #' Remove da memoria os resultados processados e armazenados durante a sessao
 #' atual do R. Atualmente, o cache e usado apenas para evitar reprocessamentos
-#' repetidos do Anexo I em chamadas a [ler_anexo()].
+#' repetidos do Anexo I em chamadas a [ler_anexo()]. Depois da limpeza, o cache
+#' e preenchido novamente conforme os anexos forem lidos.
 #'
 #' @return Invisivelmente `TRUE` quando a limpeza e concluida, ou `FALSE` se
 #'   houver alguma falha inesperada ao limpar o cache.

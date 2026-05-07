@@ -1,21 +1,24 @@
 #' Buscar informacoes de um ato nos anexos tarifarios
 #'
-#' Consulta um ato nos anexos tarifarios e retorna uma tabela padronizada com
-#' as informacoes encontradas em cada anexo. Entradas numericas buscam o numero
-#' do ato com equivalencia de zeros a esquerda, sem buscar dentro do ano do ato.
+#' Consulta um ato nos anexos tarifarios e retorna as ocorrencias encontradas em
+#' formato padronizado. A busca considera os campos de atos disponiveis nos
+#' Anexos I, II, IV, V, VI, VIII, IX e X. Entradas numericas buscam o numero do
+#' ato com equivalencia de zeros a esquerda, sem buscar dentro do ano do ato.
 #' Entradas textuais mistas sao pesquisadas de forma literal, sem diferenciar
 #' maiusculas e minusculas.
 #'
-#' @param x Objeto retornado por [download_tarifas()], que no caso e o caminho
-#'   temporario do arquivo de tarifas de importacao vigentes baixado.
+#' @param x Caminho do arquivo de tarifas, normalmente o objeto retornado por
+#'   [download_tarifas()].
 #' @param ato Numero ou texto do ato a pesquisar. Valores numericos ou textos
-#'   compostos apenas por digitos tratam zeros a esquerda como equivalentes.
+#'   compostos apenas por digitos sao tratados como numero do ato e consideram
+#'   zeros a esquerda como equivalentes.
 #'
-#' @return Um `tibble` com uma linha por ocorrencia encontrada nos anexos e as
-#'   colunas `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao`,
+#' @return Um `tibble` com uma linha por ocorrencia encontrada e as colunas
+#'   `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao`,
 #'   `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
 #'   `unidade_quota`, `inicio_de_vigencia`, `termino_de_vigencia`, `ato`,
-#'   `data_do_ato` e `obs`.
+#'   `data_do_ato` e `obs`. Quando o ato nao e encontrado, retorna um tibble
+#'   vazio com essas colunas.
 #'
 #' @examples
 #' \dontrun{
