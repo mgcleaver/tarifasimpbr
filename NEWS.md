@@ -10,6 +10,19 @@
 - Amplia a cobertura de testes para busca por NCM, busca por ato e cache do Anexo I.
 - Atualiza o README com observações sobre ferramentas de compilação necessárias em algumas instalações.
 
+# tarifasimpbr 0.2.0
+
+## Mudanças
+
+- Alteração de caracteres não ASCII para ASCII na documentação
+- Correção da lógica da coluna ncm_integral resultante da função detalhar_listas_excecao_vigentes.R
+- Simplificação do resultado de detalhar_listas_excecao_vigentes.R: remoção de indicadores
+  de presença de ex tarifário e de quota por conta de redundância.
+- Implementação de testes.
+- Reorganiza arquivos de funções.
+- Função nova para listar ex-tarifários das listas de instrumentos tarifários (anexos iv a x)
+- Suporte ao Anexo III em `ler_anexo()`, com leitura das duas tabelas da aba do setor aeronautico e retorno padronizado das colunas `ncm`, `regra` e `obs`.
+
 ## Compatibilidade
 
 - R >= 4.x
