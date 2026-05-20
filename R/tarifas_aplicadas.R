@@ -85,7 +85,7 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
   anexoii <- ler_anexo(x, "ii") |>
     dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota_aplicada))
 
-  message("Processando demais anexos...")
+  message("Processando anexos IV, V, VI, VIII, IX, X...")
   listas_excecao <- detalhar_listas_excecao_vigentes(x)
 
   base <- anexoi |>

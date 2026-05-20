@@ -55,12 +55,12 @@ e organiza os dados de cada aba do arquivo (anexo).
 }
 \details{
 Para o Anexo I, a funcao \code{ler_anexo} apenas delega o processamento para
-a funcao \code{ler_anexo1}. Para o Anexo II, le a aba correspondente e
-padroniza as colunas \code{tec} e \code{aliquota_aplicada}. Para o Anexo III,
-localiza duas tabelas de codigos NCM na mesma aba, empilha os codigos em
-uma unica coluna e adiciona \code{regra} e \code{obs} conforme a tabela de origem e
-a marcacao com asterisco. Para os anexos IV, V, VI, VIII, IX e X, a
-funcao:
+a funcao \code{ler_anexo1} com cache em memoria durante a sessao do R. Para o
+Anexo II, le a aba correspondente e padroniza as colunas \code{tec} e
+\code{aliquota_aplicada}. Para o Anexo III, localiza duas tabelas de codigos NCM
+na mesma aba, empilha os codigos em uma unica coluna e adiciona \code{regra} e
+\code{obs} conforme a tabela de origem e a marcacao com asterisco. Para os anexos
+IV, V, VI, VIII, IX e X, a funcao:
 \itemize{
 \item identifica a aba correta com base no nome do anexo;
 \item pula linhas de cabecalho conforme o tipo de anexo;

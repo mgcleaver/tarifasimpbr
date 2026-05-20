@@ -1,5 +1,5 @@
 #' @keywords internal
-#' @importFrom rlang .data
+#' @importFrom rlang .data .env
 #' @importFrom stats na.omit
 "_PACKAGE"
 
