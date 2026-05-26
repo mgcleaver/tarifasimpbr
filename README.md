@@ -31,6 +31,9 @@ usadas por dependências do R.
 ```         
 library(tarifasimpbr)
 
+# consultar a data do arquivo oficial vigente
+data_arquivo_tarifas()
+
 # baixar arquivo temporário de tarifas de importação
 x <- download_tarifas()
 ```

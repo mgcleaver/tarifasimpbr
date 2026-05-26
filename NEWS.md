@@ -1,3 +1,13 @@
+# tarifasimpbr 0.4.0
+
+## Mudanças
+
+- Adiciona `data_arquivo_tarifas()` para consultar a data do arquivo oficial de tarifas vigente no site da Camex.
+- Refatora `download_tarifas()` para reutilizar a obtenção do link oficial do arquivo de tarifas.
+- Remove avisos de depreciação em `buscar_ato()` relacionados ao uso de `.data$...` em seleções `tidyselect`.
+- Atualiza as variáveis globais internas usadas pelo pacote para manter as checagens mais limpas.
+- Adiciona testes para a extração da data do link e para o uso do link oficial de tarifas.
+
 # tarifasimpbr 0.3.0
 
 ## Mudanças

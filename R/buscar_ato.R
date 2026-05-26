@@ -129,27 +129,27 @@ buscar_ato <- function(x, ato) {
 
   descricoes_anexo_i <- anexo_i |>
     dplyr::select(
-      .data$ncm,
-      descricao_anexo_i = .data$descricao_tec,
-      descricao_tec_concatenada_anexo_i = .data$descricao_tec_concatenada,
-      bkbit_anexo_i = .data$bkbit
+      ncm,
+      descricao_anexo_i = descricao_tec,
+      descricao_tec_concatenada_anexo_i = descricao_tec_concatenada,
+      bkbit_anexo_i = bkbit
     )
 
   resultado <- anexo_i |>
     dplyr::transmute(
       anexo = "i",
       nome_anexo = nome_anexo[["i"]],
-      ncm = .data$ncm,
+      ncm = ncm,
       no_ex = NA_character_,
-      descricao = .data$descricao_tec,
-      descricao_tec_concatenada = .data$descricao_tec_concatenada,
-      bkbit = .data$bkbit,
-      aliquota = as.numeric(.data$tec),
+      descricao = descricao_tec,
+      descricao_tec_concatenada = descricao_tec_concatenada,
+      bkbit = bkbit,
+      aliquota = as.numeric(tec),
       quota = NA_character_,
       unidade_quota = NA_character_,
       inicio_de_vigencia = as.Date(NA_character_),
       termino_de_vigencia = as.Date(NA_character_),
-      ato = .data$resolucoes,
+      ato = resolucoes,
       data_do_ato = as.Date(NA_character_),
       obs = NA_character_
     )
@@ -173,17 +173,17 @@ buscar_ato <- function(x, ato) {
       dplyr::transmute(
         anexo = "ii",
         nome_anexo = nome_anexo[["ii"]],
-        ncm = .data$ncm,
+        ncm = ncm,
         no_ex = NA_character_,
-        descricao = .data$descricao_anexo_i,
-        descricao_tec_concatenada = .data$descricao_tec_concatenada_anexo_i,
-        bkbit = .data$bkbit_anexo_i,
-        aliquota = as.numeric(.data$aliquota_aplicada),
+        descricao = descricao_anexo_i,
+        descricao_tec_concatenada = descricao_tec_concatenada_anexo_i,
+        bkbit = bkbit_anexo_i,
+        aliquota = as.numeric(aliquota_aplicada),
         quota = NA_character_,
         unidade_quota = NA_character_,
         inicio_de_vigencia = as.Date(NA_character_),
         termino_de_vigencia = as.Date(NA_character_),
-        ato = .data$atos_de_inclusao,
+        ato = atos_de_inclusao,
         data_do_ato = as.Date(NA_character_),
         obs = NA_character_
       )
@@ -230,19 +230,19 @@ buscar_ato <- function(x, ato) {
         dplyr::transmute(
           anexo = anexo_atual,
           nome_anexo = nome_anexo[[anexo_atual]],
-          ncm = .data$ncm,
-          no_ex = .data$no_ex,
-          descricao = .data$descricao_anexo_i,
-          descricao_tec_concatenada = .data$descricao_tec_concatenada_anexo_i,
-          bkbit = .data$bkbit_anexo_i,
-          aliquota = as.numeric(.data$aliquota),
-          quota = .data$quota,
-          unidade_quota = .data$unidade_quota,
-          inicio_de_vigencia = .data$inicio_de_vigencia,
-          termino_de_vigencia = .data$termino_de_vigencia,
-          ato = .data$ato_de_inclusao,
-          data_do_ato = .data$data_do_ato_de_inclusao,
-          obs = .data$obs
+          ncm = ncm,
+          no_ex = no_ex,
+          descricao = descricao_anexo_i,
+          descricao_tec_concatenada = descricao_tec_concatenada_anexo_i,
+          bkbit = bkbit_anexo_i,
+          aliquota = as.numeric(aliquota),
+          quota = quota,
+          unidade_quota = unidade_quota,
+          inicio_de_vigencia = inicio_de_vigencia,
+          termino_de_vigencia = termino_de_vigencia,
+          ato = ato_de_inclusao,
+          data_do_ato = data_do_ato_de_inclusao,
+          obs = obs
         )
     )
   }
