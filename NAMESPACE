@@ -2,6 +2,7 @@
 
 export(buscar_ato)
 export(buscar_ncm)
+export(data_arquivo_tarifas)
 export(detalhar_listas_excecao_vigentes)
 export(download_tarifas)
 export(ex_tarifarios)
