@@ -38,7 +38,7 @@ library(tarifasimpbr)
 # consultar a data do arquivo oficial vigente
 data_arquivo_tarifas()
 
-# baixar arquivo temporário de tarifas de importação
+# baixar o arquivo oficial de tarifas para um diretório temporário
 x <- download_tarifas()
 ```
 
