@@ -5,12 +5,17 @@
 \title{Download de tarifas de importação do Brasil do site oficial da
 Camara de Comercio Exterior (Camex)}
 \usage{
-download_tarifas()
+download_tarifas(destfile = NULL)
+}
+\arguments{
+\item{destfile}{Caminho do arquivo onde o download deve ser salvo. Deve
+incluir o nome do arquivo. Quando \code{NULL}, usa um arquivo temporário.}
 }
 \value{
-o caminho temporário, onde o arquivo oficial de tarifas foi salvo
+O caminho onde o arquivo oficial de tarifas foi salvo.
 }
 \description{
-Essa função faz o download do arquivo de tarifas vigentes do Brasil em um diretorio
-temporario.
+Essa função faz o download do arquivo de tarifas vigentes do Brasil. Por
+padrão, o arquivo é salvo em um diretório temporário. Caso \code{destfile} seja
+informado, o arquivo é salvo no caminho indicado.
 }
