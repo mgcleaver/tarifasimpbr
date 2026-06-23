@@ -164,3 +164,60 @@ testthat::test_that("unit: download_tarifas valida destfile informado", {
     "string unica"
   )
 })
+
+testthat::test_that("unit: download_tarifas trata erro durante download", {
+  destfile <- tempfile(fileext = ".xlsx")
+
+  testthat::local_mocked_bindings(
+    obter_link_arquivo_tarifas = function() "https://exemplo.com/tarifas.xlsx",
+    .package = "tarifasimpbr"
+  )
+
+  testthat::local_mocked_bindings(
+    download.file = function(...) stop("falha simulada"),
+    .package = "utils"
+  )
+
+  testthat::expect_error(
+    download_tarifas(destfile = destfile),
+    "Download do arquivo de tarifas falhou"
+  )
+})
+
+testthat::test_that("unit: download_tarifas trata retorno diferente de zero", {
+  destfile <- tempfile(fileext = ".xlsx")
+
+  testthat::local_mocked_bindings(
+    obter_link_arquivo_tarifas = function() "https://exemplo.com/tarifas.xlsx",
+    .package = "tarifasimpbr"
+  )
+
+  testthat::local_mocked_bindings(
+    download.file = function(...) 1L,
+    .package = "utils"
+  )
+
+  testthat::expect_error(
+    download_tarifas(destfile = destfile),
+    "Download do arquivo de tarifas falhou"
+  )
+})
+
+testthat::test_that("unit: download_tarifas exige arquivo apos sucesso", {
+  destfile <- tempfile(fileext = ".xlsx")
+
+  testthat::local_mocked_bindings(
+    obter_link_arquivo_tarifas = function() "https://exemplo.com/tarifas.xlsx",
+    .package = "tarifasimpbr"
+  )
+
+  testthat::local_mocked_bindings(
+    download.file = function(...) 0L,
+    .package = "utils"
+  )
+
+  testthat::expect_error(
+    download_tarifas(destfile = destfile),
+    "Download do arquivo de tarifas falhou"
+  )
+})

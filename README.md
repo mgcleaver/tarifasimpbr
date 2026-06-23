@@ -40,10 +40,15 @@ data_arquivo_tarifas()
 
 # baixar o arquivo oficial de tarifas para um diretório temporário
 x <- download_tarifas()
+
+# ou salvar em um arquivo específico; o diretório deve existir
+# arquivos existentes são sobrescritos
+dir.create("dados", showWarnings = FALSE)
+x_local <- download_tarifas(file.path("dados", "tarifas_raw.xlsx"))
 ```
 
 Com a função `listar_anexos()` é possível obter uma tabela com as referências para cada
-um dos anexos. A coluna numero_anexo que resulta de `listas_anexos()` deve ser utilizada 
+um dos anexos. A coluna `numero_anexo` que resulta de `listar_anexos()` deve ser utilizada
 para consultar um anexo específico na função `ler_anexo()`.
 
 ```
@@ -67,7 +72,7 @@ dcc |>
 tarifas <- tarifas_aplicadas(x)
 
 # obter lista com todos os ex-tarifários presentes nos anexos entre iv e x.
-lista_ex <- ex_tarifarios()
+lista_ex <- ex_tarifarios(x)
 ```
 
 ## Outras informações
@@ -76,7 +81,7 @@ Os nomes das colunas aliquota, tec, teb e tarifa_aplicada estão em
 porcentagem.
 
 A tarifa_aplicada é obtida a partir da teb e das listas de exceção. As
-listas de exceção tem prioridade sobre a teb somente quando a tarifa da
+listas de exceção têm prioridade sobre a teb somente quando a tarifa da
 NCM foi alterada integralmente pela lista. No caso de uma lista que altera
 somente parte do código (por meio de destaque), constará
 a teb no resultado da tarifa_aplicada.
