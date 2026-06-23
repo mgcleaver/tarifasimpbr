@@ -57,10 +57,12 @@
 #'   integralmente em lista de excecao.
 #'
 #' @examples
+#' \dontrun{
 #' # Exemplo de uso:
 #' x <- download_tarifas()
 #' resumo_excecoes <- detalhar_listas_excecao_vigentes(x)
 #' dplyr::glimpse(resumo_excecoes)
+#' }
 #'
 #' @export
 detalhar_listas_excecao_vigentes <- function(x) {

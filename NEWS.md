@@ -5,6 +5,7 @@
 - Adiciona o argumento `destfile` a `download_tarifas()` para permitir o salvamento do arquivo oficial em um caminho definido pelo usuário.
 - Valida o caminho de destino e o resultado do download antes de informar sucesso.
 - Documenta o salvamento em arquivo específico e amplia os testes de falha do download.
+- Evita falhas do `R CMD check` quando o site oficial está temporariamente indisponível.
 
 # tarifasimpbr 0.4.0
 

@@ -102,6 +102,7 @@ Se existir a coluna \code{inicio_da_vigencia}, ela e renomeada para
 }
 
 \examples{
+\dontrun{
 x <- download_tarifas()
 
 # Ler Anexo I
@@ -109,6 +110,7 @@ anexo_i <- ler_anexo(x, n_anexo = "i")
 
 # Ler Anexo V (Letec) ja com datas e NCM padronizados
 anexo_v <- ler_anexo(x, n_anexo = "v")
+}
 
 }
 \seealso{

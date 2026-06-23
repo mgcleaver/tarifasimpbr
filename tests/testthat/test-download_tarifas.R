@@ -221,3 +221,33 @@ testthat::test_that("unit: download_tarifas exige arquivo apos sucesso", {
     "Download do arquivo de tarifas falhou"
   )
 })
+
+testthat::test_that("unit: integracao nao repete download indisponivel", {
+  ambiente_helper <- environment(get_tarifas_path)
+  tarifas_path_anterior <- ambiente_helper$tarifas_path
+  erro_anterior <- ambiente_helper$tarifas_download_error
+
+  on.exit(
+    {
+      ambiente_helper$tarifas_path <- tarifas_path_anterior
+      ambiente_helper$tarifas_download_error <- erro_anterior
+    },
+    add = TRUE
+  )
+
+  ambiente_helper$tarifas_path <- NULL
+  ambiente_helper$tarifas_download_error <- NULL
+  tentativas_download <- 0L
+
+  testthat::local_mocked_bindings(
+    download_tarifas = function(...) {
+      tentativas_download <<- tentativas_download + 1L
+      stop("falha simulada")
+    },
+    .package = "tarifasimpbr"
+  )
+
+  testthat::expect_condition(get_tarifas_path(), class = "skip")
+  testthat::expect_condition(get_tarifas_path(), class = "skip")
+  testthat::expect_equal(tentativas_download, 1L)
+})

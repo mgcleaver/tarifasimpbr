@@ -96,6 +96,7 @@
 #'   e `formata_datas` para limpeza e padronizacao de datas.
 #'
 #' @examples
+#' \dontrun{
 #' x <- download_tarifas()
 #'
 #' # Ler Anexo I
@@ -103,6 +104,7 @@
 #'
 #' # Ler Anexo V (Letec) ja com datas e NCM padronizados
 #' anexo_v <- ler_anexo(x, n_anexo = "v")
+#' }
 #'
 #' @export
 ler_anexo <- function(
