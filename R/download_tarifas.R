@@ -2,34 +2,75 @@
 #' Camara de Comercio Exterior (Camex)
 #'
 #' @description
-#' Essa função faz o download do arquivo de tarifas vigentes do Brasil em um diretorio
-#' temporario.
+#' Essa função faz o download do arquivo de tarifas vigentes do Brasil. Por
+#' padrão, o arquivo é salvo em um diretório temporário. Caso `destfile` seja
+#' informado, o arquivo é salvo no caminho indicado.
 #'
-#' @return o caminho temporário, onde o arquivo oficial de tarifas foi salvo
+#' @param destfile Caminho do arquivo onde o download deve ser salvo. Deve
+#'   incluir o nome do arquivo, e o diretório informado deve existir. Quando
+#'   `NULL`, usa um arquivo temporário. Se o arquivo já existir, ele será
+#'   sobrescrito.
+#'
+#' @return O caminho onde o arquivo oficial de tarifas foi salvo.
 #'
 #' @export
-download_tarifas <- function() {
+download_tarifas <- function(destfile = NULL) {
+  if (is.null(destfile)) {
+    destfile <- file.path(tempdir(), "tarifas_raw.xlsx")
+  } else {
+    if (
+      !is.character(destfile) ||
+      length(destfile) != 1 ||
+      is.na(destfile) ||
+      destfile == ""
+    ) {
+      stop(
+        "`destfile` deve ser uma string unica, nao vazia e sem valores ausentes.",
+        call. = FALSE
+      )
+    }
+
+    if (dir.exists(destfile)) {
+      stop(
+        "`destfile` deve incluir o nome do arquivo de destino, nao apenas o diretorio.",
+        call. = FALSE
+      )
+    }
+
+    diretorio_destino <- dirname(destfile)
+
+    if (!dir.exists(diretorio_destino)) {
+      stop("O diretorio informado em `destfile` nao existe.", call. = FALSE)
+    }
+  }
+
   message("Iniciando download de arquivo de tarifas")
 
   link_arquivo_tarifas <- obter_link_arquivo_tarifas()
 
-  temp_path <- file.path(tempdir(), "tarifas_raw.xlsx")
-
-  teste_download <- try(
+  resultado_download <- try(
     utils::download.file(
       link_arquivo_tarifas,
-      destfile = temp_path,
-      mode = 'wb'))
+      destfile = destfile,
+      mode = "wb"
+    ),
+    silent = TRUE
+  )
 
-  if(inherits(teste_download, "try-error")) {
-    stop("Download do arquivo de tarifas falhou")
+  download_falhou <- inherits(resultado_download, "try-error") ||
+    !is.numeric(resultado_download) ||
+    length(resultado_download) != 1 ||
+    is.na(resultado_download) ||
+    resultado_download != 0 ||
+    !file.exists(destfile)
+
+  if (download_falhou) {
+    stop("Download do arquivo de tarifas falhou.", call. = FALSE)
   }
 
   message("Download realizado com sucesso")
 
-  return(temp_path)
-
-
+  return(destfile)
 }
 
 #' Obter o link do arquivo oficial de tarifas
