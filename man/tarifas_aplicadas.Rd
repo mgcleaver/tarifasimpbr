@@ -73,6 +73,7 @@ aplicável à NCM integralmente.
 }
 }
 \examples{
+\dontrun{
 # Resultado enxuto, apenas com tarifa aplicada e TEB:
 x <- download_tarifas()
 tarifas <- tarifas_aplicadas(x)
@@ -82,6 +83,7 @@ dplyr::glimpse(tarifas)
 # e indicador de NCM integral:
 tarifas_detalhadas <- tarifas_aplicadas(x, detalhar = TRUE)
 dplyr::glimpse(tarifas_detalhadas)
+}
 
 }
 \seealso{

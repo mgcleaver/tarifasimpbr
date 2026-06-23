@@ -1,11 +1,29 @@
 tarifas_path <- NULL
+tarifas_download_error <- NULL
 
 get_tarifas_path <- function() {
   testthat::skip_on_cran()
   testthat::skip_if_offline()
 
+  if (!is.null(tarifas_download_error)) {
+    testthat::skip(tarifas_download_error)
+  }
+
   if (is.null(tarifas_path) || !file.exists(tarifas_path)) {
-    tarifas_path <<- download_tarifas()
+    resultado_download <- tryCatch(
+      download_tarifas(),
+      error = function(e) e
+    )
+
+    if (inherits(resultado_download, "error")) {
+      tarifas_download_error <<- paste0(
+        "Site oficial de tarifas indisponivel: ",
+        conditionMessage(resultado_download)
+      )
+      testthat::skip(tarifas_download_error)
+    }
+
+    tarifas_path <<- resultado_download
   }
 
   tarifas_path
