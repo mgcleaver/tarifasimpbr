@@ -11,7 +11,8 @@ download_tarifas(destfile = NULL)
 \item{destfile}{Caminho do arquivo onde o download deve ser salvo. Deve
 incluir o nome do arquivo, e o diretório informado deve existir. Quando
 \code{NULL}, usa um arquivo temporário. Se o arquivo já existir, ele será
-sobrescrito.}
+substituído somente depois que o novo download for validado como uma
+planilha Excel legível.}
 }
 \value{
 O caminho onde o arquivo oficial de tarifas foi salvo.

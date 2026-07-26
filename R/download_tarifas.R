@@ -9,7 +9,8 @@
 #' @param destfile Caminho do arquivo onde o download deve ser salvo. Deve
 #'   incluir o nome do arquivo, e o diretório informado deve existir. Quando
 #'   `NULL`, usa um arquivo temporário. Se o arquivo já existir, ele será
-#'   sobrescrito.
+#'   substituído somente depois que o novo download for validado como uma
+#'   planilha Excel legível.
 #'
 #' @return O caminho onde o arquivo oficial de tarifas foi salvo.
 #'
@@ -47,11 +48,25 @@ download_tarifas <- function(destfile = NULL) {
   message("Iniciando download de arquivo de tarifas")
 
   link_arquivo_tarifas <- obter_link_arquivo_tarifas()
+  arquivo_temporario <- tempfile(
+    pattern = "tarifas_download_",
+    tmpdir = dirname(destfile),
+    fileext = ".xlsx"
+  )
+
+  on.exit(
+    {
+      if (file.exists(arquivo_temporario)) {
+        unlink(arquivo_temporario)
+      }
+    },
+    add = TRUE
+  )
 
   resultado_download <- try(
     utils::download.file(
       link_arquivo_tarifas,
-      destfile = destfile,
+      destfile = arquivo_temporario,
       mode = "wb"
     ),
     silent = TRUE
@@ -62,15 +77,52 @@ download_tarifas <- function(destfile = NULL) {
     length(resultado_download) != 1 ||
     is.na(resultado_download) ||
     resultado_download != 0 ||
-    !file.exists(destfile)
+    !file.exists(arquivo_temporario)
 
   if (download_falhou) {
     stop("Download do arquivo de tarifas falhou.", call. = FALSE)
   }
 
+  if (!arquivo_tarifas_valido(arquivo_temporario)) {
+    stop(
+      "O arquivo baixado n\u00e3o \u00e9 uma planilha Excel v\u00e1lida.",
+      call. = FALSE
+    )
+  }
+
+  arquivo_copiado <- file.copy(
+    from = arquivo_temporario,
+    to = destfile,
+    overwrite = TRUE
+  )
+
+  if (!isTRUE(arquivo_copiado)) {
+    stop(
+      "N\u00e3o foi poss\u00edvel salvar o arquivo de tarifas no destino informado.",
+      call. = FALSE
+    )
+  }
+
   message("Download realizado com sucesso")
 
   return(destfile)
+}
+
+arquivo_tarifas_valido <- function(x) {
+  if (!file.exists(x)) {
+    return(FALSE)
+  }
+
+  tamanho <- file.info(x)$size
+
+  if (is.na(tamanho) || tamanho <= 0) {
+    return(FALSE)
+  }
+
+  tryCatch(
+    length(readxl::excel_sheets(x)) > 0,
+    error = function(e) FALSE
+  )
 }
 
 #' Obter o link do arquivo oficial de tarifas
