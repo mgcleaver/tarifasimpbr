@@ -31,22 +31,26 @@ adiciona_indicador_ex_quota <- function(
     )
   }
 
+  tem_valor <- function(y) {
+    y <- y |>
+      as.character() |>
+      stringr::str_trim()
+
+    !is.na(y) & y != "" & y != "-"
+  }
+
   out <- suprime_texto(
     ler_anexo(x = x, n_anexo = n_anexo) |>
       dplyr::mutate(
-        quota = as.numeric(.data$quota),
-        no_ex = as.numeric(.data$no_ex)
-      ) |>
-      dplyr::mutate(
-        tem_quota = dplyr::if_else(is.na(.data$quota), 0, 1),
-        tem_destaque_ex = dplyr::if_else(is.na(.data$no_ex), 0, 1),
+        tem_quota = as.integer(tem_valor(.data$quota)),
+        tem_destaque_ex = as.integer(tem_valor(.data$no_ex)),
         ncm_integral = dplyr::if_else(
-          is.na(.data$no_ex),
+          .data$tem_destaque_ex == 0,
           1,
           0
         ),
         altera_tarifa_aplicada = dplyr::if_else(
-          is.na(.data$quota) & is.na(.data$no_ex),
+          .data$tem_quota == 0 & .data$tem_destaque_ex == 0,
           1,
           0
         )

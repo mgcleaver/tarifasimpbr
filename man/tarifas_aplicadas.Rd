@@ -71,6 +71,9 @@ derivadas de \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_exce
 \item \code{ncm_integral}: indicador (0/1) de medida e lista de exceção
 aplicável à NCM integralmente.
 }
+
+Valores ausentes são substituídos por zero somente nessas três colunas.
+Ausências em \code{tec}, \code{teb} e \code{tarifa_aplicada} permanecem como \code{NA}.
 }
 \examples{
 \dontrun{

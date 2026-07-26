@@ -36,6 +36,9 @@
 #' * `ncm_integral`: indicador (0/1) de medida e lista de exceção
 #'    aplicável à NCM integralmente.
 #'
+#' Valores ausentes são substituídos por zero somente nessas três colunas.
+#' Ausências em `tec`, `teb` e `tarifa_aplicada` permanecem como `NA`.
+#'
 #' @param x Objeto, é o resultado obtido a partir da função `download_tarifas()`
 #' @param detalhar Lógico, indica se o resultado deve incluir as colunas
 #'   detalhadas das listas de exceção. O padrão é `FALSE`. Se `TRUE`,
@@ -119,7 +122,11 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
   out <- base |>
     dplyr::mutate(
       dplyr::across(
-        dplyr::where(is.numeric),
+        dplyr::all_of(c(
+          "contagem_quota",
+          "contagem_ex",
+          "ncm_integral"
+        )),
         ~ tidyr::replace_na(.x, 0)
       )
     ) |>
