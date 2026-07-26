@@ -12,7 +12,7 @@
 #' `obs` conforme a tabela de origem e a marcacao com asterisco. Para os anexos
 #' IV, V, VI, VIII, IX e X, a funcao:
 #' \itemize{
-#'   \item identifica a aba correta com base no nome do anexo;
+#'   \item identifica uma única aba com base no nome do anexo;
 #'   \item pula linhas de cabecalho conforme o tipo de anexo;
 #'   \item padroniza nomes de colunas com `janitor::clean_names` e a partir de outras regras;
 #'   \item garante a existencia da coluna de termino_de_vigencia e renomeia
@@ -49,9 +49,9 @@
 #'   \item{no_ex}{Numero do \emph{ex} padronizado com 3 digitos}
 #'   \item{inicio_de_vigencia}{Data de inicio de vigencia em formato
 #'     padronizado, conforme `formata_datas`.}
-#'   \item{termino_de_vigencia}{Data de termino de vigencia em formato
-#'     padronizado; quando ausente no arquivo, e preenchida com
-#'     \code{"9999-12-31"}.}
+#'   \item{termino_de_vigencia}{Data de término de vigência em formato
+#'     padronizado; valores `"-"`, vazios ou ausentes são tratados como
+#'     vigência sem término e preenchidos com \code{"9999-12-31"}.}
 #'   \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
 #'     tambem formatada por `formata_datas`.}
 #'   \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
@@ -62,16 +62,17 @@
 #' conforme o tipo de anexo.
 #'
 #' @details
-#' A selecao da aba e feita com base nos nomes das planilhas do arquivo Excel,
-#' convertidos para minusculas, procurando um padrao que contenha o numero
-#' romano do anexo (por exemplo, \code{" iv "} para o Anexo IV).
+#' A seleção da aba aceita espaço opcional ao redor do hífen após o número
+#' romano, reconhecendo, por exemplo, tanto `"Anexo IV - ..."` quanto
+#' `"Anexo IV-..."`. A leitura exige exatamente uma aba correspondente e
+#' informa explicitamente quando nenhuma ou mais de uma aba é encontrada.
 #'
 #' Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 #' automaticamente antes do processamento.
 #'
-#' Quando nao ha coluna de termino de vigencia no anexo, a funcao cria
-#' a coluna \code{termino_de_vigencia} e preenche dados faltantes com a data
-#' "9999-12-31".
+#' Quando não há coluna de término de vigência no anexo, a função cria
+#' a coluna \code{termino_de_vigencia}. Valores `"-"`, vazios ou ausentes
+#' são preenchidos com a data `"9999-12-31"`.
 #'
 #' Se existir a coluna \code{inicio_da_vigencia}, ela e renomeada para
 #' \code{inicio_de_vigencia}. Caso contrario, a funcao espera que
@@ -135,13 +136,11 @@ ler_anexo <- function(
     tem_lista <- 1
   }
 
-  nome_abas <- readxl::excel_sheets(x) |>
-    stringr::str_to_lower()
-
-  selecao_aba <- nome_abas |>
-    stringr::str_subset(n_anexo_lower)
-
-  numero_aba <- which(nome_abas == selecao_aba)
+  nome_abas <- readxl::excel_sheets(x)
+  numero_aba <- localizar_aba_anexo(
+    nome_abas = nome_abas,
+    n_anexo = n_anexo
+  )
 
   nome <- paste0("Anexo_", n_anexo)
   condicao6 <- FALSE
@@ -310,6 +309,48 @@ ler_anexo <- function(
 
   return(result)
 
+}
+
+localizar_aba_anexo <- function(nome_abas, n_anexo) {
+  nomes_normalizados <- nome_abas |>
+    stringr::str_to_lower() |>
+    stringr::str_squish()
+
+  padrao <- paste0(
+    "^anexo\\s+",
+    n_anexo,
+    "\\s*(?:-|$)"
+  )
+
+  abas_encontradas <- which(
+    stringr::str_detect(nomes_normalizados, padrao)
+  )
+
+  if (length(abas_encontradas) == 0) {
+    stop(
+      paste0(
+        "Aba do Anexo ",
+        stringr::str_to_upper(n_anexo),
+        " n\u00e3o encontrada."
+      ),
+      call. = FALSE
+    )
+  }
+
+  if (length(abas_encontradas) > 1) {
+    stop(
+      paste0(
+        "Mais de uma aba encontrada para o Anexo ",
+        stringr::str_to_upper(n_anexo),
+        ": ",
+        paste(nome_abas[abas_encontradas], collapse = ", "),
+        "."
+      ),
+      call. = FALSE
+    )
+  }
+
+  abas_encontradas[[1]]
 }
 
 ler_anexo3 <- function(x, numero_aba) {

@@ -3,7 +3,7 @@
 #' Funcao auxiliar para padronizar datas que podem vir em formatos
 #' heterogeneos nos anexos de tarifas: datas escritas como texto,
 #' datas no formato numerico do Excel (serial number) ou valores
-#' especiais representados por hifen (`"-"`).
+#' especiais representados por hífen (`"-"`), texto vazio ou `NA`.
 #'
 #' Esta funcao e usada internamente por `ler_anexo` e
 #' outras funcoes de limpeza dos anexos.
@@ -16,9 +16,10 @@
 #'     \item hifen (`"-"`), indicando ausencia de data.
 #'   }
 #' @param preenche_data Valor opcional usado para substituir entradas iguais
-#'   a `"-"`. Se `NULL` (padrao), o hifen e convertido para `NA`.
-#'   Caso contrario, o hifen e substituido pelo valor informado antes da
-#'   tentativa de conversao (por exemplo: `"9999-12-31"`).
+#'   a `"-"`, vazias ou ausentes. Se `NULL` (padrão), apenas o hífen é
+#'   convertido para `NA`. Caso contrário, hífen, texto vazio e `NA` são
+#'   substituídos pelo valor informado antes da tentativa de conversão
+#'   (por exemplo: `"9999-12-31"`).
 #'
 #' @return
 #' Um vetor de classe `Date` com as datas convertidas. Entradas invalidas
@@ -28,8 +29,8 @@
 #' A funcao segue tres passos principais:
 #' \itemize{
 #'   \item remocao de espacos em branco nas extremidades;
-#'   \item substituicao opcional do hifen (`"-"`) pelo valor definido
-#'     em `preenche_data`;
+#'   \item substituicao opcional do hifen (`"-"`), texto vazio e `NA` pelo
+#'     valor definido em `preenche_data`;
 #'   \item identificacao e conversao de datas em formato Excel (numeros
 #'     inteiros) e de datas textuais, usando
 #'     `lubridate::parse_date_time` com multiplas ordens possiveis
@@ -55,11 +56,12 @@ formata_datas <- function(x, preenche_data = NULL) {
   # Remove espacos extras
   x <- trimws(x)
 
-  # Substitui "-" pelo definido no argumento
+  # Substitui ausências pelo valor definido no argumento
   if (is.null(preenche_data)) {
-    x <- gsub("^-$", "", x)
+    x[!is.na(x) & x == "-"] <- ""
   } else {
-    x <- gsub("^-$", preenche_data, x)
+    ausente <- is.na(x) | x == "" | x == "-"
+    x[ausente] <- preenche_data
   }
 
   # Verifica se e numero (mesmo se veio como texto)

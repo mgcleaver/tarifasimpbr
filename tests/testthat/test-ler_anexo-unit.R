@@ -296,3 +296,92 @@ testthat::test_that("unit: ler_anexo vi remove coluna x10", {
   testthat::expect_equal(anexo_vi$lista[[1]], "Lebitbk")
   expect_ncm_oito_digitos(anexo_vi)
 })
+
+testthat::test_that("unit: formata_datas preenche termino sem data", {
+  resultado <- tarifasimpbr:::formata_datas(
+    c("-", "", NA_character_),
+    preenche_data = "9999-12-31"
+  )
+
+  testthat::expect_equal(
+    resultado,
+    as.Date(rep("9999-12-31", 3))
+  )
+
+  sem_preenchimento <- tarifasimpbr:::formata_datas(
+    c("-", "", NA_character_)
+  )
+
+  testthat::expect_true(all(is.na(sem_preenchimento)))
+})
+
+testthat::test_that("unit: ler_anexo aceita hifen sem espacos no nome da aba", {
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) "Anexo IV-Desabastecimento",
+    read_excel = function(..., sheet) {
+      testthat::expect_equal(sheet, 1L)
+
+      tibble::tibble(
+        ncm = c("12.34.56.78", "87.65.43.21", "11.22.33.44"),
+        no_ex = "-",
+        aliquota_percent = "0",
+        quota = "-",
+        unidade_da_quota = "-",
+        inicio_de_vigencia = "01/01/2026",
+        termino_de_vigencia = c("-", "", NA_character_)
+      )
+    },
+    .package = "readxl"
+  )
+
+  testthat::local_mocked_bindings(
+    listar_anexos = function() {
+      tibble::tibble(
+        numero_anexo = "iv",
+        nome_abreviado_anexo = "Desabastecimento"
+      )
+    },
+    obter_linha_cabecalho = function(...) 0L,
+    .package = "tarifasimpbr"
+  )
+
+  resultado <- ler_anexo("arquivo_mock.xlsx", "iv")
+
+  testthat::expect_equal(
+    resultado$termino_de_vigencia,
+    as.Date(rep("9999-12-31", 3))
+  )
+})
+
+testthat::test_that("unit: ler_anexo informa quando aba nao existe", {
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) "Anexo V-Letec",
+    .package = "readxl"
+  )
+
+  testthat::expect_error(
+    ler_anexo("arquivo_mock.xlsx", "iv"),
+    "Aba do Anexo IV não encontrada"
+  )
+})
+
+testthat::test_that("unit: ler_anexo informa abas duplicadas", {
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) {
+      c(
+        "Anexo IV - Desabastecimento",
+        "Anexo IV-Desabastecimento atualizado"
+      )
+    },
+    .package = "readxl"
+  )
+
+  testthat::expect_error(
+    ler_anexo("arquivo_mock.xlsx", "iv"),
+    paste0(
+      "Mais de uma aba encontrada para o Anexo IV: ",
+      "Anexo IV - Desabastecimento, ",
+      "Anexo IV-Desabastecimento atualizado"
+    )
+  )
+})
