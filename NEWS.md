@@ -1,3 +1,15 @@
+# tarifasimpbr 0.5.1
+
+## Mudanças
+
+- Evita linhas duplicadas do Anexo III em `buscar_ncm()` quando o mesmo código raiz aparece em mais de uma tabela.
+- Torna a identificação de quotas e Ex robusta a valores textuais, sem alterar indevidamente a tarifa aplicada.
+- Preserva tarifas ausentes no resultado detalhado de `tarifas_aplicadas()`, mantendo zero apenas nos indicadores e contagens.
+- Valida tamanho e legibilidade da planilha baixada antes de substituir o arquivo de destino.
+- Trata término de vigência vazio ou ausente como vigência aberta e aceita nomes de abas com ou sem espaços ao redor do hífen.
+- Melhora o diagnóstico para anexos sem aba correspondente ou com mais de uma aba correspondente.
+- Corrige o teste de indisponibilidade do download para funcionar no `R CMD check` sem depender de `NOT_CRAN=true`.
+
 # tarifasimpbr 0.5.0
 
 ## Mudanças
