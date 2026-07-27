@@ -202,9 +202,15 @@ testthat::test_that("unit: buscar_ncm inclui codigos raiz do anexo iii", {
         ),
         ii = tibble::tibble(ncm = character()),
         iii = tibble::tibble(
-          ncm = c("4011", "401110", "401120", "851714"),
-          regra = c("A", "B", "C", "D"),
-          obs = c(NA_character_, "Obs", NA_character_, NA_character_)
+          ncm = c("4011", "401110", "401110", "401120", "851714"),
+          regra = c("A", "B", "B2", "C", "D"),
+          obs = c(
+            NA_character_,
+            "Obs",
+            "Outra observacao",
+            NA_character_,
+            NA_character_
+          )
         ),
         iv = tibble::tibble(ncm = character()),
         v = tibble::tibble(ncm = character()),
@@ -222,10 +228,31 @@ testthat::test_that("unit: buscar_ncm inclui codigos raiz do anexo iii", {
     dplyr::filter(.data$anexo == "iii")
 
   testthat::expect_equal(resultado_anexo_iii$ncm, c("4011", "401110"))
+  testthat::expect_equal(nrow(resultado_anexo_iii), 2L)
   testthat::expect_equal(resultado_anexo_iii$nome_anexo, rep("Setor Aeronautico", 2))
   testthat::expect_true(all(is.na(resultado_anexo_iii$descricao)))
   testthat::expect_true(all(is.na(resultado_anexo_iii$descricao_tec_concatenada)))
   testthat::expect_true(all(is.na(resultado_anexo_iii$aliquota)))
+})
+
+testthat::test_that("integration: buscar_ncm deduplica raiz 851714 do anexo iii", {
+  arquivo <- get_tarifas_path()
+
+  for (codigo in c("85171431", "85171432")) {
+    resultado_anexo_iii <- buscar_ncm(arquivo, codigo) |>
+      dplyr::filter(.data$anexo == "iii")
+
+    testthat::expect_equal(
+      nrow(resultado_anexo_iii),
+      1L,
+      info = paste("codigo pesquisado:", codigo)
+    )
+    testthat::expect_equal(
+      resultado_anexo_iii$ncm,
+      "851714",
+      info = paste("codigo pesquisado:", codigo)
+    )
+  }
 })
 
 testthat::test_that("unit: buscar_ncm retorna vazio com warning quando ncm nao existe", {

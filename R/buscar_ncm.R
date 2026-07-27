@@ -3,8 +3,10 @@
 #' Consulta uma NCM nos anexos tarifarios e retorna as ocorrencias encontradas
 #' em formato padronizado. A busca usa correspondencia exata nos anexos com NCM
 #' completa e, no Anexo III, tambem retorna codigos raiz que abrangem a NCM
-#' pesquisada. Quando houver correspondencia exata no Anexo I, suas descricoes
-#' sao usadas como referencia para os demais anexos.
+#' pesquisada. Cada código raiz correspondente do Anexo III aparece no máximo
+#' uma vez no resultado, mesmo que conste em mais de uma tabela. Quando houver
+#' correspondencia exata no Anexo I, suas descricoes sao usadas como referencia
+#' para os demais anexos.
 #'
 #' @param x Caminho do arquivo de tarifas, normalmente o objeto retornado por
 #'   [download_tarifas()].
@@ -175,7 +177,8 @@ buscar_ncm <- function(x, ncm) {
       !is.na(.data$ncm),
       .data$ncm != "",
       stringr::str_starts(ncm_pesquisada, .data$ncm)
-    )
+    ) |>
+    dplyr::distinct(.data$ncm, .keep_all = TRUE)
 
   resultado <- dplyr::bind_rows(
     resultado,
