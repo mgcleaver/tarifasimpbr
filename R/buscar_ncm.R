@@ -13,9 +13,10 @@
 #' @param ncm Codigo NCM com 8 digitos. Pontos, hifens e espacos sao aceitos e
 #'   ignorados na busca.
 #'
-#' @return Um `tibble` com uma linha por ocorrencia encontrada e as colunas
-#'   `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao`,
-#'   `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
+#' @return Um `tibble` com uma linha por ocorrência encontrada, exceto no
+#'   Anexo III, em que cada código raiz distinto aparece no máximo uma vez.
+#'   O resultado contém as colunas `anexo`, `nome_anexo`, `ncm`, `no_ex`,
+#'   `descricao`, `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
 #'   `unidade_quota`, `inicio_de_vigencia`, `termino_de_vigencia`, `ato`,
 #'   `data_do_ato` e `obs`. Quando a NCM nao e encontrada, retorna um tibble
 #'   vazio com essas colunas e emite um aviso.
