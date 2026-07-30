@@ -16,10 +16,10 @@
 #'     \item hifen (`"-"`), indicando ausencia de data.
 #'   }
 #' @param preenche_data Valor opcional usado para substituir entradas iguais
-#'   a `"-"`, vazias ou ausentes. Se `NULL` (padrão), apenas o hífen é
-#'   convertido para `NA`. Caso contrário, hífen, texto vazio e `NA` são
-#'   substituídos pelo valor informado antes da tentativa de conversão
-#'   (por exemplo: `"9999-12-31"`).
+#'   a `"-"`, vazias ou ausentes. Se `NULL` (padrão), nenhum preenchimento é
+#'   realizado e essas entradas resultam em `NA`. Caso contrário, hífen, texto
+#'   vazio e `NA` são substituídos pelo valor informado antes da tentativa de
+#'   conversão (por exemplo: `"9999-12-31"`).
 #'
 #' @return
 #' Um vetor de classe `Date` com as datas convertidas. Entradas invalidas
@@ -29,8 +29,9 @@
 #' A funcao segue tres passos principais:
 #' \itemize{
 #'   \item remocao de espacos em branco nas extremidades;
-#'   \item substituicao opcional do hifen (`"-"`), texto vazio e `NA` pelo
-#'     valor definido em `preenche_data`;
+#'   \item tratamento do hifen (`"-"`), texto vazio e `NA` como ausencias,
+#'     mantendo o resultado como `NA` ou usando o valor definido em
+#'     `preenche_data`;
 #'   \item identificacao e conversao de datas em formato Excel (numeros
 #'     inteiros) e de datas textuais, usando
 #'     `lubridate::parse_date_time` com multiplas ordens possiveis

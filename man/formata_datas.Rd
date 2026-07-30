@@ -16,10 +16,10 @@ formata_datas(x, preenche_data = NULL)
 }}
 
 \item{preenche_data}{Valor opcional usado para substituir entradas iguais
-a \code{"-"}, vazias ou ausentes. Se \code{NULL} (padrão), apenas o hífen é
-convertido para \code{NA}. Caso contrário, hífen, texto vazio e \code{NA} são
-substituídos pelo valor informado antes da tentativa de conversão
-(por exemplo: \code{"9999-12-31"}).}
+a \code{"-"}, vazias ou ausentes. Se \code{NULL} (padrão), nenhum preenchimento é
+realizado e essas entradas resultam em \code{NA}. Caso contrário, hífen, texto
+vazio e \code{NA} são substituídos pelo valor informado antes da tentativa de
+conversão (por exemplo: \code{"9999-12-31"}).}
 }
 \value{
 Um vetor de classe \code{Date} com as datas convertidas. Entradas invalidas
@@ -38,8 +38,9 @@ outras funcoes de limpeza dos anexos.
 A funcao segue tres passos principais:
 \itemize{
 \item remocao de espacos em branco nas extremidades;
-\item substituicao opcional do hifen (\code{"-"}), texto vazio e \code{NA} pelo
-valor definido em \code{preenche_data};
+\item tratamento do hifen (\code{"-"}), texto vazio e \code{NA} como ausencias,
+mantendo o resultado como \code{NA} ou usando o valor definido em
+\code{preenche_data};
 \item identificacao e conversao de datas em formato Excel (numeros
 inteiros) e de datas textuais, usando
 \code{lubridate::parse_date_time} com multiplas ordens possiveis
