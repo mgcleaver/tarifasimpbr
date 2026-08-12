@@ -62,10 +62,12 @@
 #' conforme o tipo de anexo.
 #'
 #' @details
-#' A seleção da aba aceita espaço opcional ao redor do hífen após o número
-#' romano, reconhecendo, por exemplo, tanto `"Anexo IV - ..."` quanto
-#' `"Anexo IV-..."`. A leitura exige exatamente uma aba correspondente e
-#' informa explicitamente quando nenhuma ou mais de uma aba é encontrada.
+#' A selecao da aba e ancorada no inicio do nome: sao reconhecidas apenas abas
+#' que comecam com a palavra "Anexo" seguida do numeral romano, aceitando
+#' qualquer separador apos o numeral (hifen com ou sem espacos, travessao,
+#' espaco simples ou fim do nome). A leitura exige exatamente uma aba
+#' correspondente e informa explicitamente quando nenhuma ou mais de uma aba
+#' e encontrada.
 #'
 #' Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 #' automaticamente antes do processamento.
@@ -319,7 +321,7 @@ localizar_aba_anexo <- function(nome_abas, n_anexo) {
   padrao <- paste0(
     "^anexo\\s+",
     n_anexo,
-    "\\s*(?:-|$)"
+    "\\b"
   )
 
   abas_encontradas <- which(

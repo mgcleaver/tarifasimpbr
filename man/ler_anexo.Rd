@@ -71,10 +71,12 @@ inicio_da_vigencia para inicio_de_vigencia quando for o caso;
 \item padroniza codigos \code{ncm} e, quando existente, \code{no_ex}
 }
 
-A seleção da aba aceita espaço opcional ao redor do hífen após o número
-romano, reconhecendo, por exemplo, tanto \code{"Anexo IV - ..."} quanto
-\code{"Anexo IV-..."}. A leitura exige exatamente uma aba correspondente e
-informa explicitamente quando nenhuma ou mais de uma aba é encontrada.
+A selecao da aba e ancorada no inicio do nome: sao reconhecidas apenas abas
+que comecam com a palavra "Anexo" seguida do numeral romano, aceitando
+qualquer separador apos o numeral (hifen com ou sem espacos, travessao,
+espaco simples ou fim do nome). A leitura exige exatamente uma aba
+correspondente e informa explicitamente quando nenhuma ou mais de uma aba
+e encontrada.
 
 Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 automaticamente antes do processamento.

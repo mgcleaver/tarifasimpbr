@@ -385,3 +385,43 @@ testthat::test_that("unit: ler_anexo informa abas duplicadas", {
     )
   )
 })
+
+testthat::test_that("unit: localizar_aba_anexo aceita variacoes do separador", {
+  # o separador apos o numeral varia entre publicacoes do arquivo oficial:
+  # hifen com ou sem espacos, travessao (–), espaco simples ou nada
+  abas <- c(
+    "Anexo IV - Desabastecimento",
+    "Anexo IV-Desabastecimento",
+    "Anexo IV – Desabastecimento",
+    "Anexo IV Desabastecimento",
+    "ANEXO  IV"
+  )
+
+  for (aba in abas) {
+    testthat::expect_equal(
+      tarifasimpbr:::localizar_aba_anexo(aba, "iv"),
+      1L,
+      info = paste("aba:", aba)
+    )
+  }
+})
+
+testthat::test_that("unit: localizar_aba_anexo distingue numerais com prefixo comum", {
+  abas <- c(
+    "Anexo V - Letec",
+    "Anexo VI - Lebitbk",
+    "Anexo VIII - Concessoes OMC"
+  )
+
+  testthat::expect_equal(tarifasimpbr:::localizar_aba_anexo(abas, "v"), 1L)
+  testthat::expect_equal(tarifasimpbr:::localizar_aba_anexo(abas, "vi"), 2L)
+  testthat::expect_equal(tarifasimpbr:::localizar_aba_anexo(abas, "viii"), 3L)
+})
+
+testthat::test_that("unit: localizar_aba_anexo ignora numeral fora do inicio do nome", {
+  # evita que uma aba de notas seja lida no lugar da aba de dados
+  testthat::expect_error(
+    tarifasimpbr:::localizar_aba_anexo("Notas gerais - anexo iv e v", "iv"),
+    "Aba do Anexo IV não encontrada"
+  )
+})
