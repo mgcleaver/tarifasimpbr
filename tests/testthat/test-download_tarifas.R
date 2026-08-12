@@ -298,6 +298,41 @@ testthat::test_that("unit: download_tarifas rejeita XLSX invalido e preserva des
   testthat::expect_false(file.exists(caminho_download))
 })
 
+testthat::test_that("unit: download_tarifas substitui destino existente apos validacao", {
+  destfile <- tempfile(fileext = ".xlsx")
+  writeLines("conteudo anterior", destfile, useBytes = TRUE)
+  on.exit(unlink(destfile), add = TRUE)
+
+  testthat::local_mocked_bindings(
+    obter_link_arquivo_tarifas = function() "https://exemplo.com/tarifas.xlsx",
+    .package = "tarifasimpbr"
+  )
+
+  testthat::local_mocked_bindings(
+    download.file = function(url, destfile, mode, ...) {
+      writeBin(charToRaw("planilha nova"), destfile)
+      0L
+    },
+    .package = "utils"
+  )
+
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) "Anexo I - TEC",
+    .package = "readxl"
+  )
+
+  testthat::expect_equal(download_tarifas(destfile = destfile), destfile)
+  testthat::expect_equal(
+    readLines(destfile, warn = FALSE, encoding = "UTF-8"),
+    "planilha nova"
+  )
+  # o arquivo temporario e movido, nao copiado: nao deve sobrar no diretorio
+  testthat::expect_length(
+    list.files(dirname(destfile), pattern = "^tarifas_download_"),
+    0L
+  )
+})
+
 testthat::test_that("unit: integracao nao repete download indisponivel", {
   ambiente_helper <- environment(get_tarifas_path)
   tarifas_path_anterior <- ambiente_helper$tarifas_path

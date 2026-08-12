@@ -7,10 +7,13 @@
 #' informado, o arquivo é salvo no caminho indicado.
 #'
 #' @param destfile Caminho do arquivo onde o download deve ser salvo. Deve
-#'   incluir o nome do arquivo, e o diretório informado deve existir. Quando
-#'   `NULL`, usa um arquivo temporário. Se o arquivo já existir, ele será
-#'   substituído somente depois que o novo download for validado como uma
-#'   planilha Excel legível.
+#'   incluir o nome do arquivo, e o diretorio informado deve existir. Quando
+#'   `NULL`, usa um arquivo temporario. O download e feito em um arquivo
+#'   temporario criado no mesmo diretorio de `destfile` e movido para o destino
+#'   somente depois de validado como planilha Excel legivel, de modo que um
+#'   arquivo ja existente so e substituido apos a validacao. O diretorio precisa
+#'   permitir escrita e comportar uma copia adicional do arquivo durante o
+#'   download.
 #'
 #' @return O caminho onde o arquivo oficial de tarifas foi salvo.
 #'
@@ -90,13 +93,12 @@ download_tarifas <- function(destfile = NULL) {
     )
   }
 
-  arquivo_copiado <- file.copy(
+  arquivo_movido <- file.rename(
     from = arquivo_temporario,
-    to = destfile,
-    overwrite = TRUE
+    to = destfile
   )
 
-  if (!isTRUE(arquivo_copiado)) {
+  if (!isTRUE(arquivo_movido)) {
     stop(
       "N\u00e3o foi poss\u00edvel salvar o arquivo de tarifas no destino informado.",
       call. = FALSE
