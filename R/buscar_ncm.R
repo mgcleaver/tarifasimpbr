@@ -3,17 +3,20 @@
 #' Consulta uma NCM nos anexos tarifarios e retorna as ocorrencias encontradas
 #' em formato padronizado. A busca usa correspondencia exata nos anexos com NCM
 #' completa e, no Anexo III, tambem retorna codigos raiz que abrangem a NCM
-#' pesquisada. Quando houver correspondencia exata no Anexo I, suas descricoes
-#' sao usadas como referencia para os demais anexos.
+#' pesquisada. Cada código raiz correspondente do Anexo III aparece no máximo
+#' uma vez no resultado, mesmo que conste em mais de uma tabela. Quando houver
+#' correspondencia exata no Anexo I, suas descricoes sao usadas como referencia
+#' para os demais anexos.
 #'
 #' @param x Caminho do arquivo de tarifas, normalmente o objeto retornado por
 #'   [download_tarifas()].
 #' @param ncm Codigo NCM com 8 digitos. Pontos, hifens e espacos sao aceitos e
 #'   ignorados na busca.
 #'
-#' @return Um `tibble` com uma linha por ocorrencia encontrada e as colunas
-#'   `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao`,
-#'   `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
+#' @return Um `tibble` com uma linha por ocorrência encontrada, exceto no
+#'   Anexo III, em que cada código raiz distinto aparece no máximo uma vez.
+#'   O resultado contém as colunas `anexo`, `nome_anexo`, `ncm`, `no_ex`,
+#'   `descricao`, `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
 #'   `unidade_quota`, `inicio_de_vigencia`, `termino_de_vigencia`, `ato`,
 #'   `data_do_ato` e `obs`. Quando a NCM nao e encontrada, retorna um tibble
 #'   vazio com essas colunas e emite um aviso.
@@ -175,7 +178,8 @@ buscar_ncm <- function(x, ncm) {
       !is.na(.data$ncm),
       .data$ncm != "",
       stringr::str_starts(ncm_pesquisada, .data$ncm)
-    )
+    ) |>
+    dplyr::distinct(.data$ncm, .keep_all = TRUE)
 
   resultado <- dplyr::bind_rows(
     resultado,

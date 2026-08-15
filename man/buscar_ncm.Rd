@@ -14,9 +14,10 @@ buscar_ncm(x, ncm)
 ignorados na busca.}
 }
 \value{
-Um \code{tibble} com uma linha por ocorrencia encontrada e as colunas
-\code{anexo}, \code{nome_anexo}, \code{ncm}, \code{no_ex}, \code{descricao},
-\code{descricao_tec_concatenada}, \code{bkbit}, \code{aliquota}, \code{quota},
+Um \code{tibble} com uma linha por ocorrência encontrada, exceto no
+Anexo III, em que cada código raiz distinto aparece no máximo uma vez.
+O resultado contém as colunas \code{anexo}, \code{nome_anexo}, \code{ncm}, \code{no_ex},
+\code{descricao}, \code{descricao_tec_concatenada}, \code{bkbit}, \code{aliquota}, \code{quota},
 \code{unidade_quota}, \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato},
 \code{data_do_ato} e \code{obs}. Quando a NCM nao e encontrada, retorna um tibble
 vazio com essas colunas e emite um aviso.
@@ -25,8 +26,10 @@ vazio com essas colunas e emite um aviso.
 Consulta uma NCM nos anexos tarifarios e retorna as ocorrencias encontradas
 em formato padronizado. A busca usa correspondencia exata nos anexos com NCM
 completa e, no Anexo III, tambem retorna codigos raiz que abrangem a NCM
-pesquisada. Quando houver correspondencia exata no Anexo I, suas descricoes
-sao usadas como referencia para os demais anexos.
+pesquisada. Cada código raiz correspondente do Anexo III aparece no máximo
+uma vez no resultado, mesmo que conste em mais de uma tabela. Quando houver
+correspondencia exata no Anexo I, suas descricoes sao usadas como referencia
+para os demais anexos.
 }
 \examples{
 \dontrun{

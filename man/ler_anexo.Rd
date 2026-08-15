@@ -36,9 +36,9 @@ Para os anexos \code{"iv"}, \code{"v"}, \code{"vi"}, \code{"viii"},
 \item{no_ex}{Numero do \emph{ex} padronizado com 3 digitos}
 \item{inicio_de_vigencia}{Data de inicio de vigencia em formato
 padronizado, conforme \code{formata_datas}.}
-\item{termino_de_vigencia}{Data de termino de vigencia em formato
-padronizado; quando ausente no arquivo, e preenchida com
-\code{"9999-12-31"}.}
+\item{termino_de_vigencia}{Data de término de vigência em formato
+padronizado; valores \code{"-"}, vazios ou ausentes são tratados como
+vigência sem término e preenchidos com \code{"9999-12-31"}.}
 \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
 tambem formatada por \code{formata_datas}.}
 \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
@@ -62,7 +62,7 @@ na mesma aba, empilha os codigos em uma unica coluna e adiciona \code{regra} e
 \code{obs} conforme a tabela de origem e a marcacao com asterisco. Para os anexos
 IV, V, VI, VIII, IX e X, a funcao:
 \itemize{
-\item identifica a aba correta com base no nome do anexo;
+\item identifica uma única aba com base no nome do anexo;
 \item pula linhas de cabecalho conforme o tipo de anexo;
 \item padroniza nomes de colunas com \code{janitor::clean_names} e a partir de outras regras;
 \item garante a existencia da coluna de termino_de_vigencia e renomeia
@@ -71,16 +71,19 @@ inicio_da_vigencia para inicio_de_vigencia quando for o caso;
 \item padroniza codigos \code{ncm} e, quando existente, \code{no_ex}
 }
 
-A selecao da aba e feita com base nos nomes das planilhas do arquivo Excel,
-convertidos para minusculas, procurando um padrao que contenha o numero
-romano do anexo (por exemplo, \code{" iv "} para o Anexo IV).
+A selecao da aba e ancorada no inicio do nome: sao reconhecidas apenas abas
+que comecam com a palavra "Anexo" seguida do numeral romano, aceitando
+qualquer separador apos o numeral (hifen com ou sem espacos, travessao,
+espaco simples ou fim do nome). A leitura exige exatamente uma aba
+correspondente e informa explicitamente quando nenhuma ou mais de uma aba
+e encontrada.
 
 Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 automaticamente antes do processamento.
 
-Quando nao ha coluna de termino de vigencia no anexo, a funcao cria
-a coluna \code{termino_de_vigencia} e preenche dados faltantes com a data
-"9999-12-31".
+Quando não há coluna de término de vigência no anexo, a função cria
+a coluna \code{termino_de_vigencia}. Valores \code{"-"}, vazios ou ausentes
+são preenchidos com a data \code{"9999-12-31"}.
 
 Se existir a coluna \code{inicio_da_vigencia}, ela e renomeada para
 \code{inicio_de_vigencia}. Caso contrario, a funcao espera que

@@ -64,16 +64,23 @@ testthat::test_that("unit: download_tarifas usa caminho temporario por padrao", 
       caminho_download <<- destfile
       testthat::expect_equal(url, link_esperado)
       testthat::expect_equal(mode, "wb")
-      file.create(destfile)
+      writeBin(charToRaw("planilha simulada"), destfile)
       0L
     },
     .package = "utils"
   )
 
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) "Anexo I - TEC",
+    .package = "readxl"
+  )
+
   caminho <- download_tarifas()
 
   testthat::expect_equal(caminho, caminho_temporario)
-  testthat::expect_equal(caminho_download, caminho_temporario)
+  testthat::expect_equal(dirname(caminho_download), dirname(caminho_temporario))
+  testthat::expect_false(identical(caminho_download, caminho_temporario))
+  testthat::expect_false(file.exists(caminho_download))
   testthat::expect_true(file.exists(caminho_temporario))
 })
 
@@ -99,16 +106,23 @@ testthat::test_that("unit: download_tarifas salva no destfile informado", {
       caminho_download <<- destfile
       testthat::expect_equal(url, link_esperado)
       testthat::expect_equal(mode, "wb")
-      file.create(destfile)
+      writeBin(charToRaw("planilha simulada"), destfile)
       0L
     },
     .package = "utils"
   )
 
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) "Anexo I - TEC",
+    .package = "readxl"
+  )
+
   caminho <- download_tarifas(destfile = destfile)
 
   testthat::expect_equal(caminho, destfile)
-  testthat::expect_equal(caminho_download, destfile)
+  testthat::expect_equal(dirname(caminho_download), dirname(destfile))
+  testthat::expect_false(identical(caminho_download, destfile))
+  testthat::expect_false(file.exists(caminho_download))
   testthat::expect_true(file.exists(destfile))
 })
 
@@ -222,6 +236,103 @@ testthat::test_that("unit: download_tarifas exige arquivo apos sucesso", {
   )
 })
 
+testthat::test_that("unit: download_tarifas rejeita arquivo vazio e preserva destino", {
+  destfile <- tempfile(fileext = ".xlsx")
+  caminho_download <- NULL
+  writeLines("conteudo anterior", destfile, useBytes = TRUE)
+  on.exit(unlink(destfile), add = TRUE)
+
+  testthat::local_mocked_bindings(
+    obter_link_arquivo_tarifas = function() "https://exemplo.com/tarifas.xlsx",
+    .package = "tarifasimpbr"
+  )
+
+  testthat::local_mocked_bindings(
+    download.file = function(url, destfile, mode, ...) {
+      caminho_download <<- destfile
+      file.create(destfile)
+      0L
+    },
+    .package = "utils"
+  )
+
+  testthat::expect_error(
+    download_tarifas(destfile = destfile),
+    "não é uma planilha Excel válida"
+  )
+  testthat::expect_equal(
+    readLines(destfile, warn = FALSE, encoding = "UTF-8"),
+    "conteudo anterior"
+  )
+  testthat::expect_false(file.exists(caminho_download))
+})
+
+testthat::test_that("unit: download_tarifas rejeita XLSX invalido e preserva destino", {
+  destfile <- tempfile(fileext = ".xlsx")
+  caminho_download <- NULL
+  writeLines("conteudo anterior", destfile, useBytes = TRUE)
+  on.exit(unlink(destfile), add = TRUE)
+
+  testthat::local_mocked_bindings(
+    obter_link_arquivo_tarifas = function() "https://exemplo.com/tarifas.xlsx",
+    .package = "tarifasimpbr"
+  )
+
+  testthat::local_mocked_bindings(
+    download.file = function(url, destfile, mode, ...) {
+      caminho_download <<- destfile
+      writeBin(charToRaw("<html>erro</html>"), destfile)
+      0L
+    },
+    .package = "utils"
+  )
+
+  testthat::expect_error(
+    download_tarifas(destfile = destfile),
+    "não é uma planilha Excel válida"
+  )
+  testthat::expect_equal(
+    readLines(destfile, warn = FALSE, encoding = "UTF-8"),
+    "conteudo anterior"
+  )
+  testthat::expect_false(file.exists(caminho_download))
+})
+
+testthat::test_that("unit: download_tarifas substitui destino existente apos validacao", {
+  destfile <- tempfile(fileext = ".xlsx")
+  writeLines("conteudo anterior", destfile, useBytes = TRUE)
+  on.exit(unlink(destfile), add = TRUE)
+
+  testthat::local_mocked_bindings(
+    obter_link_arquivo_tarifas = function() "https://exemplo.com/tarifas.xlsx",
+    .package = "tarifasimpbr"
+  )
+
+  testthat::local_mocked_bindings(
+    download.file = function(url, destfile, mode, ...) {
+      writeBin(charToRaw("planilha nova"), destfile)
+      0L
+    },
+    .package = "utils"
+  )
+
+  testthat::local_mocked_bindings(
+    excel_sheets = function(...) "Anexo I - TEC",
+    .package = "readxl"
+  )
+
+  testthat::expect_equal(download_tarifas(destfile = destfile), destfile)
+  testthat::expect_equal(
+    readLines(destfile, warn = FALSE, encoding = "UTF-8"),
+    "planilha nova"
+  )
+  # o arquivo temporario e movido, nao copiado: nao deve sobrar no diretorio
+  testthat::expect_length(
+    list.files(dirname(destfile), pattern = "^tarifas_download_"),
+    0L
+  )
+})
+
 testthat::test_that("unit: integracao nao repete download indisponivel", {
   ambiente_helper <- environment(get_tarifas_path)
   tarifas_path_anterior <- ambiente_helper$tarifas_path
@@ -238,6 +349,12 @@ testthat::test_that("unit: integracao nao repete download indisponivel", {
   ambiente_helper$tarifas_path <- NULL
   ambiente_helper$tarifas_download_error <- NULL
   tentativas_download <- 0L
+
+  testthat::local_mocked_bindings(
+    skip_on_cran = function() NULL,
+    skip_if_offline = function(...) NULL,
+    .package = "testthat"
+  )
 
   testthat::local_mocked_bindings(
     download_tarifas = function(...) {

@@ -24,7 +24,10 @@ de exceção que abrange a NCM integralmente (sem destaque);
 \item \code{lista}: string com a(s) lista(s) de excecao em que a NCM aparece,
 concatenadas com virgula quando houver mais de uma.
 \item \code{tarifa_aplicada}: apresenta a tarifa aplicada para as ncms incluidas
-integralmente em lista de excecao.
+integralmente em lista de excecao;
+\item \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato_de_inclusao} e
+\code{data_do_ato_de_inclusao}: metadados do registro que altera a tarifa para
+a integralidade da NCM. Permanecem \code{NA} quando nao houver esse registro.
 }
 }
 \description{
@@ -45,8 +48,9 @@ A funcao aplica, para cada anexo especificado, a combinacao de
 \item filtrar apenas os registros vigentes na data de execucao (\code{Sys.Date()}).
 }
 
-Os anexos tambem sao processados para obter as ncms incluidas integralmente
-em listas de excecao com suas respectivas tarifas aplicadas.
+Os anexos tambem sao processados para obter as NCMs incluidas integralmente
+em listas de excecao com suas respectivas tarifas aplicadas, datas de
+vigencia e ato de inclusao.
 
 Em seguida, os resultados de cada anexo sao agregados por NCM e consolidados
 em um unico \code{tibble}/\code{data.frame}. Por fim, sao adicionados dados de tarifas
@@ -64,8 +68,17 @@ na lista de desabastecimento e em outra lista ou na lista de concessoes
 da OMC e em outra lista. Como normalmente os codigos presentes na lista de
 desabastecimento e de concessoes da OMC nao sao incluidos nessas
 listas integralmente, nesses casos de uma NCM fazer parte de mais de uma lista,
-a tarifa aplicada sera, provavelmente, referente a outra lista remanescente.
+a tarifa aplicada sera, provavelmente, referente a outra lista remanescente;
+\item as colunas \code{inicio_de_vigencia}, \code{termino_de_vigencia},
+\code{ato_de_inclusao} e \code{data_do_ato_de_inclusao}, preenchidas apenas quando
+houver alteracao tarifaria vigente para a integralidade da NCM, sem quota
+e sem destaque (Ex). Nos demais casos, inclusive quando houver somente
+ex-tarifarios, essas colunas permanecem \code{NA}.
 }
+
+Se os dados de origem contiverem mais de um registro integral vigente para
+a mesma NCM, a funcao interrompe o processamento, pois nao e possivel
+representar tarifas e metadados conflitantes em uma unica linha.
 }
 \examples{
 \dontrun{
