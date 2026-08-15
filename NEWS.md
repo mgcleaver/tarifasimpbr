@@ -1,14 +1,48 @@
-# tarifasimpbr 0.5.1
+# tarifasimpbr 0.6.0
+
+## Novidades
+
+- `ler_anexo()` passa a ler arquivos cujas abas não usam separador após o numeral
+  romano, como as planilhas de histórico de medidas tarifárias
+  (abas nomeadas apenas `"Anexo IV"`, `"Anexo V"` etc.). Nas versões anteriores
+  esses arquivos falhavam com o erro `` `sheet` must have length 1 `` e não podiam
+  ser lidos. A identificação da aba agora aceita hífen com ou sem espaços,
+  travessão, espaço simples ou nenhum separador após o numeral
+  (`"Anexo IV - ..."`, `"Anexo IV-..."`, `"Anexo IV – ..."`, `"Anexo IV"`).
 
 ## Mudanças
 
 - Evita linhas duplicadas do Anexo III em `buscar_ncm()` quando o mesmo código raiz aparece em mais de uma tabela.
 - Torna a identificação de quotas e Ex robusta a valores textuais, sem alterar indevidamente a tarifa aplicada.
 - Preserva tarifas ausentes no resultado detalhado de `tarifas_aplicadas()`, mantendo zero apenas nos indicadores e contagens.
-- Valida tamanho e legibilidade da planilha baixada antes de substituir o arquivo de destino.
-- Trata término de vigência vazio ou ausente como vigência aberta e aceita nomes de abas com ou sem espaços ao redor do hífen.
+- Valida tamanho e legibilidade da planilha baixada antes de substituir o arquivo de destino: o download é feito em um arquivo temporário criado no mesmo diretório de `destfile` e, depois de validado, é movido para o destino em uma única operação, sem cópia intermediária. O diretório de destino precisa permitir escrita e comportar uma cópia adicional do arquivo durante o download.
+- Trata término de vigência vazio ou ausente como vigência aberta.
 - Melhora o diagnóstico para anexos sem aba correspondente ou com mais de uma aba correspondente.
 - Corrige o teste de indisponibilidade do download para funcionar no `R CMD check` sem depender de `NOT_CRAN=true`.
+- Amplia a cobertura de testes de `ler_anexo()`, `tarifas_aplicadas()`, `buscar_ncm()` e `download_tarifas()`.
+
+## Notas de compatibilidade
+
+Nos arquivos oficiais de tarifas da SE-Camex verificados, os resultados de
+`tarifas_aplicadas()` são idênticos aos da versão 0.5.0, com `detalhar = FALSE`
+e `detalhar = TRUE`. As mudanças abaixo alteram o comportamento apenas em
+arquivos com as características descritas.
+
+- A busca da aba do anexo é ancorada no início do nome: apenas abas que começam
+  com `"Anexo <numeral>"` são reconhecidas. Nomes em que o numeral aparece no
+  meio do texto (por exemplo, `"Notas gerais - anexo iv e v"`) deixam de ser
+  considerados, o que evita a leitura silenciosa da aba errada. Arquivos com
+  nomes de aba fora desse padrão passam a gerar erro explícito em vez de
+  resultado incorreto.
+- Quotas e números de Ex preenchidos com texto não numérico (por exemplo,
+  `"60.000 toneladas"`) passam a ser reconhecidos como valores presentes. Antes
+  eram convertidos para `NA` e tratados como ausência, o que podia atribuir à NCM
+  a tarifa da lista de exceção em vez da TEB/TEC. Os anexos oficiais verificados
+  usam apenas valores numéricos nessas colunas, de modo que a correção não altera
+  a tarifa compilada a partir deles.
+- `tarifas_aplicadas(detalhar = TRUE)` mantém `NA` em `tec`, `teb` e
+  `tarifa_aplicada`, substituindo ausências por zero somente em
+  `contagem_quota`, `contagem_ex` e `ncm_integral`.
 
 # tarifasimpbr 0.5.0
 
