@@ -34,15 +34,21 @@
 #' * `contagem_quota`: número de ocorrências com quota;
 #' * `contagem_ex`: número de destaques (Ex);
 #' * `ncm_integral`: indicador (0/1) de medida e lista de exceção
-#'    aplicável à NCM integralmente.
+#'    aplicável à NCM integralmente;
+#' * `inicio_de_vigencia`, `termino_de_vigencia`, `ato_de_inclusao` e
+#'   `data_do_ato_de_inclusao`: metadados do registro vigente que altera a
+#'   tarifa para a integralidade da NCM, sem quota e sem destaque (Ex).
 #'
 #' Valores ausentes são substituídos por zero somente nessas três colunas.
-#' Ausências em `tec`, `teb` e `tarifa_aplicada` permanecem como `NA`.
+#' Ausências em `tec`, `teb`, `tarifa_aplicada` e nos metadados de vigência e
+#' ato permanecem como `NA`. Assim, NCMs que aparecem apenas em ex-tarifários
+#' ou quotas não recebem datas nem ato de inclusão.
 #'
 #' @param x Objeto, é o resultado obtido a partir da função `download_tarifas()`
 #' @param detalhar Lógico, indica se o resultado deve incluir as colunas
 #'   detalhadas das listas de exceção. O padrão é `FALSE`. Se `TRUE`,
-#'   retorna indicadores de contagem, de quota, de destaque (Ex) e de NCM integral.
+#'   retorna indicadores de contagem, de quota, de destaque (Ex), de NCM integral
+#'   e os metadados da alteração tarifária aplicável à NCM integralmente.
 #'
 #' @return Um `tibble` (ou `data.frame`) com, no mínimo, as colunas:
 #'
@@ -60,6 +66,8 @@
 #' Quando `detalhar = TRUE`, o retorno inclui também:
 #'
 #' * `contagem_quota`, `contagem_ex`, `ncm_integral`,
+#'   `inicio_de_vigencia`, `termino_de_vigencia`, `ato_de_inclusao` e
+#'   `data_do_ato_de_inclusao`,
 #'   conforme descrito em [detalhar_listas_excecao_vigentes()].
 #'
 #' @seealso
@@ -137,6 +145,10 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       tec,
       teb,
       tarifa_aplicada,
+      inicio_de_vigencia,
+      termino_de_vigencia,
+      ato_de_inclusao,
+      data_do_ato_de_inclusao,
       contagem_quota,
       contagem_ex,
       ncm_integral

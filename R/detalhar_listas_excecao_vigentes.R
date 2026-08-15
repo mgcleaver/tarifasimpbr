@@ -19,8 +19,9 @@
 #' * adicionar indicadores de quota, destaque (Ex) e NCM integral; e
 #' * filtrar apenas os registros vigentes na data de execucao (`Sys.Date()`).
 #'
-#' Os anexos tambem sao processados para obter as ncms incluidas integralmente
-#' em listas de excecao com suas respectivas tarifas aplicadas.
+#' Os anexos tambem sao processados para obter as NCMs incluidas integralmente
+#' em listas de excecao com suas respectivas tarifas aplicadas, datas de
+#' vigencia e ato de inclusao.
 #'
 #' Em seguida, os resultados de cada anexo sao agregados por NCM e consolidados
 #' em um unico `tibble`/`data.frame`. Por fim, sao adicionados dados de tarifas
@@ -38,7 +39,16 @@
 #'   da OMC e em outra lista. Como normalmente os codigos presentes na lista de
 #'   desabastecimento e de concessoes da OMC nao sao incluidos nessas
 #'   listas integralmente, nesses casos de uma NCM fazer parte de mais de uma lista,
-#'   a tarifa aplicada sera, provavelmente, referente a outra lista remanescente.
+#'   a tarifa aplicada sera, provavelmente, referente a outra lista remanescente;
+#' * as colunas `inicio_de_vigencia`, `termino_de_vigencia`,
+#'   `ato_de_inclusao` e `data_do_ato_de_inclusao`, preenchidas apenas quando
+#'   houver alteracao tarifaria vigente para a integralidade da NCM, sem quota
+#'   e sem destaque (Ex). Nos demais casos, inclusive quando houver somente
+#'   ex-tarifarios, essas colunas permanecem `NA`.
+#'
+#' Se os dados de origem contiverem mais de um registro integral vigente para
+#' a mesma NCM, a funcao interrompe o processamento, pois nao e possivel
+#' representar tarifas e metadados conflitantes em uma unica linha.
 #'
 #' @param x deve ser o resultado da funcao `download_tarifas()`.
 #'
@@ -54,7 +64,10 @@
 #' * `lista`: string com a(s) lista(s) de excecao em que a NCM aparece,
 #'   concatenadas com virgula quando houver mais de uma.
 #' * `tarifa_aplicada`: apresenta a tarifa aplicada para as ncms incluidas
-#'   integralmente em lista de excecao.
+#'   integralmente em lista de excecao;
+#' * `inicio_de_vigencia`, `termino_de_vigencia`, `ato_de_inclusao` e
+#'   `data_do_ato_de_inclusao`: metadados do registro que altera a tarifa para
+#'   a integralidade da NCM. Permanecem `NA` quando nao houver esse registro.
 #'
 #' @examples
 #' \dontrun{
@@ -78,10 +91,40 @@ detalhar_listas_excecao_vigentes <- function(x) {
     listas_detalhadas_vigentes,
     ~ seleciona_tarifas(.x)
   ) |>
-    dplyr::bind_rows() |>
+    dplyr::bind_rows(
+      tibble::tibble(
+        inicio_de_vigencia = as.Date(character()),
+        termino_de_vigencia = as.Date(character()),
+        ato_de_inclusao = character(),
+        data_do_ato_de_inclusao = as.Date(character())
+      )
+    )
+
+  ncms_integrais_duplicadas <- ncms_integrais |>
+    dplyr::count(.data$ncm, name = "numero_registros") |>
+    dplyr::filter(.data$numero_registros > 1) |>
+    dplyr::pull(.data$ncm)
+
+  if (length(ncms_integrais_duplicadas) > 0) {
+    stop(
+      paste0(
+        "Os dados de origem contem mais de um registro integral vigente ",
+        "para a mesma NCM: ",
+        paste(ncms_integrais_duplicadas, collapse = ", "),
+        "."
+      ),
+      call. = FALSE
+    )
+  }
+
+  ncms_integrais <- ncms_integrais |>
     dplyr::transmute(
       .data$ncm,
-      tarifa_aplicada = as.numeric(.data$aliquota)
+      tarifa_aplicada = as.numeric(.data$aliquota),
+      inicio_de_vigencia = .data$inicio_de_vigencia,
+      termino_de_vigencia = .data$termino_de_vigencia,
+      ato_de_inclusao = .data$ato_de_inclusao,
+      data_do_ato_de_inclusao = .data$data_do_ato_de_inclusao
     )
 
   resumo_tarifas_excecao <- purrr::map(

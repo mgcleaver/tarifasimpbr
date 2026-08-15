@@ -12,7 +12,8 @@ tarifas_aplicadas(x, detalhar = FALSE)
 
 \item{detalhar}{Lógico, indica se o resultado deve incluir as colunas
 detalhadas das listas de exceção. O padrão é \code{FALSE}. Se \code{TRUE},
-retorna indicadores de contagem, de quota, de destaque (Ex) e de NCM integral.}
+retorna indicadores de contagem, de quota, de destaque (Ex), de NCM integral
+e os metadados da alteração tarifária aplicável à NCM integralmente.}
 }
 \value{
 Um \code{tibble} (ou \code{data.frame}) com, no mínimo, as colunas:
@@ -32,6 +33,8 @@ na lista de exceção.
 Quando \code{detalhar = TRUE}, o retorno inclui também:
 \itemize{
 \item \code{contagem_quota}, \code{contagem_ex}, \code{ncm_integral},
+\code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato_de_inclusao} e
+\code{data_do_ato_de_inclusao},
 conforme descrito em \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}.
 }
 }
@@ -69,11 +72,16 @@ derivadas de \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_exce
 \item \code{contagem_quota}: número de ocorrências com quota;
 \item \code{contagem_ex}: número de destaques (Ex);
 \item \code{ncm_integral}: indicador (0/1) de medida e lista de exceção
-aplicável à NCM integralmente.
+aplicável à NCM integralmente;
+\item \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato_de_inclusao} e
+\code{data_do_ato_de_inclusao}: metadados do registro vigente que altera a
+tarifa para a integralidade da NCM, sem quota e sem destaque (Ex).
 }
 
 Valores ausentes são substituídos por zero somente nessas três colunas.
-Ausências em \code{tec}, \code{teb} e \code{tarifa_aplicada} permanecem como \code{NA}.
+Ausências em \code{tec}, \code{teb}, \code{tarifa_aplicada} e nos metadados de vigência e
+ato permanecem como \code{NA}. Assim, NCMs que aparecem apenas em ex-tarifários
+ou quotas não recebem datas nem ato de inclusão.
 }
 \examples{
 \dontrun{

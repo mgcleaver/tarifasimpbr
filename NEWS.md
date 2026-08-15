@@ -15,6 +15,12 @@
 - Evita linhas duplicadas do Anexo III em `buscar_ncm()` quando o mesmo código raiz aparece em mais de uma tabela.
 - Torna a identificação de quotas e Ex robusta a valores textuais, sem alterar indevidamente a tarifa aplicada.
 - Preserva tarifas ausentes no resultado detalhado de `tarifas_aplicadas()`, mantendo zero apenas nos indicadores e contagens.
+- `tarifas_aplicadas(detalhar = TRUE)` passa a informar início e término de
+  vigência, ato de inclusão e data do ato para alterações tarifárias aplicáveis
+  à NCM integralmente. Os campos permanecem como `NA` quando houver apenas
+  ex-tarifário ou quota.
+- Interrompe a consolidação com erro informativo quando os anexos contêm mais de
+  um registro integral vigente para a mesma NCM.
 - Valida tamanho e legibilidade da planilha baixada antes de substituir o arquivo de destino: o download é feito em um arquivo temporário criado no mesmo diretório de `destfile` e, depois de validado, é movido para o destino em uma única operação, sem cópia intermediária. O diretório de destino precisa permitir escrita e comportar uma cópia adicional do arquivo durante o download.
 - Trata término de vigência vazio ou ausente como vigência aberta.
 - Melhora o diagnóstico para anexos sem aba correspondente ou com mais de uma aba correspondente.
