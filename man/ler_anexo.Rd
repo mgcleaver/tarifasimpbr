@@ -54,8 +54,10 @@ Le o anexo desejado do arquivo de tarifas obtido por meio da funcao
 e organiza os dados de cada aba do arquivo (anexo).
 }
 \details{
-Para o Anexo I, a funcao \code{ler_anexo} apenas delega o processamento para
-a funcao \code{ler_anexo1} com cache em memoria durante a sessao do R. Para o
+Os anexos processados sao reutilizados em memoria durante a sessao do R,
+enquanto caminho, tamanho e data de modificacao do arquivo forem os mesmos.
+Use \code{\link[=limpar_cache_tarifas]{limpar_cache_tarifas()}} para forcar uma nova leitura. O cache nao filtra
+vigencias. Para o Anexo I, o processamento e delegado a \code{ler_anexo1}. Para o
 Anexo II, le a aba correspondente e padroniza as colunas \code{tec} e
 \code{aliquota_aplicada}. Para o Anexo III, localiza duas tabelas de codigos NCM
 na mesma aba, empilha os codigos em uma unica coluna e adiciona \code{regra} e

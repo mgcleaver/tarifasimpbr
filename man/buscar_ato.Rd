@@ -27,6 +27,10 @@ Consulta um ato nos anexos tarifarios e retorna as ocorrencias encontradas em
 formato padronizado. A busca considera os campos de atos disponiveis nos
 Anexos I, II, IV, V, VI, VIII, IX e X. Entradas numericas buscam o numero do
 ato com equivalencia de zeros a esquerda, sem buscar dentro do ano do ato.
+Na busca numerica, o ano apos a barra e as datas numericas ou por extenso
+sao ignorados, inclusive em \code{68 / 2024} e \code{68, de 1 de janeiro de 2024}.
+A busca considera todos os atos informados em cada celula e preserva numeros
+de atos com quatro digitos, como \code{2024/2026}.
 Entradas textuais mistas sao pesquisadas de forma literal, sem diferenciar
 maiusculas e minusculas.
 }

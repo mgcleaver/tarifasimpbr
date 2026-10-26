@@ -27,10 +27,19 @@ cria_chave_cache_anexo_i <- function(x) {
 }
 
 ler_anexo1_com_cache <- function(x) {
+  ler_anexo_com_cache(x, "i")
+}
+
+ler_anexo_com_cache <- function(x, n_anexo) {
   chave_cache <- cria_chave_cache_anexo_i(x)
 
   if (is.na(chave_cache)) {
-    return(ler_anexo1(x))
+    return(ler_anexo_sem_cache(x, n_anexo))
+  }
+
+  # Preserva a chave existente do Anexo I e separa os demais anexos do arquivo.
+  if (n_anexo != "i") {
+    chave_cache <- paste0(chave_cache, "|", n_anexo)
   }
 
   tem_cache <- tryCatch(
@@ -45,12 +54,12 @@ ler_anexo1_com_cache <- function(x) {
     )
 
     if (!is.null(resultado_cache)) {
-      message("Obtendo Anexo I processado do cache...")
+      message("Obtendo Anexo ", toupper(n_anexo), " processado do cache...")
       return(resultado_cache)
     }
   }
 
-  resultado <- ler_anexo1(x)
+  resultado <- ler_anexo_sem_cache(x, n_anexo)
 
   tryCatch(
     assign(chave_cache, resultado, envir = .cache_tarifas),
@@ -63,9 +72,11 @@ ler_anexo1_com_cache <- function(x) {
 #' Limpar cache interno de tarifas
 #'
 #' Remove da memoria os resultados processados e armazenados durante a sessao
-#' atual do R. Atualmente, o cache e usado apenas para evitar reprocessamentos
-#' repetidos do Anexo I em chamadas a [ler_anexo()]. Depois da limpeza, o cache
-#' e preenchido novamente conforme os anexos forem lidos.
+#' atual do R. O cache evita reprocessamentos de todos os anexos suportados em
+#' chamadas a [ler_anexo()]. Depois da limpeza, o cache e preenchido novamente
+#' conforme os anexos forem lidos. Cada anexo e identificado pelo caminho
+#' normalizado, tamanho e data de modificacao do arquivo. O cache guarda os
+#' dados sem filtro de vigencia; esse filtro continua sendo aplicado na consulta.
 #'
 #' @return Invisivelmente `TRUE` quando a limpeza e concluida, ou `FALSE` se
 #'   houver alguma falha inesperada ao limpar o cache.

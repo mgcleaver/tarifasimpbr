@@ -1,3 +1,13 @@
+# tarifasimpbr (desenvolvimento)
+
+- Estende o cache em memoria de `ler_anexo()` a todos os anexos suportados,
+  mantendo a identificacao por caminho, tamanho e data de modificacao do arquivo
+  e a limpeza por `limpar_cache_tarifas()`. O filtro de vigencia continua sendo
+  aplicado depois da leitura dos dados em cache.
+- Corrige a busca numerica de `buscar_ato()` para desconsiderar anos separados
+  por barras com espacos e datas numericas ou por extenso, preservando buscas
+  por multiplos atos, zeros a esquerda e numeros de atos de quatro digitos.
+
 # tarifasimpbr 0.6.0
 
 ## Novidades

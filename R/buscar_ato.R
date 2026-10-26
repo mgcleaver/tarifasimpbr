@@ -4,6 +4,10 @@
 #' formato padronizado. A busca considera os campos de atos disponiveis nos
 #' Anexos I, II, IV, V, VI, VIII, IX e X. Entradas numericas buscam o numero do
 #' ato com equivalencia de zeros a esquerda, sem buscar dentro do ano do ato.
+#' Na busca numerica, o ano apos a barra e as datas numericas ou por extenso
+#' sao ignorados, inclusive em `68 / 2024` e `68, de 1 de janeiro de 2024`.
+#' A busca considera todos os atos informados em cada celula e preserva numeros
+#' de atos com quatro digitos, como `2024/2026`.
 #' Entradas textuais mistas sao pesquisadas de forma literal, sem diferenciar
 #' maiusculas e minusculas.
 #'
@@ -254,7 +258,10 @@ buscar_ato <- function(x, ato) {
     resultado |>
       dplyr::filter(
         !is.na(.data$ato),
-        stringr::str_detect(.data$ato, stringr::regex(padrao_ato))
+        stringr::str_detect(
+          prepara_ato_busca_numerica(.data$ato),
+          stringr::regex(padrao_ato)
+        )
       )
   } else {
     resultado |>
@@ -273,4 +280,35 @@ buscar_ato <- function(x, ato) {
   }
 
   resultado
+}
+
+# Remove datas somente da copia usada na busca numerica. O texto original do
+# ato e a busca textual literal permanecem inalterados. Nao removemos anos
+# isolados: um ato pode ter, por exemplo, o numero 2024.
+prepara_ato_busca_numerica <- function(x) {
+  meses <- paste0(
+    "(?:jan(?:eiro)?|fev(?:ereiro)?|mar(?:[c\u00e7]o)?|abr(?:il)?|",
+    "mai(?:o)?|jun(?:ho)?|jul(?:ho)?|ago(?:sto)?|set(?:embro)?|",
+    "out(?:ubro)?|nov(?:embro)?|dez(?:embro)?)"
+  )
+  data_extenso <- paste0(
+    "\\b[0-9]{1,2}(?:[\u00bao])?\\s+de\\s+",
+    meses,
+    "\\.?\\s+(?:de\\s+)?[0-9]{4}\\b"
+  )
+  data_numerica <- paste0(
+    "\\b(?:[0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2}|",
+    "[0-9]{1,2}[-/.][0-9]{1,2}[-/.][0-9]{2,4})\\b"
+  )
+
+  x |>
+    stringr::str_replace_all("\\s*/\\s*", "/") |>
+    stringr::str_replace_all(data_numerica, " ") |>
+    stringr::str_replace_all(
+      stringr::regex(data_extenso, ignore_case = TRUE), " "
+    ) |>
+    stringr::str_replace_all(
+      # Em "atos de 2024/2026", 2024 e numero do ato, nao o ano.
+      stringr::regex("\\b(?:de|em)\\s+[0-9]{4}\\b(?!/)", ignore_case = TRUE), " "
+    )
 }
