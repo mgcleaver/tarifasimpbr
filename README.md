@@ -73,6 +73,12 @@ tarifas <- tarifas_aplicadas(x)
 
 # obter lista com todos os ex-tarifários presentes nos anexos entre iv e x.
 lista_ex <- ex_tarifarios(x)
+
+# consultar vencimentos futuros até o fim do mês corrente
+vencimentos <- fim_vigencia(x)
+
+# consultar até o fim do próximo mês, incluindo vencimentos de hoje
+vencimentos <- fim_vigencia(x, meses = 1, incluir_hoje = TRUE)
 ```
 
 ## Outras informações

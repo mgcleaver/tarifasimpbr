@@ -16,10 +16,7 @@ testthat::test_that("unit: todos os anexos reutilizam a leitura real em cache", 
   for (anexo in anexos) {
     frio <- ler_anexo(arquivo, anexo)
     testthat::expect_true(nrow(frio) > 0, info = anexo)
-    testthat::expect_message(
-      quente <- ler_anexo(arquivo, anexo),
-      paste0("Obtendo Anexo ", toupper(anexo), " processado do cache")
-    )
+    testthat::expect_silent(quente <- ler_anexo(arquivo, anexo))
     testthat::expect_identical(quente, frio, info = anexo)
   }
   testthat::expect_equal(unname(leituras), rep(1L, length(anexos)))
@@ -36,10 +33,26 @@ testthat::test_that("unit: consultas publicas sao equivalentes com cache frio e 
     tarifas = tarifas_aplicadas(arquivo, detalhar = TRUE),
     ncm = buscar_ncm(arquivo, "01012100"),
     ato = buscar_ato(arquivo, 68),
-    ex = ex_tarifarios(arquivo)
+    ex = ex_tarifarios(arquivo),
+    vencimentos = fim_vigencia(arquivo)
   )
   frio <- consultas()
-  testthat::expect_identical(consultas(), frio)
+  mensagens <- character()
+  quente <- withCallingHandlers(
+    consultas(),
+    message = function(condicao) {
+      mensagens <<- c(mensagens, conditionMessage(condicao))
+      invokeRestart("muffleMessage")
+    }
+  )
+  testthat::expect_identical(quente, frio)
+  testthat::expect_identical(
+    trimws(mensagens),
+    c(
+      "Processando anexos IV, V, VI, VIII, IX, X...",
+      "Tarifas aplicadas geradas com sucesso"
+    )
+  )
   limpar_cache_tarifas()
   testthat::expect_identical(consultas(), frio)
 })

@@ -54,7 +54,6 @@ ler_anexo_com_cache <- function(x, n_anexo) {
     )
 
     if (!is.null(resultado_cache)) {
-      message("Obtendo Anexo ", toupper(n_anexo), " processado do cache...")
       return(resultado_cache)
     }
   }

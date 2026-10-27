@@ -1,5 +1,10 @@
 # tarifasimpbr (desenvolvimento)
 
+- Silencia as mensagens de reutilização dos anexos em cache, mantendo as
+  mensagens de leitura e processamento quando os dados precisam ser lidos.
+- Adiciona `fim_vigencia(x, meses = 0, incluir_hoje = FALSE)` para consultar
+  vencimentos das listas de exceção até o fim do mês corrente ou de meses
+  seguintes, preservando os registros e as colunas de origem de cada anexo.
 - Estende o cache em memoria de `ler_anexo()` a todos os anexos suportados,
   mantendo a identificacao por caminho, tamanho e data de modificacao do arquivo
   e a limpeza por `limpar_cache_tarifas()`. O filtro de vigencia continua sendo
