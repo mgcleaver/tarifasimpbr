@@ -1,17 +1,36 @@
-# tarifasimpbr (desenvolvimento)
+# tarifasimpbr 0.7.0
 
-- Silencia as mensagens de reutilização dos anexos em cache, mantendo as
-  mensagens de leitura e processamento quando os dados precisam ser lidos.
+## Novidades
+
 - Adiciona `fim_vigencia(x, meses = 0, incluir_hoje = FALSE)` para consultar
   vencimentos das listas de exceção até o fim do mês corrente ou de meses
   seguintes, preservando os registros e as colunas de origem de cada anexo.
-- Estende o cache em memoria de `ler_anexo()` a todos os anexos suportados,
-  mantendo a identificacao por caminho, tamanho e data de modificacao do arquivo
-  e a limpeza por `limpar_cache_tarifas()`. O filtro de vigencia continua sendo
+
+## Melhorias e correções
+
+- Estende o cache em memória de `ler_anexo()` a todos os anexos suportados,
+  mantendo a identificação por caminho, tamanho e data de modificação do arquivo
+  e a limpeza por `limpar_cache_tarifas()`. O filtro de vigência continua sendo
   aplicado depois da leitura dos dados em cache.
-- Corrige a busca numerica de `buscar_ato()` para desconsiderar anos separados
-  por barras com espacos e datas numericas ou por extenso, preservando buscas
-  por multiplos atos, zeros a esquerda e numeros de atos de quatro digitos.
+- Silencia as mensagens de reutilização dos anexos em cache, mantendo as
+  mensagens de leitura e processamento quando os dados precisam ser lidos.
+- Corrige a busca numérica de `buscar_ato()` para desconsiderar anos separados
+  por barras com espaços e datas numéricas ou por extenso, preservando buscas
+  por múltiplos atos, zeros à esquerda e números de atos de quatro dígitos.
+
+## Compatibilidade e dados
+
+- Na planilha oficial de 26/10/2026, verificada em 27/10/2026, os nove anexos
+  suportados, `tarifas_aplicadas()` (com e sem detalhamento) e `ex_tarifarios()`
+  produzem resultados idênticos aos da versão 0.6.0. A consolidação contém
+  10.516 NCMs únicas, sem tarifas aplicadas ausentes.
+- `fim_vigencia()` inclui o último dia do mês consultado, exclui vigências
+  abertas e preserva quotas, Ex e registros com início de vigência futuro.
+  Na mesma planilha, com referência em 27/10/2026, não há vencimentos até o
+  fim de outubro e há 10 registros com vencimento até o fim de novembro.
+- O cache passa a manter mais anexos em memória para evitar releituras nas
+  consultas seguintes. Use `limpar_cache_tarifas()` para liberar esses dados
+  ou forçar uma nova leitura do arquivo.
 
 # tarifasimpbr 0.6.0
 
