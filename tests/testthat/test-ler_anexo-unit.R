@@ -30,7 +30,7 @@ testthat::test_that("unit: ler_anexo i reutiliza cache para o mesmo arquivo", {
   testthat::expect_identical(primeira_leitura, segunda_leitura)
 })
 
-testthat::test_that("unit: ler_anexo i informa quando usa cache", {
+testthat::test_that("unit: ler_anexo i informa processamento e silencia leituras em cache", {
   limpar_cache_tarifas()
   on.exit(limpar_cache_tarifas(), add = TRUE)
 
@@ -46,12 +46,15 @@ testthat::test_that("unit: ler_anexo i informa quando usa cache", {
   )
 
   testthat::expect_message(
-    ler_anexo(arquivo, "i"),
+    primeira <- ler_anexo(arquivo, "i"),
     "Processando Anexo I..."
   )
+  testthat::expect_silent(segunda <- ler_anexo(arquivo, "i"))
+  testthat::expect_identical(segunda, primeira)
+  limpar_cache_tarifas()
   testthat::expect_message(
     ler_anexo(arquivo, "i"),
-    "Obtendo Anexo I processado do cache..."
+    "Processando Anexo I..."
   )
 })
 

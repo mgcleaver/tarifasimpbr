@@ -237,3 +237,86 @@ testthat::test_that("unit: buscar_ato falha para ato invalido", {
     "ato deve conter um texto ou numero de ato valido"
   )
 })
+
+testthat::test_that("unit: busca numerica distingue numeros de atos e datas", {
+  atos <- c(
+    "Res. 68 / 2024",
+    "Resolu\u00e7\u00e3o 68, de 1 de janeiro de 2024",
+    "Resolu\u00e7\u00e3o 068, de 1\u00ba de mar\u00e7o de 2024",
+    "Res. 68, de 01/02/2024",
+    "Res. 68, de 2024-02-01",
+    "Res. 68/2024; Res. 202/2025",
+    "68 / 24; 00680 / 2024",
+    "Res. 168/2024",
+    "Res. 680/2024",
+    "Resolu\u00e7\u00e3o 2024, de 1 de janeiro de 2025",
+    "Res. 2024 / 2026",
+    "Res. 68, de 1 de jan. de 2024",
+    "Res. 68 de 2024",
+    "Res. 068 / 2024\nRes. 00800 / 2026",
+    "Res. 268, de 1 de JANEIRO de 2024",
+    "Res. 68/2024 e 2024/2025",
+    "Resolu\u00e7\u00e3o Gecex n\u00ba 272, de 19 de novembro de 2021",
+    "Resolu\u00e7\u00e3o Gecex n.\u00ba 318, de 24/03/2022",
+    "Res. 000/2024",
+    "68/2024, 800/2025",
+    "Atos de 2024/2026 e 68/2024",
+    "Incluido em 2024 / 2026"
+  )
+  testthat::local_mocked_bindings(
+    ler_anexo = function(x, n_anexo) {
+      if (n_anexo == "i") {
+        return(tibble::tibble(ncm = sprintf("%08d", seq_along(atos)), resolucoes = atos))
+      }
+      tibble::tibble(ncm = character())
+    },
+    .package = "tarifasimpbr"
+  )
+
+  esperados_68 <- atos[c(1:7, 12:14, 16, 20, 21)]
+  testthat::expect_identical(buscar_ato("mock", 68)$ato, esperados_68)
+  testthat::expect_identical(buscar_ato("mock", "00068")$ato, esperados_68)
+  testthat::expect_identical(buscar_ato("mock", 2024)$ato, atos[c(10, 11, 16, 21, 22)])
+  testthat::expect_identical(buscar_ato("mock", 202)$ato, atos[[6]])
+  testthat::expect_identical(buscar_ato("mock", 800)$ato, atos[c(14, 20)])
+  testthat::expect_identical(buscar_ato("mock", 168)$ato, atos[[8]])
+  testthat::expect_identical(buscar_ato("mock", 680)$ato, atos[c(7, 9)])
+  testthat::expect_identical(buscar_ato("mock", 272)$ato, atos[[17]])
+  testthat::expect_identical(buscar_ato("mock", 318)$ato, atos[[18]])
+  testthat::expect_identical(buscar_ato("mock", 0)$ato, atos[[19]])
+
+  for (numero in c(1, 2, 19, 24, 2021, 2022, 2025, 2026)) {
+    testthat::expect_warning(
+      resultado <- buscar_ato("mock", numero),
+      "Pesquisa n\u00e3o encontrada em atos"
+    )
+    testthat::expect_equal(nrow(resultado), 0L, info = as.character(numero))
+  }
+
+  # A limpeza so afeta a comparacao numerica, nunca o texto devolvido ou a
+  # busca textual literal, inclusive quando o texto inclui parte de uma data.
+  testthat::expect_identical(buscar_ato("mock", "68 / 2024")$ato, atos[c(1, 14)])
+  testthat::expect_identical(buscar_ato("mock", "janeiro de 2024")$ato, atos[c(2, 15)])
+})
+
+testthat::test_that("unit: busca por ato usa todos os campos com datas e preserva texto", {
+  testthat::local_mocked_bindings(
+    ler_anexo = function(x, n_anexo) {
+      if (n_anexo == "i") return(tibble::tibble(ncm = "01012100"))
+      if (n_anexo == "ii") {
+        return(tibble::tibble(ncm = "01012100", atos_de_inclusao = "068 / 2024; 800/2026"))
+      }
+      tibble::tibble(
+        ncm = "01012100",
+        ato_de_inclusao = "Resolu\u00e7\u00e3o 68, de 1 de janeiro de 2024"
+      )
+    },
+    .package = "tarifasimpbr"
+  )
+  resultado <- buscar_ato("mock", 68)
+  testthat::expect_identical(resultado$anexo, c("ii", "iv", "v", "vi", "viii", "ix", "x"))
+  testthat::expect_identical(resultado$ato[[1]], "068 / 2024; 800/2026")
+  testthat::expect_identical(buscar_ato("mock", 800)$anexo, "ii")
+  testthat::expect_warning(vazio <- buscar_ato("mock", 2024), "Pesquisa n\u00e3o encontrada em atos")
+  testthat::expect_equal(nrow(vazio), 0L)
+})

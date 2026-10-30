@@ -12,7 +12,9 @@ houver alguma falha inesperada ao limpar o cache.
 }
 \description{
 Remove da memoria os resultados processados e armazenados durante a sessao
-atual do R. Atualmente, o cache e usado apenas para evitar reprocessamentos
-repetidos do Anexo I em chamadas a \code{\link[=ler_anexo]{ler_anexo()}}. Depois da limpeza, o cache
-e preenchido novamente conforme os anexos forem lidos.
+atual do R. O cache evita reprocessamentos de todos os anexos suportados em
+chamadas a \code{\link[=ler_anexo]{ler_anexo()}}. Depois da limpeza, o cache e preenchido novamente
+conforme os anexos forem lidos. Cada anexo e identificado pelo caminho
+normalizado, tamanho e data de modificacao do arquivo. O cache guarda os
+dados sem filtro de vigencia; esse filtro continua sendo aplicado na consulta.
 }

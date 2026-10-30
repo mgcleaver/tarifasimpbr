@@ -4,8 +4,10 @@
 #' `download_tarifas`. Para cada anexo, a funcao `ler_anexo` limpa
 #' e organiza os dados de cada aba do arquivo (anexo).
 #'
-#' Para o Anexo I, a funcao `ler_anexo` apenas delega o processamento para
-#' a funcao `ler_anexo1` com cache em memoria durante a sessao do R. Para o
+#' Os anexos processados sao reutilizados em memoria durante a sessao do R,
+#' enquanto caminho, tamanho e data de modificacao do arquivo forem os mesmos.
+#' Use [limpar_cache_tarifas()] para forcar uma nova leitura. O cache nao filtra
+#' vigencias. Para o Anexo I, o processamento e delegado a `ler_anexo1`. Para o
 #' Anexo II, le a aba correspondente e padroniza as colunas `tec` e
 #' `aliquota_aplicada`. Para o Anexo III, localiza duas tabelas de codigos NCM
 #' na mesma aba, empilha os codigos em uma unica coluna e adiciona `regra` e
@@ -119,8 +121,12 @@ ler_anexo <- function(
     n_anexo
   )
 
+  ler_anexo_com_cache(x, n_anexo)
+}
+
+ler_anexo_sem_cache <- function(x, n_anexo) {
   if (n_anexo == "i") {
-    return(ler_anexo1_com_cache(x))
+    return(ler_anexo1(x))
   }
 
   n_anexo_lower <- paste0(
