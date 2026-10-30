@@ -8,6 +8,8 @@
 
 ## Melhorias e correções
 
+- Rejeita valores excessivos de `meses` em `fim_vigencia()` antes do cálculo
+  de datas, evitando diferenças de validação entre sistemas operacionais.
 - Estende o cache em memória de `ler_anexo()` a todos os anexos suportados,
   mantendo a identificação por caminho, tamanho e data de modificação do arquivo
   e a limpeza por `limpar_cache_tarifas()`. O filtro de vigência continua sendo

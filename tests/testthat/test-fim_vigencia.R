@@ -174,6 +174,24 @@ testthat::test_that("unit: fim_vigencia valida argumentos antes de ler anexos", 
   testthat::expect_error(fim_vigencia(arquivo, meses = 1e100), "meses produz um limite de data invalido")
 })
 
+testthat::test_that("unit: fim_vigencia rejeita meses excessivos antes de calcular datas", {
+  arquivo <- testthat::test_path("fixtures", "anexos-cache.xlsx")
+  testthat::local_mocked_bindings(
+    period = function(...) stop("O calculo de datas nao deveria ser chamado"),
+    .package = "lubridate"
+  )
+
+  for (meses in c(
+    .Machine$integer.max, .Machine$integer.max + 1, 2^53, 1e100,
+    .Machine$double.xmax
+  )) {
+    testthat::expect_error(
+      fim_vigencia(arquivo, meses = meses),
+      "meses produz um limite de data invalido"
+    )
+  }
+})
+
 testthat::test_that("unit: fim_vigencia propaga falhas de leitura sem resultado parcial", {
   arquivo <- testthat::test_path("fixtures", "anexos-cache.xlsx")
   testthat::local_mocked_bindings(

@@ -8,6 +8,7 @@ Description: Fornece funções para baixar o arquivo de tarifas oficial da SE-Ca
     ler os anexos desse arquivo de forma padronizada e compilar os anexos para
     obter a tarifa aplicada vigente.
 License: MIT + file LICENSE
+Language: pt-BR
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

@@ -67,6 +67,11 @@ fim_vigencia <- function(x, meses = 0, incluir_hoje = FALSE) {
     stop("incluir_hoje deve ser TRUE ou FALSE.", call. = FALSE)
   }
 
+  # Evita conversões fora do limite de inteiros no cálculo de meses + 1.
+  if (meses >= .Machine$integer.max) {
+    stop("meses produz um limite de data invalido.", call. = FALSE)
+  }
+
   hoje <- Sys.Date()
   inicio <- if (incluir_hoje) hoje else hoje + 1
   limite <- suppressWarnings(
