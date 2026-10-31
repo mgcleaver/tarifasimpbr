@@ -1,3 +1,23 @@
+# tarifasimpbr 0.8.0
+
+## Compatibilidade
+
+- Passa a exigir R >= 4.2.0. O código do pacote não mudou, mas a versão atual de
+  `readxl` no CRAN, uma dependência direta, exige esse mínimo. Quem usa R 4.1
+  precisa atualizar o R para instalar esta versão.
+- Atualiza o mínimo de `testthat` para 3.1.7, que disponibiliza
+  `local_mocked_bindings()`, já usado pelos testes.
+
+## Mudanças
+
+- A CI passa a testar R 4.2.0, `oldrel-1` e `release`, deixa de testar `devel`
+  e atualiza as dependências. As verificações também podem ser executadas
+  manualmente e rodam toda semana, além dos pushes e pull requests.
+- Adiciona `tools/check.R` para validar o pacote em uma biblioteca local isolada,
+  respeitando o requisito de R do `DESCRIPTION`, com atualização opcional das
+  dependências e registro das versões usadas.
+- Move as instruções de desenvolvimento para `.github/CONTRIBUTING.md`.
+
 # tarifasimpbr 0.7.0
 
 ## Novidades

@@ -1,7 +1,7 @@
 Package: tarifasimpbr
 Title: Ferramentas para trabalhar com dados de tarifas de importação brasileiras
-Version: 0.7.0
-Depends: R (>= 4.1.0)
+Version: 0.8.0
+Depends: R (>= 4.2.0)
 Authors@R: 
     person("Miguel", "Cleaver", , "miguelmdic@outlook.com", role = c("aut", "cre"))
 Description: Fornece funções para baixar o arquivo de tarifas oficial da SE-Camex,
@@ -24,5 +24,5 @@ Imports:
     tibble,
     tidyr
 Suggests:
-    testthat (>= 3.0.0)
+    testthat (>= 3.1.7)
 Config/testthat/edition: 3
