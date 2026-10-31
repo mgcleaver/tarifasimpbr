@@ -14,6 +14,8 @@ A fonte das informações tarifárias deste pacote pode ser encontrada em:
 
 ## Instalação
 
+O pacote requer **R >= 4.2.0**.
+
 ```         
 # install.packages("pak")
 pak::pak("mgcleaver/tarifasimpbr")
@@ -94,3 +96,8 @@ a teb no resultado da tarifa_aplicada.
 
 Por sua vez, a teb é formada entre a combinação do anexo ii com o anexo i. O anexo ii
 tem prioridade sobre o anexo i.
+
+## Desenvolvimento
+
+As instruções para validar o pacote localmente e a descrição da CI estão em
+[CONTRIBUTING.md](.github/CONTRIBUTING.md).
