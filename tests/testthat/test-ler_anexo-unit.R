@@ -2,6 +2,13 @@ testthat::test_that("unit: ler_anexo falha para n_anexo invalido", {
   testthat::expect_error(ler_anexo("qualquer_arquivo.xlsx", "foo"))
 })
 
+testthat::test_that("unit: VII nao e interpretado como abreviacao de VIII", {
+  arquivo <- testthat::test_path("fixtures", "anexos-xi.xlsx")
+  testthat::expect_equal(ler_anexo(arquivo, "viii")$lista, "Concessoes OMC")
+  testthat::expect_error(ler_anexo(arquivo, "vii"), "Anexo VII.*nao e suportado")
+  testthat::expect_error(ler_anexo(arquivo, c(anexo = "vii")), "Anexo VII.*nao e suportado")
+})
+
 testthat::test_that("unit: ler_anexo falha quando arquivo nao existe", {
   testthat::expect_error(ler_anexo("arquivo_que_nao_existe.xlsx", "ii"))
 })

@@ -64,6 +64,17 @@
 #' ano escrito na referencia normativa. Nas buscas, registros dos Anexos I,
 #' II e III nao possuem esse metadado e recebem `NA`.
 #'
+#' O Anexo VII correspondia a Lista Covid. A
+#' [compilacao oficial da Resolucao Gecex 272/2021](https://www.gov.br/mdic/pt-br/assuntos/camex/resolucoes/gecex/resolucoes-compiladas/resolucao-gecex-no-272-de-19-de-novembro-de-2021-compilada)
+#' registra fim de vigencia em 31/03/2024 e revogacao expressa pela Resolucao
+#' Gecex 592/2024. A aba VII nao consta das planilhas oficiais de 04/11/2026
+#' e 11/11/2026 verificadas. O pacote nao suporta VII: a leitura explicita
+#' rejeita esse argumento e as consultas consolidadas nao o incluem, mesmo
+#' se houver uma aba historica. A compatibilidade com arquivos sem XI nao
+#' significa cobertura da antiga Lista Covid. Nao ha coluna VII a migrar
+#' nas planilhas verificadas; eventual suporte historico exigiria adaptacao
+#' e validacao especificas.
+#'
 #' Sao aceitas datas brasileiras (`d/m/aaaa` ou `dd/mm/aaaa`), ISO
 #' (`aaaa-mm-dd`) e numeros inteiros seriais do Excel, com origem
 #' `1899-12-30`. Datas multiplas podem usar `e` (sem distinguir maiusculas),

@@ -78,6 +78,9 @@
 #' permitindo usar planilhas antigas. A chamada explicita `ler_anexo(x, "xi")`
 #' continua exigindo a presenca de uma unica aba do XI.
 #'
+#' O Anexo VII (antiga Lista Covid) nao e suportado. O argumento `"vii"`
+#' gera erro, impedindo que seja interpretado como abreviacao de `"viii"`.
+#'
 #' Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 #' automaticamente antes do processamento.
 #'
@@ -125,6 +128,10 @@ ler_anexo <- function(
     x,
     n_anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x", "xi")
 ) {
+
+  if (isTRUE(n_anexo == "vii")) {
+    stop("Anexo VII (Lista Covid) nao e suportado pelo pacote.", call. = FALSE)
+  }
 
   n_anexo <- match.arg(
     n_anexo

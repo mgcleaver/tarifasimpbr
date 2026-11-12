@@ -18,6 +18,9 @@
   o texto original nem calcular um máximo parcial. Ausências continuam `NA`.
 - Documenta as colunas em `?colunas_tarifas`, incluindo a migração dos nomes
   e `9999-12-31` como sentinela, não uma data real de expiração.
+- Rejeita explicitamente `ler_anexo(x, "vii")`, que antes retornava o VIII
+  por aceitar abreviações no argumento. Documenta a ausência de suporte ao
+  VII (antiga Lista Covid), encerrado em 2024 e ausente das planilhas verificadas.
 
 # tarifasimpbr 0.8.0
 

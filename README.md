@@ -58,6 +58,10 @@ O pacote suporta I, II, III, IV, V, VI, VIII, IX, X e XI. O XI (Letec+)
 planilhas antigas sem essa aba continuam funcionando. A leitura explícita
 com `ler_anexo(x, "xi")` exige que a aba esteja presente.
 
+O VII (antiga Lista Covid) não é suportado e não consta das planilhas
+oficiais de novembro de 2026 verificadas. O [dicionário de colunas](man/colunas_tarifas.Rd)
+explica seu encerramento e a limitação para arquivos históricos com essa aba.
+
 ```
 # consultar os anexos tarifários disponíveis para leitura
 listar_anexos()

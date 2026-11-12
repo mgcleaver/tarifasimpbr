@@ -90,6 +90,9 @@ As consultas consolidadas incluem o Anexo XI somente quando a aba existe,
 permitindo usar planilhas antigas. A chamada explicita \code{ler_anexo(x, "xi")}
 continua exigindo a presenca de uma unica aba do XI.
 
+O Anexo VII (antiga Lista Covid) nao e suportado. O argumento \code{"vii"}
+gera erro, impedindo que seja interpretado como abreviacao de \code{"viii"}.
+
 Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 automaticamente antes do processamento.
 
