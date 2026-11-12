@@ -59,7 +59,7 @@ planilhas antigas sem essa aba continuam funcionando. A leitura explícita
 com `ler_anexo(x, "xi")` exige que a aba esteja presente.
 
 O VII (antiga Lista Covid) não é suportado e não consta das planilhas
-oficiais de novembro de 2026 verificadas. O [dicionário de colunas](man/colunas_tarifas.Rd)
+oficiais de novembro de 2026 verificadas. O [dicionário de colunas](docs/colunas_tarifas.md)
 explica seu encerramento e a limitação para arquivos históricos com essa aba.
 
 ```
@@ -97,7 +97,7 @@ vencimentos <- fim_vigencia(x, meses = 1, incluir_hoje = TRUE)
 
 ## Dicionário de colunas e migração para 0.9.0
 
-Consulte o [dicionário das colunas](man/colunas_tarifas.Rd), também disponível
+Consulte o [dicionário das colunas](docs/colunas_tarifas.md), também disponível
 no R com `?colunas_tarifas`. Ele explica as descrições, alíquotas, datas,
 quotas e a sentinela de ausência de prazo individual.
 
