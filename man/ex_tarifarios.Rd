@@ -21,7 +21,8 @@ Um \code{tibble} com uma linha por ex-tarifario e, no minimo, as colunas:
 \item{quota}{Volume de quota, quando houver.}
 \item{unidade_quota}{Unidade da quota, quando houver.}
 \item{ato_de_inclusao}{Ato normativo informado no anexo, quando houver.}
-\item{data_do_ato_de_inclusao}{Data do ato de inclusao, quando houver.}
+\item{data_mais_recente_dos_atos}{Maior data informada na celula dos atos.}
+\item{datas_dos_atos_texto}{Conteudo original da celula de datas dos atos.}
 \item{inicio_de_vigencia}{Inicio da vigencia do registro.}
 \item{termino_de_vigencia}{Termino da vigencia do registro.}
 \item{obs}{Observacoes presentes no anexo, quando houver.}
@@ -45,4 +46,7 @@ exs <- ex_tarifarios(x)
 dplyr::glimpse(exs)
 }
 
+}
+\seealso{
+\link{colunas_tarifas}
 }

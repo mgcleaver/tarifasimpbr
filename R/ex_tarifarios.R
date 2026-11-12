@@ -18,7 +18,8 @@
 #'   \item{quota}{Volume de quota, quando houver.}
 #'   \item{unidade_quota}{Unidade da quota, quando houver.}
 #'   \item{ato_de_inclusao}{Ato normativo informado no anexo, quando houver.}
-#'   \item{data_do_ato_de_inclusao}{Data do ato de inclusao, quando houver.}
+#'   \item{data_mais_recente_dos_atos}{Maior data informada na celula dos atos.}
+#'   \item{datas_dos_atos_texto}{Conteudo original da celula de datas dos atos.}
 #'   \item{inicio_de_vigencia}{Inicio da vigencia do registro.}
 #'   \item{termino_de_vigencia}{Termino da vigencia do registro.}
 #'   \item{obs}{Observacoes presentes no anexo, quando houver.}
@@ -29,6 +30,8 @@
 #' Em seguida, filtra apenas as linhas com `no_ex` preenchido e padroniza as
 #' colunas opcionais para permitir a consolidacao entre anexos com estruturas
 #' ligeiramente diferentes.
+#'
+#' @seealso [colunas_tarifas]
 #'
 #' @examples
 #' \dontrun{
@@ -49,6 +52,7 @@ ex_tarifarios <- function(x) {
       "quota",
       "unidade_quota",
       "ato_de_inclusao",
+      "datas_dos_atos_texto",
       "obs"
     )
 
@@ -56,8 +60,8 @@ ex_tarifarios <- function(x) {
       df[[coluna]] <- NA_character_
     }
 
-    if (!"data_do_ato_de_inclusao" %in% names(df)) {
-      df$data_do_ato_de_inclusao <- as.Date(NA)
+    if (!"data_mais_recente_dos_atos" %in% names(df)) {
+      df$data_mais_recente_dos_atos <- as.Date(NA)
     }
 
     df
@@ -80,7 +84,8 @@ ex_tarifarios <- function(x) {
           quota = .data$quota,
           unidade_quota = .data$unidade_quota,
           ato_de_inclusao = .data$ato_de_inclusao,
-          data_do_ato_de_inclusao = .data$data_do_ato_de_inclusao,
+          data_mais_recente_dos_atos = .data$data_mais_recente_dos_atos,
+          datas_dos_atos_texto = .data$datas_dos_atos_texto,
           inicio_de_vigencia = .data$inicio_de_vigencia,
           termino_de_vigencia = .data$termino_de_vigencia,
           obs = .data$obs

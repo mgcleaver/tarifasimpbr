@@ -41,7 +41,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
         quota = c(NA_character_),
         unidade_quota = c(NA_character_),
         ato_de_inclusao = c("Res. 3"),
-        data_do_ato_de_inclusao = as.Date("2024-05-10"),
+        data_mais_recente_dos_atos = as.Date("2024-05-10"),
         obs = c("Observacao"),
         inicio_de_vigencia = as.Date("2024-01-01"),
         termino_de_vigencia = as.Date("2100-12-31"),
@@ -66,7 +66,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
         "quota",
         "unidade_quota",
         "ato_de_inclusao",
-        "data_do_ato_de_inclusao",
+        "data_mais_recente_dos_atos",
         "inicio_de_vigencia",
         "termino_de_vigencia",
         "obs"
@@ -77,7 +77,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
   testthat::expect_equal(ex_tarifarios$no_ex, c("001", "007"))
   testthat::expect_equal(ex_tarifarios$tarifa_ex, c("2", "0"))
   testthat::expect_equal(ex_tarifarios$quota, c("100", NA_character_))
-  testthat::expect_true(is.na(ex_tarifarios$data_do_ato_de_inclusao[[1]]))
+  testthat::expect_true(is.na(ex_tarifarios$data_mais_recente_dos_atos[[1]]))
   testthat::expect_equal(ex_tarifarios$obs[[2]], "Observacao")
   testthat::expect_true(is.na(ex_tarifarios$obs[[1]]))
 })

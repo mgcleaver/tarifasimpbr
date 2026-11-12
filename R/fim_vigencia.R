@@ -17,7 +17,7 @@
 #' A data de referência é obtida uma única vez com `Sys.Date()`. O último dia
 #' do intervalo é sempre incluído. Não há filtro por `inicio_de_vigencia`:
 #' registros que ainda vão começar a vigorar também podem ser retornados.
-#' Términos ausentes e a data `9999-12-31`, usada para vigência aberta, são
+#' Términos ausentes e a data `9999-12-31`, sentinela de prazo individual nao informado, são
 #' excluídos.
 #'
 #' A função reutiliza a leitura e o cache de [ler_anexo()]. Cada anexo é
@@ -32,7 +32,7 @@
 #'   Sem correspondências, retorna uma tabela vazia com as mesmas colunas,
 #'   sem aviso.
 #'
-#' @seealso [tarifas_futuras()], [tarifas_vigentes()]
+#' @seealso [colunas_tarifas], [tarifas_futuras()], [tarifas_vigentes()]
 #' @examples
 #' \dontrun{
 #' x <- download_tarifas()

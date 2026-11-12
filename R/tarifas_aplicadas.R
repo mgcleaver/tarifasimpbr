@@ -36,7 +36,7 @@
 #' * `ncm_integral`: indicador (0/1) de medida e lista de exceção
 #'    aplicável à NCM integralmente;
 #' * `inicio_de_vigencia`, `termino_de_vigencia`, `ato_de_inclusao` e
-#'   `data_do_ato_de_inclusao`: metadados do registro vigente que altera a
+#'   `data_mais_recente_dos_atos` e `datas_dos_atos_texto`: metadados do registro vigente que altera a
 #'   tarifa para a integralidade da NCM, sem quota e sem destaque (Ex).
 #'
 #' Valores ausentes são substituídos por zero somente nessas três colunas.
@@ -67,11 +67,11 @@
 #'
 #' * `contagem_quota`, `contagem_ex`, `ncm_integral`,
 #'   `inicio_de_vigencia`, `termino_de_vigencia`, `ato_de_inclusao` e
-#'   `data_do_ato_de_inclusao`,
+#'   `data_mais_recente_dos_atos` e `datas_dos_atos_texto`,
 #'   conforme descrito em [detalhar_listas_excecao_vigentes()].
 #'
 #' @seealso
-#' [ler_anexo()], [detalhar_listas_excecao_vigentes()],
+#' [colunas_tarifas], [ler_anexo()], [detalhar_listas_excecao_vigentes()],
 #' [tarifas_vigentes()].
 #'
 #' @examples
@@ -148,7 +148,8 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
       inicio_de_vigencia,
       termino_de_vigencia,
       ato_de_inclusao,
-      data_do_ato_de_inclusao,
+      data_mais_recente_dos_atos,
+      datas_dos_atos_texto,
       contagem_quota,
       contagem_ex,
       ncm_integral

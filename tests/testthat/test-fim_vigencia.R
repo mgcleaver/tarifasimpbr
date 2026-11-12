@@ -109,7 +109,8 @@ testthat::test_that("unit: fim_vigencia preserva colunas, tipos, duplicidades e 
         dplyr::mutate(lista = paste("Lista", n_anexo))
       if (n_anexo == "v") {
         anexo$obs <- "Observacao preservada"
-        anexo$data_do_ato_de_inclusao <- as.Date("2020-01-01")
+        anexo$data_mais_recente_dos_atos <- as.Date("2020-01-01")
+        anexo$datas_dos_atos_texto <- "01/01/2020 e 01/01/2019"
       }
       anexo
     },
@@ -123,7 +124,7 @@ testthat::test_that("unit: fim_vigencia preserva colunas, tipos, duplicidades e 
   testthat::expect_identical(resultado$anexo, c(rep(anexos, each = 2), anexos))
   testthat::expect_identical(
     names(resultado),
-    c("anexo", names(dados), "lista", "obs", "data_do_ato_de_inclusao")
+    c("anexo", names(dados), "lista", "obs", "data_mais_recente_dos_atos", "datas_dos_atos_texto")
   )
   testthat::expect_identical(
     resultado |>
@@ -135,9 +136,16 @@ testthat::test_that("unit: fim_vigencia preserva colunas, tipos, duplicidades e 
   testthat::expect_identical(
     resultado$obs[resultado$anexo == "v"], rep("Observacao preservada", 3)
   )
-  testthat::expect_s3_class(resultado$data_do_ato_de_inclusao, "Date")
+  testthat::expect_s3_class(resultado$data_mais_recente_dos_atos, "Date")
   testthat::expect_true(all(is.na(
-    resultado$data_do_ato_de_inclusao[resultado$anexo != "v"]
+    resultado$data_mais_recente_dos_atos[resultado$anexo != "v"]
+  )))
+  testthat::expect_identical(
+    resultado$datas_dos_atos_texto[resultado$anexo == "v"],
+    rep("01/01/2020 e 01/01/2019", 3)
+  )
+  testthat::expect_true(all(is.na(
+    resultado$datas_dos_atos_texto[resultado$anexo != "v"]
   )))
 
   testthat::expect_silent(vazio <- fim_vigencia_na_data("2030-01-01", arquivo))

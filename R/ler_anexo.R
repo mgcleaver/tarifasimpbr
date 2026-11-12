@@ -19,7 +19,8 @@
 #'   \item padroniza nomes de colunas com `janitor::clean_names` e a partir de outras regras;
 #'   \item garante a existencia da coluna de termino_de_vigencia e renomeia
 #'     inicio_da_vigencia para inicio_de_vigencia quando for o caso;
-#'   \item formata datas com a funcao auxiliar `formata_datas`;
+#'   \item formata vigencias com a funcao auxiliar `formata_datas`;
+#'   \item preserva o texto das datas dos atos e calcula a maior data valida;
 #'   \item padroniza codigos \code{ncm} e, quando existente, \code{no_ex}
 #' }
 #'
@@ -53,9 +54,11 @@
 #'     padronizado, conforme `formata_datas`.}
 #'   \item{termino_de_vigencia}{Data de término de vigência em formato
 #'     padronizado; valores `"-"`, vazios ou ausentes são tratados como
-#'     vigência sem término e preenchidos com \code{"9999-12-31"}.}
-#'   \item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
-#'     tambem formatada por `formata_datas`.}
+#'     ausencia de prazo individual conhecido e preenchidos com \code{"9999-12-31"}.}
+#'   \item{datas_dos_atos_texto}{Conteudo original da coluna de datas dos atos
+#'     de inclusao, antes da conversao. `NA` se a coluna nao existir na fonte.}
+#'   \item{data_mais_recente_dos_atos}{Maior data cronologica da celula, de
+#'     classe `Date`. Se alguma parte for invalida, recebe `NA` com aviso.}
 #'   \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
 #'   IV (Desabastecimento), V (Letec), VI (Lebitbk), VIII (Concessoes OMC), IX
 #'   (DCC), X (Automotivo) e XI (Letec+))}
@@ -101,6 +104,7 @@
 #' }
 #'
 #' @seealso
+#'   [colunas_tarifas] para o dicionario, formatos aceitos e migracao dos nomes;
 #'   `download_tarifas` para obtencao do arquivo de tarifas,
 #'   `ler_anexo1` para o processamento especifico do Anexo I
 #'   e `formata_datas` para limpeza e padronizacao de datas.
@@ -215,6 +219,19 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
     col_types = c("text")) |>
     janitor::clean_names()
 
+  # Rele apenas esta coluna sem aparar espacos, preservando o texto da fonte.
+  coluna_datas <- match("data_do_ato_de_inclusao", names(anexo))
+  if (!is.na(coluna_datas) && nrow(anexo) > 0) {
+    anexo$data_do_ato_de_inclusao <- readxl::read_excel(
+      x, sheet = numero_aba,
+      range = readxl::cell_limits(
+        c(pula_linhas + 2, coluna_datas),
+        c(pula_linhas + 1 + nrow(anexo), coluna_datas)
+      ),
+      col_names = "datas_dos_atos_texto", col_types = "text", trim_ws = FALSE
+    )[[1]]
+  }
+
   if(condicao6 && "x10" %in% names(anexo)) {
     anexo <- anexo |>
       dplyr::select(-x10)
@@ -228,12 +245,6 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
   nomes_colunas <- names(anexo)
 
   termino_vigencia <- stringr::str_subset(nomes_colunas, "termino_de_vigencia")
-
-  processa_data_inclusao <- FALSE
-
-  if("data_do_ato_de_inclusao" %in% nomes_colunas) {
-    processa_data_inclusao <- TRUE
-  }
 
   inicio <- stringr::str_subset(nomes_colunas, "inicio_da_vigencia")
 
@@ -314,16 +325,18 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
       dplyr::mutate(lista = nome_lista)
   }
 
-  if(processa_data_inclusao) {
-    return(result |>
-             dplyr::mutate(
-               data_do_ato_de_inclusao = formata_datas(
-                 .data$data_do_ato_de_inclusao)
-               ))
-
+  if (!"data_do_ato_de_inclusao" %in% names(result)) {
+    result$data_do_ato_de_inclusao <- rep(NA_character_, nrow(result))
   }
 
-  return(result)
+  result |>
+    dplyr::rename(datas_dos_atos_texto = data_do_ato_de_inclusao) |>
+    dplyr::mutate(
+      data_mais_recente_dos_atos = formata_datas_atos(
+        .data$datas_dos_atos_texto, contexto = paste("Anexo", toupper(n_anexo))
+      )
+    ) |>
+    dplyr::relocate(data_mais_recente_dos_atos, .before = datas_dos_atos_texto)
 
 }
 

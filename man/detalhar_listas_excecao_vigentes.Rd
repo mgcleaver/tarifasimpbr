@@ -26,7 +26,7 @@ concatenadas com virgula quando houver mais de uma.
 \item \code{tarifa_aplicada}: apresenta a tarifa aplicada para as ncms incluidas
 integralmente em lista de excecao;
 \item \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato_de_inclusao} e
-\code{data_do_ato_de_inclusao}: metadados do registro que altera a tarifa para
+\code{data_mais_recente_dos_atos} e \code{datas_dos_atos_texto}: metadados do registro que altera a tarifa para
 a integralidade da NCM. Permanecem \code{NA} quando nao houver esse registro.
 }
 }
@@ -71,7 +71,7 @@ desabastecimento e de concessoes da OMC nao sao incluidos nessas
 listas integralmente, nesses casos de uma NCM fazer parte de mais de uma lista,
 a tarifa aplicada sera, provavelmente, referente a outra lista remanescente;
 \item as colunas \code{inicio_de_vigencia}, \code{termino_de_vigencia},
-\code{ato_de_inclusao} e \code{data_do_ato_de_inclusao}, preenchidas apenas quando
+\code{ato_de_inclusao}, \code{data_mais_recente_dos_atos} e \code{datas_dos_atos_texto}, preenchidas apenas quando
 houver alteracao tarifaria vigente para a integralidade da NCM, sem quota
 e sem destaque (Ex). Nos demais casos, inclusive quando houver somente
 ex-tarifarios, essas colunas permanecem \code{NA}.
@@ -89,4 +89,7 @@ resumo_excecoes <- detalhar_listas_excecao_vigentes(x)
 dplyr::glimpse(resumo_excecoes)
 }
 
+}
+\seealso{
+\link{colunas_tarifas} para significado e tipos das colunas.
 }

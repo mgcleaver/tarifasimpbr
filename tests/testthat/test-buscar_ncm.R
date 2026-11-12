@@ -12,7 +12,8 @@ colunas_buscar_ncm <- c(
   "inicio_de_vigencia",
   "termino_de_vigencia",
   "ato",
-  "data_do_ato",
+  "data_mais_recente_dos_atos",
+  "datas_dos_atos_texto",
   "obs",
   "descricao_medida"
 )
@@ -111,7 +112,7 @@ testthat::test_that("unit: buscar_ncm preserva multiplas linhas em anexos de exc
           inicio_de_vigencia = as.Date(c("2025-01-01", "2025-06-01")),
           termino_de_vigencia = as.Date(c("2025-12-31", "2026-12-31")),
           ato_de_inclusao = c("Res. 1", "Res. 2"),
-          data_do_ato_de_inclusao = as.Date(c("2024-12-01", "2025-05-01")),
+          data_mais_recente_dos_atos = as.Date(c("2024-12-01", "2025-05-01")),
           obs = c(NA_character_, "Observacao"),
           lista = "Letec"
         ),
@@ -137,7 +138,7 @@ testthat::test_that("unit: buscar_ncm preserva multiplas linhas em anexos de exc
     rep("Produtos vegetais. Gluten de trigo.", 2)
   )
   testthat::expect_equal(resultado_letec$ato, c("Res. 1", "Res. 2"))
-  testthat::expect_equal(resultado_letec$data_do_ato, as.Date(c("2024-12-01", "2025-05-01")))
+  testthat::expect_equal(resultado_letec$data_mais_recente_dos_atos, as.Date(c("2024-12-01", "2025-05-01")))
 })
 
 testthat::test_that("unit: buscar_ncm usa descricao do anexo i nos anexos de excecao", {
@@ -171,7 +172,7 @@ testthat::test_that("unit: buscar_ncm usa descricao do anexo i nos anexos de exc
           inicio_de_vigencia = as.Date("2025-01-01"),
           termino_de_vigencia = as.Date("2025-12-31"),
           ato_de_inclusao = "Res. DCC",
-          data_do_ato_de_inclusao = as.Date("2024-12-01"),
+          data_mais_recente_dos_atos = as.Date("2024-12-01"),
           obs = NA_character_
         ),
         x = tibble::tibble(ncm = character())

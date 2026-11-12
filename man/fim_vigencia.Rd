@@ -36,7 +36,7 @@ do mês indicado por \code{meses}.
 A data de referência é obtida uma única vez com \code{Sys.Date()}. O último dia
 do intervalo é sempre incluído. Não há filtro por \code{inicio_de_vigencia}:
 registros que ainda vão começar a vigorar também podem ser retornados.
-Términos ausentes e a data \code{9999-12-31}, usada para vigência aberta, são
+Términos ausentes e a data \code{9999-12-31}, sentinela de prazo individual nao informado, são
 excluídos.
 
 A função reutiliza a leitura e o cache de \code{\link[=ler_anexo]{ler_anexo()}}. Cada anexo é
@@ -56,5 +56,5 @@ fim_vigencia(x, meses = 1, incluir_hoje = TRUE)
 
 }
 \seealso{
-\code{\link[=tarifas_futuras]{tarifas_futuras()}}, \code{\link[=tarifas_vigentes]{tarifas_vigentes()}}
+\link{colunas_tarifas}, \code{\link[=tarifas_futuras]{tarifas_futuras()}}, \code{\link[=tarifas_vigentes]{tarifas_vigentes()}}
 }

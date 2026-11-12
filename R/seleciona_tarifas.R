@@ -14,7 +14,8 @@ seleciona_tarifas <- function(
     "inicio_de_vigencia",
     "termino_de_vigencia",
     "ato_de_inclusao",
-    "data_do_ato_de_inclusao",
+    "data_mais_recente_dos_atos",
+    "datas_dos_atos_texto",
     "lista",
     sep = "|"
   )

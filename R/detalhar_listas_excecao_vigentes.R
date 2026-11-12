@@ -42,7 +42,7 @@
 #'   listas integralmente, nesses casos de uma NCM fazer parte de mais de uma lista,
 #'   a tarifa aplicada sera, provavelmente, referente a outra lista remanescente;
 #' * as colunas `inicio_de_vigencia`, `termino_de_vigencia`,
-#'   `ato_de_inclusao` e `data_do_ato_de_inclusao`, preenchidas apenas quando
+#'   `ato_de_inclusao`, `data_mais_recente_dos_atos` e `datas_dos_atos_texto`, preenchidas apenas quando
 #'   houver alteracao tarifaria vigente para a integralidade da NCM, sem quota
 #'   e sem destaque (Ex). Nos demais casos, inclusive quando houver somente
 #'   ex-tarifarios, essas colunas permanecem `NA`.
@@ -67,8 +67,10 @@
 #' * `tarifa_aplicada`: apresenta a tarifa aplicada para as ncms incluidas
 #'   integralmente em lista de excecao;
 #' * `inicio_de_vigencia`, `termino_de_vigencia`, `ato_de_inclusao` e
-#'   `data_do_ato_de_inclusao`: metadados do registro que altera a tarifa para
+#'   `data_mais_recente_dos_atos` e `datas_dos_atos_texto`: metadados do registro que altera a tarifa para
 #'   a integralidade da NCM. Permanecem `NA` quando nao houver esse registro.
+#'
+#' @seealso [colunas_tarifas] para significado e tipos das colunas.
 #'
 #' @examples
 #' \dontrun{
@@ -97,7 +99,8 @@ detalhar_listas_excecao_vigentes <- function(x) {
         inicio_de_vigencia = as.Date(character()),
         termino_de_vigencia = as.Date(character()),
         ato_de_inclusao = character(),
-        data_do_ato_de_inclusao = as.Date(character())
+        data_mais_recente_dos_atos = as.Date(character()),
+        datas_dos_atos_texto = character()
       )
     )
 
@@ -125,7 +128,8 @@ detalhar_listas_excecao_vigentes <- function(x) {
       inicio_de_vigencia = .data$inicio_de_vigencia,
       termino_de_vigencia = .data$termino_de_vigencia,
       ato_de_inclusao = .data$ato_de_inclusao,
-      data_do_ato_de_inclusao = .data$data_do_ato_de_inclusao
+      data_mais_recente_dos_atos = .data$data_mais_recente_dos_atos,
+      datas_dos_atos_texto = .data$datas_dos_atos_texto
     )
 
   resumo_tarifas_excecao <- purrr::map(

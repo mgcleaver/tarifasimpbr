@@ -25,9 +25,7 @@ adiciona_indicador_ex_quota <- function(
 
   suprime_texto <- function(y) {
     suppressMessages(
-      suppressWarnings(
-        y
-      )
+      y
     )
   }
 

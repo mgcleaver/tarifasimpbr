@@ -19,7 +19,7 @@ Um \code{tibble} com uma linha por ocorrencia encontrada e as colunas
 \code{anexo}, \code{nome_anexo}, \code{ncm}, \code{no_ex}, \code{descricao},
 \code{descricao_tec_concatenada}, \code{bkbit}, \code{aliquota}, \code{quota},
 \code{unidade_quota}, \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato},
-\code{data_do_ato}, \code{obs} e \code{descricao_medida}. Quando o ato nao e encontrado, retorna um tibble
+\code{data_mais_recente_dos_atos}, \code{datas_dos_atos_texto}, \code{obs} e \code{descricao_medida}. Quando o ato nao e encontrado, retorna um tibble
 vazio com essas colunas.
 }
 \description{
@@ -43,6 +43,8 @@ coluna \code{descricao} do anexo consultado (II ou lista de excecao), inclusive
 restricoes de Ex como "exceto treonina" e descricoes de medidas sem Ex.
 No Anexo I, ou quando a coluna de origem nao existe, recebe \code{NA}.
 Valores ausentes na origem nao sao preenchidos com a descricao da NCM.
+As datas dos atos resumem a celula inteira, inclusive quando a busca
+corresponde a somente um dos atos. Consulte \link{colunas_tarifas}.
 }
 \examples{
 \dontrun{

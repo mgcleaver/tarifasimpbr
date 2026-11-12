@@ -34,7 +34,7 @@ Quando \code{detalhar = TRUE}, o retorno inclui também:
 \itemize{
 \item \code{contagem_quota}, \code{contagem_ex}, \code{ncm_integral},
 \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato_de_inclusao} e
-\code{data_do_ato_de_inclusao},
+\code{data_mais_recente_dos_atos} e \code{datas_dos_atos_texto},
 conforme descrito em \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}.
 }
 }
@@ -74,7 +74,7 @@ derivadas de \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_exce
 \item \code{ncm_integral}: indicador (0/1) de medida e lista de exceção
 aplicável à NCM integralmente;
 \item \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato_de_inclusao} e
-\code{data_do_ato_de_inclusao}: metadados do registro vigente que altera a
+\code{data_mais_recente_dos_atos} e \code{datas_dos_atos_texto}: metadados do registro vigente que altera a
 tarifa para a integralidade da NCM, sem quota e sem destaque (Ex).
 }
 
@@ -98,6 +98,6 @@ dplyr::glimpse(tarifas_detalhadas)
 
 }
 \seealso{
-\code{\link[=ler_anexo]{ler_anexo()}}, \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}},
+\link{colunas_tarifas}, \code{\link[=ler_anexo]{ler_anexo()}}, \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}},
 \code{\link[=tarifas_vigentes]{tarifas_vigentes()}}.
 }

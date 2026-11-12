@@ -20,7 +20,7 @@
 #'   O resultado contém as colunas `anexo`, `nome_anexo`, `ncm`, `no_ex`,
 #'   `descricao`, `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
 #'   `unidade_quota`, `inicio_de_vigencia`, `termino_de_vigencia`, `ato`,
-#'   `data_do_ato`, `obs` e `descricao_medida`. Quando a NCM nao e encontrada, retorna um tibble
+#'   `data_mais_recente_dos_atos`, `datas_dos_atos_texto`, `obs` e `descricao_medida`. Quando a NCM nao e encontrada, retorna um tibble
 #'   vazio com essas colunas e emite um aviso.
 #'
 #' @details
@@ -30,6 +30,8 @@
 #' restricoes de Ex como "exceto treonina" e descricoes de medidas sem Ex.
 #' Nos Anexos I e III, ou quando a coluna de origem nao existe, recebe `NA`.
 #' Valores ausentes na origem nao sao preenchidos com a descricao da NCM.
+#' As datas dos atos resumem a celula inteira, inclusive quando a busca
+#' corresponde a somente um dos atos. Consulte [colunas_tarifas].
 #'
 #' @examples
 #' \dontrun{
@@ -67,7 +69,8 @@ buscar_ncm <- function(x, ncm) {
     "inicio_de_vigencia",
     "termino_de_vigencia",
     "ato",
-    "data_do_ato",
+    "data_mais_recente_dos_atos",
+    "datas_dos_atos_texto",
     "obs",
     "descricao_medida"
   )
@@ -86,7 +89,8 @@ buscar_ncm <- function(x, ncm) {
     inicio_de_vigencia = as.Date(character()),
     termino_de_vigencia = as.Date(character()),
     ato = character(),
-    data_do_ato = as.Date(character()),
+    data_mais_recente_dos_atos = as.Date(character()),
+    datas_dos_atos_texto = character(),
     obs = character(),
     descricao_medida = character()
   )
@@ -149,7 +153,8 @@ buscar_ncm <- function(x, ncm) {
       inicio_de_vigencia = as.Date(NA_character_),
       termino_de_vigencia = as.Date(NA_character_),
       ato = .data$resolucoes,
-      data_do_ato = as.Date(NA_character_),
+      data_mais_recente_dos_atos = as.Date(NA_character_),
+      datas_dos_atos_texto = NA_character_,
       obs = NA_character_,
       descricao_medida = NA_character_
     )
@@ -185,7 +190,8 @@ buscar_ncm <- function(x, ncm) {
         inicio_de_vigencia = as.Date(NA_character_),
         termino_de_vigencia = as.Date(NA_character_),
         ato = .data$atos_de_inclusao,
-        data_do_ato = as.Date(NA_character_),
+        data_mais_recente_dos_atos = as.Date(NA_character_),
+        datas_dos_atos_texto = NA_character_,
         obs = NA_character_
       )
   )
@@ -216,7 +222,8 @@ buscar_ncm <- function(x, ncm) {
         inicio_de_vigencia = as.Date(NA_character_),
         termino_de_vigencia = as.Date(NA_character_),
         ato = NA_character_,
-        data_do_ato = as.Date(NA_character_),
+        data_mais_recente_dos_atos = as.Date(NA_character_),
+        datas_dos_atos_texto = NA_character_,
         obs = NA_character_
       )
   )
@@ -249,8 +256,11 @@ buscar_ncm <- function(x, ncm) {
     if (!"ato_de_inclusao" %in% names(anexo_lista)) {
       anexo_lista$ato_de_inclusao <- rep(NA_character_, nrow(anexo_lista))
     }
-    if (!"data_do_ato_de_inclusao" %in% names(anexo_lista)) {
-      anexo_lista$data_do_ato_de_inclusao <- as.Date(rep(NA_character_, nrow(anexo_lista)))
+    if (!"datas_dos_atos_texto" %in% names(anexo_lista)) {
+      anexo_lista$datas_dos_atos_texto <- rep(NA_character_, nrow(anexo_lista))
+    }
+    if (!"data_mais_recente_dos_atos" %in% names(anexo_lista)) {
+      anexo_lista$data_mais_recente_dos_atos <- as.Date(rep(NA_character_, nrow(anexo_lista)))
     }
     if (!"obs" %in% names(anexo_lista)) {
       anexo_lista$obs <- rep(NA_character_, nrow(anexo_lista))
@@ -274,7 +284,8 @@ buscar_ncm <- function(x, ncm) {
           inicio_de_vigencia = .data$inicio_de_vigencia,
           termino_de_vigencia = .data$termino_de_vigencia,
           ato = .data$ato_de_inclusao,
-          data_do_ato = .data$data_do_ato_de_inclusao,
+          data_mais_recente_dos_atos = .data$data_mais_recente_dos_atos,
+          datas_dos_atos_texto = .data$datas_dos_atos_texto,
           obs = .data$obs
         )
     )

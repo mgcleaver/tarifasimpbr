@@ -91,6 +91,18 @@ vencimentos <- fim_vigencia(x)
 vencimentos <- fim_vigencia(x, meses = 1, incluir_hoje = TRUE)
 ```
 
+## Dicionário de colunas
+
+Consulte o [dicionário das colunas](man/colunas_tarifas.Rd), também disponível
+no R com `?colunas_tarifas`. Ele explica as descrições, alíquotas, datas,
+quotas e a sentinela de ausência de prazo individual.
+
+`data_mais_recente_dos_atos` substitui `data_do_ato_de_inclusao` nas listas
+e `data_do_ato` nas buscas. `datas_dos_atos_texto` preserva o conteúdo
+original antes da conversão. Se qualquer data da célula for inválida,
+a data resumida é `NA` e a leitura emite aviso. Atualize seleções e filtros
+que utilizem os nomes antigos.
+
 ## Outras informações
 
 Os nomes das colunas aliquota, tec, teb e tarifa_aplicada estão em

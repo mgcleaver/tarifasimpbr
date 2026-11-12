@@ -80,7 +80,8 @@ testthat::test_that("unit: detalhamento nao transforma tarifas ausentes em zero"
         inicio_de_vigencia = as.Date(character()),
         termino_de_vigencia = as.Date(character()),
         ato_de_inclusao = character(),
-        data_do_ato_de_inclusao = as.Date(character())
+        data_mais_recente_dos_atos = as.Date(character()),
+        datas_dos_atos_texto = character()
       )
     },
     .package = "tarifasimpbr"
@@ -102,11 +103,11 @@ testthat::test_that("unit: detalhamento nao transforma tarifas ausentes em zero"
   testthat::expect_s3_class(detalhado$inicio_de_vigencia, "Date")
   testthat::expect_s3_class(detalhado$termino_de_vigencia, "Date")
   testthat::expect_type(detalhado$ato_de_inclusao, "character")
-  testthat::expect_s3_class(detalhado$data_do_ato_de_inclusao, "Date")
+  testthat::expect_s3_class(detalhado$data_mais_recente_dos_atos, "Date")
   testthat::expect_true(all(is.na(detalhado$inicio_de_vigencia)))
   testthat::expect_true(all(is.na(detalhado$termino_de_vigencia)))
   testthat::expect_true(all(is.na(detalhado$ato_de_inclusao)))
-  testthat::expect_true(all(is.na(detalhado$data_do_ato_de_inclusao)))
+  testthat::expect_true(all(is.na(detalhado$data_mais_recente_dos_atos)))
 })
 
 testthat::test_that("unit: metadados pertencem somente a NCMs integrais", {
@@ -129,9 +130,12 @@ testthat::test_that("unit: metadados pertencem somente a NCMs integrais", {
       "Res. Letec quota",
       "Res. DCC integral"
     ),
-    data_do_ato_de_inclusao = as.Date(c(
+    data_mais_recente_dos_atos = as.Date(c(
       "2024-12-01", "2025-01-01", "2025-02-15", "2025-03-15", "2025-04-15"
     )),
+    datas_dos_atos_texto = c(
+      "01/12/2024", "01/01/2025", "15/02/2025", "15/03/2025", "15/04/2025"
+    ),
     lista = c("Desabastecimento", "Desabastecimento", "Letec", "Letec", "DCC"),
     tem_quota = c(0L, 0L, 0L, 1L, 0L),
     tem_destaque_ex = c(1L, 1L, 0L, 0L, 0L),
@@ -171,8 +175,12 @@ testthat::test_that("unit: metadados pertencem somente a NCMs integrais", {
     c("Res. DCC integral", "Res. Letec integral", NA, NA)
   )
   testthat::expect_equal(
-    resultado$data_do_ato_de_inclusao,
+    resultado$data_mais_recente_dos_atos,
     as.Date(c("2025-04-15", "2025-02-15", NA, NA))
+  )
+  testthat::expect_identical(
+    resultado$datas_dos_atos_texto,
+    c("15/04/2025", "15/02/2025", NA_character_, NA_character_)
   )
 })
 
@@ -208,7 +216,8 @@ testthat::test_that("unit: tarifas detalhadas incluem metadados integrais", {
         inicio_de_vigencia = as.Date("2025-05-01"),
         termino_de_vigencia = as.Date("2026-05-01"),
         ato_de_inclusao = "Res. DCC integral",
-        data_do_ato_de_inclusao = as.Date("2025-04-15")
+        data_mais_recente_dos_atos = as.Date("2025-04-15"),
+        datas_dos_atos_texto = "15/04/2025"
       )
     },
     .package = "tarifasimpbr"
@@ -220,7 +229,8 @@ testthat::test_that("unit: tarifas detalhadas incluem metadados integrais", {
     "inicio_de_vigencia",
     "termino_de_vigencia",
     "ato_de_inclusao",
-    "data_do_ato_de_inclusao"
+    "data_mais_recente_dos_atos",
+    "datas_dos_atos_texto"
   )
 
   testthat::expect_false(any(metadados %in% names(simples)))
@@ -229,7 +239,7 @@ testthat::test_that("unit: tarifas detalhadas incluem metadados integrais", {
   testthat::expect_equal(detalhado$termino_de_vigencia[[1]], as.Date("2026-05-01"))
   testthat::expect_equal(detalhado$ato_de_inclusao[[1]], "Res. DCC integral")
   testthat::expect_equal(
-    detalhado$data_do_ato_de_inclusao[[1]],
+    detalhado$data_mais_recente_dos_atos[[1]],
     as.Date("2025-04-15")
   )
   testthat::expect_true(all(is.na(detalhado[2, metadados])))
@@ -271,7 +281,8 @@ testthat::test_that("integration: metadados detalhados correspondem aos anexos",
     "inicio_de_vigencia",
     "termino_de_vigencia",
     "ato_de_inclusao",
-    "data_do_ato_de_inclusao"
+    "data_mais_recente_dos_atos",
+    "datas_dos_atos_texto"
   )
 
   esperado <- purrr::map(

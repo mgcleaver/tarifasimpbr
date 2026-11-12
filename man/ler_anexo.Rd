@@ -41,9 +41,11 @@ Para os anexos \code{"iv"}, \code{"v"}, \code{"vi"}, \code{"viii"},
 padronizado, conforme \code{formata_datas}.}
 \item{termino_de_vigencia}{Data de término de vigência em formato
 padronizado; valores \code{"-"}, vazios ou ausentes são tratados como
-vigência sem término e preenchidos com \code{"9999-12-31"}.}
-\item{data_do_ato_de_inclusao}{(Quando existente) data do ato de inclusao,
-tambem formatada por \code{formata_datas}.}
+ausencia de prazo individual conhecido e preenchidos com \code{"9999-12-31"}.}
+\item{datas_dos_atos_texto}{Conteudo original da coluna de datas dos atos
+de inclusao, antes da conversao. \code{NA} se a coluna nao existir na fonte.}
+\item{data_mais_recente_dos_atos}{Maior data cronologica da celula, de
+classe \code{Date}. Se alguma parte for invalida, recebe \code{NA} com aviso.}
 \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
 IV (Desabastecimento), V (Letec), VI (Lebitbk), VIII (Concessoes OMC), IX
 (DCC), X (Automotivo) e XI (Letec+))}
@@ -72,7 +74,8 @@ IV, V, VI, VIII, IX, X e XI, a funcao:
 \item padroniza nomes de colunas com \code{janitor::clean_names} e a partir de outras regras;
 \item garante a existencia da coluna de termino_de_vigencia e renomeia
 inicio_da_vigencia para inicio_de_vigencia quando for o caso;
-\item formata datas com a funcao auxiliar \code{formata_datas};
+\item formata vigencias com a funcao auxiliar \code{formata_datas};
+\item preserva o texto das datas dos atos e calcula a maior data valida;
 \item padroniza codigos \code{ncm} e, quando existente, \code{no_ex}
 }
 
@@ -127,6 +130,7 @@ anexo_v <- ler_anexo(x, n_anexo = "v")
 
 }
 \seealso{
+\link{colunas_tarifas} para o dicionario, formatos aceitos e migracao dos nomes;
 \code{download_tarifas} para obtencao do arquivo de tarifas,
 \code{ler_anexo1} para o processamento especifico do Anexo I
 e \code{formata_datas} para limpeza e padronizacao de datas.

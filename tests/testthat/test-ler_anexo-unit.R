@@ -221,7 +221,8 @@ testthat::test_that("unit: ler_anexo iii empilha tabelas, limpa ncm e atribui ob
 testthat::test_that("unit: ler_anexo iv aplica regras de padronizacao", {
   testthat::local_mocked_bindings(
     excel_sheets = function(...) c("Anexo IV - Desabastecimento"),
-    read_excel = function(...) {
+    read_excel = function(..., trim_ws = TRUE) {
+      if (!trim_ws) return(tibble::tibble(datas = c("01/01/2025", "02/01/2025")))
       tibble::tibble(
         ncm = c("12.34.56.78", "8765.43.21"),
         no_ex = c("1", "-"),
@@ -260,7 +261,7 @@ testthat::test_that("unit: ler_anexo iv aplica regras de padronizacao", {
   testthat::expect_equal(anexo_iv$lista[[1]], "Desabastecimento")
   testthat::expect_s3_class(anexo_iv$inicio_de_vigencia, "Date")
   testthat::expect_s3_class(anexo_iv$termino_de_vigencia, "Date")
-  testthat::expect_s3_class(anexo_iv$data_do_ato_de_inclusao, "Date")
+  testthat::expect_s3_class(anexo_iv$data_mais_recente_dos_atos, "Date")
   testthat::expect_true(is.na(anexo_iv$obs[[1]]))
   testthat::expect_equal(anexo_iv$obs[[2]], "Observacao")
 })

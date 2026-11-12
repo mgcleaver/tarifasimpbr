@@ -9,8 +9,15 @@
   informando erro se a aba não existir ou estiver duplicada.
 - Acrescenta `descricao_medida` ao fim das buscas por NCM e ato, preservando
   a descrição específica do anexo sem substituir as descrições da NCM.
-  As colunas anteriores mantêm nomes, posições, tipos e conteúdo.
-- Mantém o tratamento existente das datas nas consultas.
+  As descrições anteriores da NCM são preservadas.
+- Substitui `data_do_ato_de_inclusao` (e `data_do_ato` nas buscas) por
+  `data_mais_recente_dos_atos`, com o máximo cronológico das datas da célula.
+  Acrescenta `datas_dos_atos_texto`, preservando o conteúdo original, e
+  aplica o mesmo esquema às listas IV, V, VI, VIII, IX, X e XI.
+- Células com qualquer data inválida retornam `NA` com aviso, sem descartar
+  o texto original nem calcular um máximo parcial. Ausências continuam `NA`.
+- Documenta as colunas em `?colunas_tarifas`, incluindo a migração dos nomes
+  e `9999-12-31` como sentinela, não uma data real de expiração.
 
 # tarifasimpbr 0.8.0
 

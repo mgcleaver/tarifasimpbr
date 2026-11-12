@@ -11,6 +11,8 @@ utils::globalVariables(c(
   "descricao_tec_concatenada_anexo_i",
   "bkbit_anexo_i",
   "ato_de_inclusao",
+  "data_mais_recente_dos_atos",
+  "datas_dos_atos_texto",
   "data_do_ato_de_inclusao",
   "obs",
   "bkbit",

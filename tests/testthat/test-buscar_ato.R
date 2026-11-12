@@ -12,7 +12,8 @@ colunas_buscar_ato <- c(
   "inicio_de_vigencia",
   "termino_de_vigencia",
   "ato",
-  "data_do_ato",
+  "data_mais_recente_dos_atos",
+  "datas_dos_atos_texto",
   "obs",
   "descricao_medida"
 )
@@ -72,7 +73,7 @@ mock_ler_anexo_buscar_ato <- function(x, n_anexo) {
       inicio_de_vigencia = as.Date(c("2025-01-01", "2025-06-01")),
       termino_de_vigencia = as.Date(c("2025-12-31", "2026-12-31")),
       ato_de_inclusao = c("Res. 068/2024", "Res. 168/2024"),
-      data_do_ato_de_inclusao = as.Date(c("2024-12-01", "2025-05-01")),
+      data_mais_recente_dos_atos = as.Date(c("2024-12-01", "2025-05-01")),
       obs = c(NA_character_, "Observacao")
     ),
     vi = tibble::tibble(ncm = character()),
