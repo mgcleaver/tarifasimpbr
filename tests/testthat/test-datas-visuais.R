@@ -39,7 +39,7 @@ testthat::test_that("integration: formatos oficiais e campos equivalentes sao pr
   testthat::expect_identical(names(catalogo), c("anexo", "nome_anexo"))
   base <- ler_anexo(x, "i")
   ii <- ler_anexo(x, "ii")
-  testthat::expect_true(all(c("descricao_medida", "aliquota", "ato_de_inclusao", "bkbit") %in% names(ii)))
+  testthat::expect_true(all(c("descricao_ncm", "aliquota", "ato_de_inclusao", "bkbit") %in% names(ii)))
   testthat::expect_false(any(c("descricao", "aliquota_aplicada", "atos_de_inclusao", "bit_bk") %in% names(ii)))
   tarifas <- tarifas_aplicadas(x, detalhar = TRUE)
   testthat::expect_identical(tarifas$descricao_ncm, base$descricao_ncm)
@@ -47,7 +47,7 @@ testthat::test_that("integration: formatos oficiais e campos equivalentes sao pr
   testthat::expect_identical(tarifasimpbr:::listar_ex_tarifarios(x), ex_tarifarios(x))
   for (a in tarifasimpbr:::anexos_excecao_disponiveis(x)) {
     lido <- ler_anexo(x, a)
-    testthat::expect_false(any(c("descricao", "tarifa_ex") %in% names(lido)))
+    testthat::expect_false(any(c("descricao_medida", "tarifa_ex") %in% names(lido)))
     testthat::expect_identical(names(lido)[[ncol(lido)]], "lista")
   }
   if (!"xi" %in% tarifasimpbr:::anexos_excecao_disponiveis(x)) return(invisible(NULL))
@@ -56,9 +56,9 @@ testthat::test_that("integration: formatos oficiais e campos equivalentes sao pr
   testthat::expect_identical(xi$datas_dos_atos_texto[xi$ncm == "40111000"], "06/11/2026")
   testthat::expect_identical(xi$datas_dos_atos_texto[xi$ncm == "29225099"], rep("25/02/2025 e 06/11/2026", 2))
   for (busca in list(buscar_ncm(x, "29225099"), buscar_ato(x, 705))) {
-    testthat::expect_identical(match("descricao_medida", names(busca)) + 1L, match("descricao_ncm", names(busca)))
+    testthat::expect_identical(match("descricao_ex", names(busca)) + 1L, match("descricao_ncm", names(busca)))
     trecho <- busca[busca$anexo == "xi" & !is.na(busca$no_ex) & busca$no_ex == "002", ]
-    testthat::expect_identical(trecho$descricao_medida, "Outros, exceto treonina")
+    testthat::expect_identical(trecho$descricao_ex, "Outros, exceto treonina")
     testthat::expect_identical(trecho$descricao_ncm, "Outros")
   }
 })

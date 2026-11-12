@@ -14,18 +14,29 @@
 #'     catalogo e nas buscas. `fim_vigencia()` acrescenta somente `anexo`.}
 #'   \item{lista}{Nome da lista de excecao; na consolidacao, nomes separados
 #'     por virgula quando houver medidas em mais de uma lista.}
-#'   \item{descricao_ncm}{Descricao da NCM de oito digitos do Anexo I,
-#'     tambem usada nas tarifas e buscas. Nas buscas do Anexo III, recebe `NA`.}
+#'   \item{descricao_ncm}{Descricao da propria fonte na leitura dos Anexos
+#'     I e II. Nas tarifas e buscas, vem do I, sem substituicao pelo texto do
+#'     II ou das listas. Nas buscas do Anexo III, recebe `NA`.}
 #'   \item{descricao_tec_concatenada}{Descricao formada com os niveis
 #'     hierarquicos do Anexo I, a partir da posicao.}
-#'   \item{descricao_medida}{Texto especifico do Anexo II ou da
-#'     lista de excecao, incluindo restricoes como "exceto treonina". Nao
-#'     substitui a descricao da NCM. Mantido nas buscas, Ex e vencimentos.
-#'     Nas buscas, ausente para I e III ou quando a fonte nao o informa.}
+#'   \item{descricao}{Texto da propria lista em `ler_anexo()` para IV, V,
+#'     VI, VIII, IX, X e XI, e em `fim_vigencia()`. Preservado para Ex,
+#'     codigo integral e quota.}
+#'   \item{descricao_ex}{Nas buscas e em `ex_tarifarios()`, copia somente
+#'     a descricao da lista quando ha Ex indicado em `no_ex`. Sem Ex ou sem
+#'     descricao na lista, recebe `NA`. Nao usa nem concatena a descricao
+#'     do Anexo I. Nas buscas, I, II e III recebem `NA`.}
 #'   \item{bkbit}{Marcacao da NCM como bem de capital (BK) ou de informatica e
 #'     telecomunicacoes (BIT), quando informada nos Anexos I e II. Nas tarifas
 #'     e buscas vem do I; os valores de cada fonte permanecem preservados.}
 #' }
+#'
+#' A indicacao de Ex segue a presenca de `no_ex`: `NA`, vazio apos remover
+#' espacos e hifen sao ausencias. Zeros a esquerda sao preservados. Quota
+#' preenchida, sozinha, nao preenche `descricao_ex`. Nas planilhas de 04/11 e
+#' 11/11/2026 nao foram observados `0` ou `000`; esses valores continuam
+#' tratados como preenchidos pela regra existente, sem validar a numeracao
+#' legal nem reinterpreta-los silenciosamente como ausencia.
 #'
 #' @section Aliquotas e quotas:
 #' \describe{
@@ -144,17 +155,23 @@
 #' consolidadas; a leitura explicita de XI continua exigindo a aba.
 #'
 #' Outras renomeacoes: `descricao_tec` no I e nas tarifas, e `descricao` nas
-#' buscas, passam a `descricao_ncm`. `descricao` no II, nas listas, Ex e
-#' vencimentos passa a `descricao_medida`. `aliquota_aplicada` no II e
+#' buscas, passam a `descricao_ncm`. O II tambem passa de `descricao` para
+#' `descricao_ncm`. Em `ex_tarifarios()`, `descricao` passa a `descricao_ex`.
+#' Nas listas e vencimentos, `descricao` conserva seu nome. `aliquota_aplicada` no II e
 #' `tarifa_ex` nos Ex passam a `aliquota`. No II, `atos_de_inclusao` passa a
 #' `ato_de_inclusao` e `bit_bk` a `bkbit`. No catalogo, `numero_anexo` e
 #' `nome_abreviado_anexo` passam a `anexo` e `nome_anexo`. Os nomes antigos
 #' deixam de ser retornados. Tipos e valores dessas colunas sao preservados.
 #'
+#' `descricao_ex` nas buscas e uma coluna adicional em relacao a 0.8.0.
+#' Para quem testou versoes intermediarias deste branch, `descricao_medida`
+#' passa a `descricao_ncm` no II, a `descricao_ex` nas buscas/Ex e volta a
+#' `descricao` nas listas/vencimentos. Nas buscas sem Ex, agora recebe `NA`.
+#'
 #' @section Ordem das colunas:
 #' A ordem relativa das colunas preexistentes na 0.8.0 e preservada,
 #' considerando as renomeacoes acima. `datas_dos_atos_texto` fica
-#' imediatamente depois de `data_mais_recente_dos_atos`; `descricao_medida`
+#' imediatamente depois de `data_mais_recente_dos_atos`; `descricao_ex`
 #' fica imediatamente antes de `descricao_ncm` nas buscas. Novas colunas podem deslocar posicoes numericas.
 #'
 #' Na leitura individual com [ler_anexo()], `lista` permanece na ultima

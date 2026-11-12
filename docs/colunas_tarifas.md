@@ -13,7 +13,7 @@ ausente ou não aplicável àquela saída, conforme as regras abaixo.
 | --- | --- |
 | `listar_anexos()` | Catálogo dos anexos suportados, com `anexo` e `nome_anexo`, ambos como texto. Não verifica quais abas existem em um arquivo. |
 | `ler_anexo(x, n_anexo)` | Dados do anexo solicitado, com nomes e valores padronizados. Pode preservar colunas adicionais da planilha. A leitura não filtra vigências. |
-| `buscar_ncm(x, ncm)` | Registros da NCM nos anexos suportados; no III, também códigos raiz que a abrangem. Retorna a descrição da NCM e a descrição específica da medida em colunas separadas. Não filtra vigências. |
+| `buscar_ncm(x, ncm)` | Registros da NCM nos anexos suportados; no III, também códigos raiz que a abrangem. Retorna a descrição NCM e, somente nas linhas com Ex, a descrição do destaque em colunas separadas. Não filtra vigências. |
 | `buscar_ato(x, ato)` | Registros que correspondem ao ato nos Anexos I, II e listas de exceção suportadas. Usa as mesmas colunas de `buscar_ncm()`. Não filtra vigências. |
 | `ex_tarifarios(x)` | Registros com destaque Ex nas listas de exceção suportadas, incluindo medidas futuras ou vencidas que estejam na fonte. `listar_ex_tarifarios()` é um nome alternativo para a mesma função. |
 | `detalhar_listas_excecao_vigentes(x)` | Consolidação por NCM das medidas vigentes nas listas, com contagens e dados do registro integral sem quota, quando existente. |
@@ -45,18 +45,30 @@ Gecex 592/2024. As planilhas de 04/11/2026 e 11/11/2026 verificadas não contêm
 | `anexo` | `character` | Número romano em minúsculas no catálogo, nas buscas e em `fim_vigencia()`, como `"xi"`. |
 | `nome_anexo` | `character` | Nome do anexo no catálogo e nas buscas, conforme o catálogo de `listar_anexos()`. |
 | `lista` | `character` | Nome da lista de exceção. Na consolidação e nas tarifas, pode reunir nomes separados por vírgula quando há medidas vigentes em mais de uma lista. Sua presença, por si só, não significa que a tarifa geral foi substituída. |
-| `descricao_ncm` | `character` | Descrição da NCM de oito dígitos no Anexo I; a mesma informação nas tarifas e nas buscas, quando disponível. Nas linhas do Anexo III nas buscas, recebe `NA`. |
+| `descricao_ncm` | `character` | Descrição NCM da própria fonte na leitura dos Anexos I e II. Nas tarifas e nas buscas, vem do Anexo I, quando disponível; não é substituída pela descrição do II ou das listas. Nas linhas do Anexo III nas buscas, recebe `NA`. |
 | `descricao_tec_concatenada` | `character` | Descrição formada com os níveis hierárquicos do Anexo I, da posição de quatro dígitos até o subitem de oito. É informação distinta da descrição apenas do subitem. |
-| `descricao_medida` | `character` | Descrição específica do Anexo II ou da lista de exceção, inclusive restrições do produto. Mantida nas buscas, Ex e vencimentos. Nas buscas, recebe `NA` para os Anexos I e III ou quando a fonte não a fornece; não substitui `descricao_ncm`. |
+| `descricao` | `character` | Texto da própria lista em `ler_anexo()` para IV, V, VI, VIII, IX, X e XI, e em `fim_vigencia()`. Preservado tanto para Ex quanto para código integral ou quota. |
+| `descricao_ex` | `character` | Nas buscas e em `ex_tarifarios()`, descrição copiada exclusivamente da coluna `descricao` da lista quando há Ex indicado em `no_ex`. Sem Ex, recebe `NA`, inclusive para quota e código integral. Se a descrição da lista estiver ausente, também recebe `NA`; nunca usa nem concatena a descrição do Anexo I. Nas buscas, I, II e III recebem `NA`. |
 | `bkbit` | `character` | Marcação como bem de capital (BK) ou de informática e telecomunicações (BIT), informada nos Anexos I e II. Nas tarifas e buscas, vem do I. Os valores de cada fonte são preservados, sem preencher lacunas de um anexo com o outro. |
 
 Exemplo real na planilha de **11/11/2026**, ao executar
 `buscar_ncm(x, "29225099")` e selecionar as linhas do Anexo XI:
 
-| `ncm` | `no_ex` | `descricao_medida` | `descricao_ncm` |
+| `ncm` | `no_ex` | `descricao_ex` | `descricao_ncm` |
 | --- | --- | --- | --- |
-| `29225099` | `NA` | Outros | Outros |
+| `29225099` | `NA` | `NA` | Outros |
 | `29225099` | `002` | Outros, exceto treonina | Outros |
+
+A indicação de Ex segue a regra de presença já usada nos indicadores:
+`NA`, vazio após remover espaços e hífen significam ausência. Valores como
+`2` e `002` indicam Ex; o leitor mantém sua padronização com zeros à esquerda.
+Quota preenchida, sozinha, não preenche `descricao_ex`. A descrição da linha
+continua disponível como `descricao` na leitura da lista e nos vencimentos.
+
+Nas planilhas de 04/11 e 11/11/2026 não foram encontrados `0` ou `000` em
+`no_ex`. Para preservar o comportamento existente, esses valores continuam
+sendo tratados como campos preenchidos, sem validar a numeração legal do Ex
+nem reinterpretá-los silenciosamente como ausência.
 
 ## Alíquotas, quotas e contagens
 
@@ -215,15 +227,22 @@ Para inspecionar a saída de uma leitura, use `names(ler_anexo(x, "xi"))` ou
 | `data_do_ato_de_inclusao` nas listas e tabelas derivadas | `data_mais_recente_dos_atos` |
 | `data_do_ato` nas buscas | `data_mais_recente_dos_atos` |
 | `descricao_tec` em `ler_anexo(x, "i")` e tarifas | `descricao_ncm` |
-| `descricao` nas buscas | `descricao_ncm` |
-| `descricao` no Anexo II, nas listas, Ex e vencimentos | `descricao_medida` |
+| `descricao` no Anexo II e nas buscas | `descricao_ncm` |
+| `descricao` em `ex_tarifarios()` | `descricao_ex` |
 | `aliquota_aplicada` no Anexo II e `tarifa_ex` nos Ex | `aliquota` |
 | `atos_de_inclusao` no Anexo II | `ato_de_inclusao` |
 | `bit_bk` no Anexo II | `bkbit` |
 | `numero_anexo` e `nome_abreviado_anexo` no catálogo | `anexo` e `nome_anexo`, respectivamente |
 
 Os nomes antigos deixam de ser retornados. Atualize seleções, filtros e demais
-consumidores dessas colunas. `datas_dos_atos_texto` é uma coluna adicional.
+consumidores dessas colunas. `datas_dos_atos_texto` e `descricao_ex` nas
+buscas são colunas adicionais em relação à 0.8.0. `descricao` nas listas e
+nos vencimentos conserva o nome histórico.
+
+Para quem testou versões intermediárias deste branch: `descricao_medida`
+passa a `descricao_ncm` no II, a `descricao_ex` nas buscas e Ex, e volta a
+`descricao` nas listas e vencimentos. Nas buscas, o conteúdo agora é `NA`
+quando não há Ex, mesmo que a lista possua uma descrição nessa linha.
 Os nomes na planilha de entrada continuam aceitos; não é necessário renomeá-los.
 Consulte também as [notas da versão](../NEWS.md).
 
@@ -231,7 +250,7 @@ Consulte também as [notas da versão](../NEWS.md).
 
 A ordem relativa das colunas preexistentes na 0.8.0 é preservada, considerando
 as renomeações acima. `datas_dos_atos_texto` fica imediatamente depois de
-`data_mais_recente_dos_atos`; nas buscas, `descricao_medida` fica
+`data_mais_recente_dos_atos`; nas buscas, `descricao_ex` fica
 imediatamente antes de `descricao_ncm`.
 Novas colunas podem deslocar posições numéricas.
 

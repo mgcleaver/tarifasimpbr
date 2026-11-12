@@ -15,7 +15,7 @@ Um \code{tibble} com uma linha por ex-tarifario e, no minimo, as colunas:
 \describe{
 \item{lista}{Nome abreviado da lista de excecao.}
 \item{ncm}{Codigo NCM padronizado com 8 digitos.}
-\item{descricao_medida}{Descricao do produto associada ao ex.}
+\item{descricao_ex}{Descricao do produto associada ao ex.}
 \item{no_ex}{Numero do ex padronizado com 3 digitos.}
 \item{aliquota}{Aliquota associada ao ex-tarifario.}
 \item{quota}{Volume de quota, quando houver.}
@@ -32,12 +32,15 @@ Um \code{tibble} com uma linha por ex-tarifario e, no minimo, as colunas:
 Consolida, em uma unica tabela, os registros de ex-tarifarios lidos por
 \code{\link[=ler_anexo]{ler_anexo()}} nos anexos IV, V, VI, VIII, IX, X e XI (quando presente no arquivo). A identificacao de
 ex-tarifario e feita a partir da presenca de valor na coluna \code{no_ex}.
+\code{NA}, vazio apos remover espacos e hifen indicam ausencia.
 }
 \details{
 A funcao usa \code{\link[=ler_anexo]{ler_anexo()}} como fonte unica de leitura e limpeza dos dados.
 Em seguida, filtra apenas as linhas com \code{no_ex} preenchido e padroniza as
 colunas opcionais para permitir a consolidacao entre anexos com estruturas
-ligeiramente diferentes.
+ligeiramente diferentes. \code{descricao_ex} copia exclusivamente \code{descricao}
+da lista, sem usar nem concatenar o texto do Anexo I. Se a descricao
+da lista estiver ausente, retorna \code{NA}.
 }
 \examples{
 \dontrun{

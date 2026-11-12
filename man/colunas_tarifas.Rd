@@ -19,18 +19,29 @@ digitos. Ausencia indica que o registro nao especifica destaque.}
 catalogo e nas buscas. \code{fim_vigencia()} acrescenta somente \code{anexo}.}
 \item{lista}{Nome da lista de excecao; na consolidacao, nomes separados
 por virgula quando houver medidas em mais de uma lista.}
-\item{descricao_ncm}{Descricao da NCM de oito digitos do Anexo I,
-tambem usada nas tarifas e buscas. Nas buscas do Anexo III, recebe \code{NA}.}
+\item{descricao_ncm}{Descricao da propria fonte na leitura dos Anexos
+I e II. Nas tarifas e buscas, vem do I, sem substituicao pelo texto do
+II ou das listas. Nas buscas do Anexo III, recebe \code{NA}.}
 \item{descricao_tec_concatenada}{Descricao formada com os niveis
 hierarquicos do Anexo I, a partir da posicao.}
-\item{descricao_medida}{Texto especifico do Anexo II ou da
-lista de excecao, incluindo restricoes como "exceto treonina". Nao
-substitui a descricao da NCM. Mantido nas buscas, Ex e vencimentos.
-Nas buscas, ausente para I e III ou quando a fonte nao o informa.}
+\item{descricao}{Texto da propria lista em \code{ler_anexo()} para IV, V,
+VI, VIII, IX, X e XI, e em \code{fim_vigencia()}. Preservado para Ex,
+codigo integral e quota.}
+\item{descricao_ex}{Nas buscas e em \code{ex_tarifarios()}, copia somente
+a descricao da lista quando ha Ex indicado em \code{no_ex}. Sem Ex ou sem
+descricao na lista, recebe \code{NA}. Nao usa nem concatena a descricao
+do Anexo I. Nas buscas, I, II e III recebem \code{NA}.}
 \item{bkbit}{Marcacao da NCM como bem de capital (BK) ou de informatica e
 telecomunicacoes (BIT), quando informada nos Anexos I e II. Nas tarifas
 e buscas vem do I; os valores de cada fonte permanecem preservados.}
 }
+
+A indicacao de Ex segue a presenca de \code{no_ex}: \code{NA}, vazio apos remover
+espacos e hifen sao ausencias. Zeros a esquerda sao preservados. Quota
+preenchida, sozinha, nao preenche \code{descricao_ex}. Nas planilhas de 04/11 e
+11/11/2026 nao foram observados \code{0} ou \code{000}; esses valores continuam
+tratados como preenchidos pela regra existente, sem validar a numeracao
+legal nem reinterpreta-los silenciosamente como ausencia.
 }
 
 \section{Aliquotas e quotas}{
@@ -159,19 +170,25 @@ nao mudam. Arquivos antigos sem XI continuam aceitos pelas consultas
 consolidadas; a leitura explicita de XI continua exigindo a aba.
 
 Outras renomeacoes: \code{descricao_tec} no I e nas tarifas, e \code{descricao} nas
-buscas, passam a \code{descricao_ncm}. \code{descricao} no II, nas listas, Ex e
-vencimentos passa a \code{descricao_medida}. \code{aliquota_aplicada} no II e
+buscas, passam a \code{descricao_ncm}. O II tambem passa de \code{descricao} para
+\code{descricao_ncm}. Em \code{ex_tarifarios()}, \code{descricao} passa a \code{descricao_ex}.
+Nas listas e vencimentos, \code{descricao} conserva seu nome. \code{aliquota_aplicada} no II e
 \code{tarifa_ex} nos Ex passam a \code{aliquota}. No II, \code{atos_de_inclusao} passa a
 \code{ato_de_inclusao} e \code{bit_bk} a \code{bkbit}. No catalogo, \code{numero_anexo} e
 \code{nome_abreviado_anexo} passam a \code{anexo} e \code{nome_anexo}. Os nomes antigos
 deixam de ser retornados. Tipos e valores dessas colunas sao preservados.
+
+\code{descricao_ex} nas buscas e uma coluna adicional em relacao a 0.8.0.
+Para quem testou versoes intermediarias deste branch, \code{descricao_medida}
+passa a \code{descricao_ncm} no II, a \code{descricao_ex} nas buscas/Ex e volta a
+\code{descricao} nas listas/vencimentos. Nas buscas sem Ex, agora recebe \code{NA}.
 }
 
 \section{Ordem das colunas}{
 
 A ordem relativa das colunas preexistentes na 0.8.0 e preservada,
 considerando as renomeacoes acima. \code{datas_dos_atos_texto} fica
-imediatamente depois de \code{data_mais_recente_dos_atos}; \code{descricao_medida}
+imediatamente depois de \code{data_mais_recente_dos_atos}; \code{descricao_ex}
 fica imediatamente antes de \code{descricao_ncm} nas buscas. Novas colunas podem deslocar posicoes numericas.
 
 Na leitura individual com \code{\link[=ler_anexo]{ler_anexo()}}, \code{lista} permanece na ultima

@@ -16,7 +16,7 @@ zeros a esquerda como equivalentes.}
 }
 \value{
 Um \code{tibble} com uma linha por ocorrencia encontrada e as colunas
-\code{anexo}, \code{nome_anexo}, \code{ncm}, \code{no_ex}, \code{descricao_medida}, \code{descricao_ncm},
+\code{anexo}, \code{nome_anexo}, \code{ncm}, \code{no_ex}, \code{descricao_ex}, \code{descricao_ncm},
 \code{descricao_tec_concatenada}, \code{bkbit}, \code{aliquota}, \code{quota},
 \code{unidade_quota}, \code{inicio_de_vigencia}, \code{termino_de_vigencia}, \code{ato},
 \code{data_mais_recente_dos_atos}, \code{datas_dos_atos_texto}, \code{obs}. Quando o ato nao e encontrado, retorna um tibble
@@ -38,10 +38,11 @@ maiusculas e minusculas.
 O Anexo XI (Letec+) e incluido quando presente no arquivo.
 
 \code{descricao_ncm} e \code{descricao_tec_concatenada} mantem as descricoes do Anexo I.
-\code{descricao_medida}, imediatamente antes de \code{descricao_ncm}, preserva o texto
-especifico do anexo consultado (II ou lista de excecao), inclusive
-restricoes de Ex como "exceto treonina" e descricoes de medidas sem Ex.
-No Anexo I, ou quando a coluna de origem nao existe, recebe \code{NA}.
+\code{descricao_ex}, imediatamente antes de \code{descricao_ncm}, preserva o texto
+da coluna \code{descricao} da lista somente quando \code{no_ex} indica um Ex,
+inclusive restricoes como "exceto treonina". Sem Ex, recebe \code{NA},
+mesmo quando ha quota ou descricao preenchida na fonte.
+Nos Anexos I e II, ou quando a coluna de origem nao existe, recebe \code{NA}.
 Valores ausentes na origem nao sao preenchidos com a descricao da NCM.
 As datas dos atos resumem a celula inteira, inclusive quando a busca
 corresponde a somente um dos atos. Consulte \link{colunas_tarifas}.

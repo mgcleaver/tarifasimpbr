@@ -4,6 +4,7 @@
 #' Consolida, em uma unica tabela, os registros de ex-tarifarios lidos por
 #' [ler_anexo()] nos anexos IV, V, VI, VIII, IX, X e XI (quando presente no arquivo). A identificacao de
 #' ex-tarifario e feita a partir da presenca de valor na coluna `no_ex`.
+#' `NA`, vazio apos remover espacos e hifen indicam ausencia.
 #'
 #' @param x Objeto retornado por [download_tarifas()], que no caso e o caminho
 #'   temporario do arquivo de tarifas de importacao vigentes baixado.
@@ -12,7 +13,7 @@
 #' \describe{
 #'   \item{lista}{Nome abreviado da lista de excecao.}
 #'   \item{ncm}{Codigo NCM padronizado com 8 digitos.}
-#'   \item{descricao_medida}{Descricao do produto associada ao ex.}
+#'   \item{descricao_ex}{Descricao do produto associada ao ex.}
 #'   \item{no_ex}{Numero do ex padronizado com 3 digitos.}
 #'   \item{aliquota}{Aliquota associada ao ex-tarifario.}
 #'   \item{quota}{Volume de quota, quando houver.}
@@ -29,7 +30,9 @@
 #' A funcao usa [ler_anexo()] como fonte unica de leitura e limpeza dos dados.
 #' Em seguida, filtra apenas as linhas com `no_ex` preenchido e padroniza as
 #' colunas opcionais para permitir a consolidacao entre anexos com estruturas
-#' ligeiramente diferentes.
+#' ligeiramente diferentes. `descricao_ex` copia exclusivamente `descricao`
+#' da lista, sem usar nem concatenar o texto do Anexo I. Se a descricao
+#' da lista estiver ausente, retorna `NA`.
 #'
 #' @seealso [colunas_tarifas]
 #'
@@ -46,7 +49,7 @@ ex_tarifarios <- function(x) {
 
   adiciona_colunas_ausentes <- function(df) {
     colunas_texto <- c(
-      "descricao_medida",
+      "descricao",
       "lista",
       "aliquota",
       "quota",
@@ -74,11 +77,11 @@ ex_tarifarios <- function(x) {
         adiciona_colunas_ausentes()
 
       anexo |>
-        dplyr::filter(!is.na(.data$no_ex) & trimws(.data$no_ex) != "") |>
+        dplyr::filter(ex_informado(.data$no_ex)) |>
         dplyr::transmute(
           lista = .data$lista,
           ncm = .data$ncm,
-          descricao_medida = .data$descricao_medida,
+          descricao_ex = .data$descricao,
           no_ex = .data$no_ex,
           aliquota = .data$aliquota,
           quota = .data$quota,

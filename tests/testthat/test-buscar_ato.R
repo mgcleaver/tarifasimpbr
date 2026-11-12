@@ -3,7 +3,7 @@ colunas_buscar_ato <- c(
   "nome_anexo",
   "ncm",
   "no_ex",
-  "descricao_medida",
+  "descricao_ex",
   "descricao_ncm",
   "descricao_tec_concatenada",
   "bkbit",
@@ -52,7 +52,7 @@ mock_ler_anexo_buscar_ato <- function(x, n_anexo) {
     ),
     ii = tibble::tibble(
       ncm = c("11090000", "22090000"),
-      descricao_medida = c("Descricao propria II", "Outra descricao II"),
+      descricao_ncm = c("Descricao propria II", "Outra descricao II"),
       tec = c("10", "12"),
       aliquota = c("8", "9"),
       ato_de_inclusao = c("068/2024", "00680/2024")
@@ -65,7 +65,7 @@ mock_ler_anexo_buscar_ato <- function(x, n_anexo) {
     iv = tibble::tibble(ncm = character()),
     v = tibble::tibble(
       ncm = c("11090000", "22090000"),
-      descricao_medida = c("Descricao propria V", "Outra descricao V"),
+      descricao = c("Descricao propria V", "Outra descricao V"),
       no_ex = c("001", "002"),
       aliquota = c("0", "2"),
       quota = c(NA_character_, "100"),
@@ -114,7 +114,7 @@ testthat::test_that("unit: buscar_ato usa descricao do anexo i quando anexo poss
   resultado <- buscar_ato(x = "arquivo_mock.xlsx", ato = 68)
 
   testthat::expect_equal(resultado$descricao_ncm, rep("Gluten de trigo", 3))
-  testthat::expect_identical(resultado$descricao_medida, c(NA_character_, "Descricao propria II", "Descricao propria V"))
+  testthat::expect_identical(resultado$descricao_ex, c(NA_character_, NA_character_, "Descricao propria V"))
   testthat::expect_false("Descricao propria II" %in% resultado$descricao_ncm)
   testthat::expect_false("Descricao propria V" %in% resultado$descricao_ncm)
 })

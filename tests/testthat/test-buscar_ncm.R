@@ -3,7 +3,7 @@ colunas_buscar_ncm <- c(
   "nome_anexo",
   "ncm",
   "no_ex",
-  "descricao_medida",
+  "descricao_ex",
   "descricao_ncm",
   "descricao_tec_concatenada",
   "bkbit",
@@ -73,7 +73,7 @@ testthat::test_that("unit: buscar_ncm retorna anexo i e ii padronizados", {
   testthat::expect_s3_class(resultado, "tbl_df")
   testthat::expect_identical(names(resultado), colunas_buscar_ncm)
   testthat::expect_equal(resultado$anexo, c("i", "ii"))
-  testthat::expect_identical(resultado$descricao_medida, rep(NA_character_, 2))
+  testthat::expect_identical(resultado$descricao_ex, rep(NA_character_, 2))
   testthat::expect_equal(resultado$nome_anexo, c("Tarifa Externa Comum", "Anexo II"))
   testthat::expect_equal(resultado$ncm, c("11090000", "11090000"))
   testthat::expect_equal(resultado$aliquota, c(10, 8))
@@ -164,7 +164,7 @@ testthat::test_that("unit: buscar_ncm usa descricao do anexo i nos anexos de exc
         viii = tibble::tibble(ncm = character()),
         ix = tibble::tibble(
           ncm = "40111000",
-          descricao_medida = "Descricao propria do Anexo IX",
+          descricao = "Descricao propria do Anexo IX",
           no_ex = NA_character_,
           aliquota = "0",
           quota = NA_character_,
@@ -186,7 +186,7 @@ testthat::test_that("unit: buscar_ncm usa descricao do anexo i nos anexos de exc
     dplyr::filter(.data$anexo == "ix")
 
   testthat::expect_equal(resultado_ix$descricao_ncm, "Descricao do Anexo I")
-  testthat::expect_equal(resultado_ix$descricao_medida, "Descricao propria do Anexo IX")
+  testthat::expect_identical(resultado_ix$descricao_ex, NA_character_)
   testthat::expect_equal(
     resultado_ix$descricao_tec_concatenada,
     "Descricao concatenada do Anexo I."
@@ -239,7 +239,7 @@ testthat::test_that("unit: buscar_ncm inclui codigos raiz do anexo iii", {
   testthat::expect_equal(nrow(resultado_anexo_iii), 2L)
   testthat::expect_equal(resultado_anexo_iii$nome_anexo, rep("Setor Aeronautico", 2))
   testthat::expect_true(all(is.na(resultado_anexo_iii$descricao_ncm)))
-  testthat::expect_identical(resultado_anexo_iii$descricao_medida, rep(NA_character_, 2))
+  testthat::expect_identical(resultado_anexo_iii$descricao_ex, rep(NA_character_, 2))
   testthat::expect_true(all(is.na(resultado_anexo_iii$descricao_tec_concatenada)))
   testthat::expect_true(all(is.na(resultado_anexo_iii$aliquota)))
 })
@@ -291,7 +291,7 @@ testthat::test_that("unit: buscar_ncm falha para ncm invalida", {
   )
 })
 
-testthat::test_that("integration: buscas preservam treonina e descricao integral da fonte", {
+testthat::test_that("integration: buscas preservam treonina apenas no Ex e mantem descricao NCM", {
   x <- get_tarifas_path()
   anexo <- if ("xi" %in% tarifasimpbr:::anexos_excecao_disponiveis(x)) "xi" else "v"
   fonte <- ler_anexo(x, anexo) |>
@@ -303,27 +303,27 @@ testthat::test_that("integration: buscas preservam treonina e descricao integral
     dplyr::filter(.data$anexo == .env$anexo, .data$ncm == "29225099")
 
   for (resultado in list(por_ncm, por_ato)) {
-    testthat::expect_identical(resultado$descricao_medida, fonte$descricao_medida)
+    testthat::expect_identical(resultado$descricao_ex, ifelse(is.na(fonte$no_ex), NA_character_, fonte$descricao))
     testthat::expect_identical(resultado$descricao_ncm, rep("Outros", nrow(fonte)))
-    testthat::expect_identical(match("descricao_medida", names(resultado)) + 1L, match("descricao_ncm", names(resultado)))
+    testthat::expect_identical(match("descricao_ex", names(resultado)) + 1L, match("descricao_ncm", names(resultado)))
     ex <- resultado |> dplyr::filter(.data$no_ex == "002")
     integral <- resultado |> dplyr::filter(is.na(.data$no_ex))
-    testthat::expect_identical(ex$descricao_medida, "Outros, exceto treonina")
+    testthat::expect_identical(ex$descricao_ex, "Outros, exceto treonina")
     testthat::expect_equal(ex$aliquota, 0)
-    testthat::expect_identical(integral$descricao_medida, "Outros")
+    testthat::expect_identical(integral$descricao_ex, NA_character_)
     testthat::expect_equal(integral$aliquota, 10.8)
     testthat::expect_true(all(resultado$termino_de_vigencia == as.Date("9999-12-31")))
   }
 })
 
-testthat::test_that("unit: buscas preservam medida mesmo sem NCM correspondente no I", {
+testthat::test_that("unit: buscas preservam descricao do Ex mesmo sem NCM correspondente no I", {
   testthat::local_mocked_bindings(
     anexos_excecao_disponiveis = function(x) "xi",
     ler_anexo = function(x, n_anexo) {
       if (n_anexo == "xi") {
         return(tibble::tibble(
           ncm = "29225099", no_ex = "002",
-          descricao_medida = "Outros, exceto treonina", ato_de_inclusao = "Res. 705/2025"
+          descricao = "Outros, exceto treonina", ato_de_inclusao = "Res. 705/2025"
         ))
       }
       tibble::tibble(ncm = character())
@@ -331,7 +331,7 @@ testthat::test_that("unit: buscas preservam medida mesmo sem NCM correspondente 
     .package = "tarifasimpbr"
   )
   for (resultado in list(buscar_ncm("mock", "29225099"), buscar_ato("mock", 705))) {
-    testthat::expect_identical(resultado$descricao_medida, "Outros, exceto treonina")
+    testthat::expect_identical(resultado$descricao_ex, "Outros, exceto treonina")
     testthat::expect_identical(resultado$descricao_ncm, NA_character_)
     testthat::expect_identical(resultado$descricao_tec_concatenada, NA_character_)
   }

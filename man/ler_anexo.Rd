@@ -23,7 +23,8 @@ Para \code{n_anexo = "i"}, retorna o tibble produzido por \code{ler_anexo1}.
 
 Para \code{n_anexo = "ii"}, retorna um tibble com as colunas
 \code{ncm}, \code{tec} e \code{aliquota}, alem de outras
-colunas eventualmente presentes na aba.
+colunas eventualmente presentes na aba. A descricao do Anexo II e
+retornada como \code{descricao_ncm}, preservando o texto dessa fonte.
 
 Para \code{n_anexo = "iii"}, retorna um tibble com as colunas
 \code{ncm}, \code{regra} e \code{obs}. Os codigos sao lidos das duas
@@ -50,6 +51,8 @@ classe \code{Date}. Se alguma parte for invalida, recebe \code{NA} com aviso.}
 IV (Desabastecimento), V (Letec), VI (Lebitbk), VIII (Concessoes OMC), IX
 (DCC), X (Automotivo) e XI (Letec+))}
 }
+Nas listas, \code{descricao} conserva o texto e o nome da coluna de origem,
+tanto para Ex quanto para codigo integral ou quota.
 Outras colunas presentes no anexo original sao mantidas, podendo variar
 conforme o tipo de anexo.
 }

@@ -20,7 +20,7 @@ testthat::test_that("unit: leitura individual mantem lista por ultimo com ou sem
   )
   testthat::local_mocked_bindings(obter_linha_cabecalho = function(...) 0L, .package = "tarifasimpbr")
   anteriores <- c(
-    "ncm", "no_ex", "descricao_medida", "aliquota", "quota", "unidade_quota",
+    "ncm", "no_ex", "descricao", "aliquota", "quota", "unidade_quota",
     "inicio_de_vigencia", "termino_de_vigencia", "ato_de_inclusao"
   )
   datas <- c("data_mais_recente_dos_atos", "datas_dos_atos_texto")
@@ -40,7 +40,7 @@ testthat::test_that("unit: leitura individual mantem lista por ultimo com ou sem
 
 testthat::test_that("unit: saidas derivadas preservam ordem da 0.8.0 com renomeacoes deliberadas", {
   # Esquemas da 0.8.0 para as fixtures. As datas foram renomeadas;
-  # texto original e descricao_medida sao acrescimos, sem reordenar as demais.
+  # texto original e descricao_ex sao acrescimos, sem reordenar as demais.
   tec <- c("ncm", "descricao_tec", "descricao_tec_concatenada", "tec", "bkbit", "resolucoes")
   lista <- c(
     "ncm", "no_ex", "descricao", "aliquota", "quota", "unidade_quota",
@@ -69,7 +69,7 @@ testthat::test_that("unit: saidas derivadas preservam ordem da 0.8.0 com renomea
   renomear <- function(nomes, saida) {
     mapa <- c(descricao_tec = "descricao_ncm", numero_anexo = "anexo", nome_abreviado_anexo = "nome_anexo", tarifa_ex = "aliquota")
     for (antigo in names(mapa)) nomes[nomes == antigo] <- mapa[[antigo]]
-    nomes[nomes == "descricao"] <- if (startsWith(saida, "busca")) "descricao_ncm" else "descricao_medida"
+    nomes[nomes == "descricao"] <- if (startsWith(saida, "busca")) "descricao_ncm" else if (saida == "ex") "descricao_ex" else "descricao"
     nomes[nomes %in% c("data_do_ato", "data_do_ato_de_inclusao")] <- "data_mais_recente_dos_atos"
     nomes
   }
@@ -91,7 +91,7 @@ testthat::test_that("unit: saidas derivadas preservam ordem da 0.8.0 com renomea
       if ("datas_dos_atos_texto" %in% atuais) {
         testthat::expect_identical(match("datas_dos_atos_texto", atuais), match("data_mais_recente_dos_atos", atuais) + 1L)
       }
-      if (startsWith(nome, "busca")) testthat::expect_identical(match("descricao_medida", atuais) + 1L, match("descricao_ncm", atuais))
+      if (startsWith(nome, "busca")) testthat::expect_identical(match("descricao_ex", atuais) + 1L, match("descricao_ncm", atuais))
     }
   }
 })

@@ -109,8 +109,8 @@ incompatível com seleções e filtros que utilizem os nomes anteriores:
 | `data_do_ato_de_inclusao` nas listas e tabelas derivadas | `data_mais_recente_dos_atos` |
 | `data_do_ato` nas buscas | `data_mais_recente_dos_atos` |
 | `descricao_tec` em `ler_anexo(x, "i")` e tarifas | `descricao_ncm` |
-| `descricao` nas buscas | `descricao_ncm` |
-| `descricao` no Anexo II, nas listas, Ex e vencimentos | `descricao_medida` |
+| `descricao` no Anexo II e nas buscas | `descricao_ncm` |
+| `descricao` em `ex_tarifarios()` | `descricao_ex` |
 | `aliquota_aplicada` no Anexo II e `tarifa_ex` nos Ex | `aliquota` |
 | `atos_de_inclusao` no Anexo II | `ato_de_inclusao` |
 | `bit_bk` no Anexo II | `bkbit` |
@@ -120,10 +120,17 @@ Os nomes antigos deixam de ser retornados. `data_mais_recente_dos_atos` é `Date
 a maior data cronológica da célula, mesmo que a ordem textual seja diferente.
 `datas_dos_atos_texto` é uma coluna adicional que preserva o conteúdo original
 e a apresentação das datas numéricas nos formatos XLSX suportados, como
-`06/11/2026`. Nas buscas, `descricao_medida` fica imediatamente antes de
+`06/11/2026`. Nas buscas, `descricao_ex` fica imediatamente antes de
 `descricao_ncm`; as demais colunas mantêm sua ordem relativa. Se qualquer parte da célula for inválida, a data resumida
 é `NA` e a leitura emite aviso. O resumo da célula não identifica, por si só,
 a data de cada ato citado. Veja as demais mudanças no [NEWS.md](NEWS.md).
+
+`descricao_ex` usa apenas o texto da própria lista nas linhas com Ex.
+Sem Ex ou sem descrição na lista, recebe `NA`, sem usar a descrição do Anexo I.
+`descricao` nas listas e em `fim_vigencia()` conserva o nome histórico.
+Quem testou o campo provisório `descricao_medida` deve consultar a migração
+no dicionário: o II usa `descricao_ncm`, as buscas e Ex usam `descricao_ex`,
+e listas e vencimentos usam `descricao`.
 
 ## Outras informações
 

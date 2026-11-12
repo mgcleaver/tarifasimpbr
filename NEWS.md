@@ -6,22 +6,26 @@
 - Integra o XI às consultas por NCM e ato, à listagem de Ex, aos vencimentos
   e às tarifas aplicadas, usando as mesmas regras de NCM integral, Ex e quota
   das demais listas de exceção.
-- Acrescenta `descricao_medida` imediatamente antes de `descricao_ncm` nas buscas por NCM e ato, preservando
-  a descrição específica da medida no Anexo II ou na lista de exceção,
-  inclusive em registros sem Ex, sem substituir as descrições da NCM.
-  Quando a fonte não informa essa descrição, a coluna recebe `NA`.
-  Isso mantém, por exemplo, "Outros, exceto treonina" para 2922.50.99 Ex 002.
+- Acrescenta `descricao_ex` imediatamente antes de `descricao_ncm` nas buscas
+  por NCM e ato. Copia exclusivamente a descrição da lista quando há Ex em
+  `no_ex`, preservando, por exemplo, "Outros, exceto treonina" para
+  2922.50.99 Ex 002. Sem Ex ou sem descrição na lista, retorna `NA`,
+  sem preencher nem concatenar com a descrição do Anexo I. Quota, sozinha,
+  não preenche esse campo.
 - Documenta as colunas em `?colunas_tarifas`, incluindo a migração dos nomes
   e seus tipos, com link para a documentação no README.
 
 ## Mudanças incompatíveis: nomes de colunas
 
 - Unifica a descrição da NCM do Anexo I em `descricao_ncm`: substitui
-  `descricao_tec` na leitura do I e nas tarifas, e `descricao` nas buscas.
+  `descricao_tec` na leitura do I e nas tarifas, e `descricao` no II e nas buscas.
+  Na leitura do II, mantém seu texto original; nas buscas, mantém a referência do I.
   Mantém `descricao_tec_concatenada`, que contém informação hierárquica distinta.
-- Usa `descricao_medida` para a descrição do Anexo II, das listas, Ex e
-  vencimentos, substituindo `descricao` nessas saídas. Nas buscas, coloca-a
-  imediatamente antes de `descricao_ncm`, inclusive quando vazias.
+- Em `ex_tarifarios()`, renomeia `descricao` para `descricao_ex` na mesma
+  posição. Na leitura das listas e em `fim_vigencia()`, mantém `descricao`.
+  Corrige o campo provisório `descricao_medida` das versões intermediárias
+  deste branch: passa a `descricao_ncm` no II, `descricao_ex` nas buscas/Ex
+  e `descricao` nas listas/vencimentos. A ordem das demais colunas é preservada.
 - Unifica `aliquota_aplicada` do II e `tarifa_ex` dos Ex em `aliquota`.
   Mantém `tec`, `teb` e `tarifa_aplicada`, com significados próprios.
 - No II, padroniza `atos_de_inclusao` para `ato_de_inclusao` e `bit_bk`
@@ -61,10 +65,15 @@
 
 ## Correções e compatibilidade
 
+- A descrição de Ex segue a indicação de `no_ex`: `NA`, vazio e hífen são
+  ausências. Zeros à esquerda são preservados. As planilhas verificadas não
+  têm `0`/`000`; esses valores continuam preenchidos pela regra existente,
+  sem nova validação da numeração ou mudança dos indicadores tarifários.
+
 - Mantém `lista` na última posição de `ler_anexo()`, inclusive quando as novas
   colunas de datas são criadas por ausência da coluna original na fonte.
   Preserva a ordem relativa das colunas anteriores nas saídas públicas,
-  considerando as renomeações deliberadas e a posição de `descricao_medida` nas buscas. As funções derivadas
+  considerando as renomeações deliberadas e a posição de `descricao_ex` nas buscas. As funções derivadas
   mantêm suas ordens próprias, incluindo a união de colunas em `fim_vigencia()`.
 - Preserva a leitura de planilhas antigas sem XI: as consultas consolidadas
   só incluem a aba quando presente. A leitura explícita do XI informa erro
