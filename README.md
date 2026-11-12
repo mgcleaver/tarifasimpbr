@@ -95,17 +95,26 @@ vencimentos <- fim_vigencia(x)
 vencimentos <- fim_vigencia(x, meses = 1, incluir_hoje = TRUE)
 ```
 
-## Dicionário de colunas
+## Dicionário de colunas e migração para 0.9.0
 
 Consulte o [dicionário das colunas](man/colunas_tarifas.Rd), também disponível
 no R com `?colunas_tarifas`. Ele explica as descrições, alíquotas, datas,
 quotas e a sentinela de ausência de prazo individual.
 
-`data_mais_recente_dos_atos` substitui `data_do_ato_de_inclusao` nas listas
-e `data_do_ato` nas buscas. `datas_dos_atos_texto` preserva o conteúdo
-original antes da conversão. Se qualquer data da célula for inválida,
-a data resumida é `NA` e a leitura emite aviso. Atualize seleções e filtros
-que utilizem os nomes antigos.
+A versão 0.9.0 altera os nomes das colunas de datas de atos de forma
+incompatível com seleções e filtros que utilizem os nomes anteriores:
+
+| Nome até 0.8.0 | Nome a partir de 0.9.0 |
+| --- | --- |
+| `data_do_ato_de_inclusao` nas listas e tabelas derivadas | `data_mais_recente_dos_atos` |
+| `data_do_ato` nas buscas | `data_mais_recente_dos_atos` |
+
+Os nomes antigos deixam de ser retornados. A nova coluna é `Date` e contém
+a maior data cronológica da célula, mesmo que a ordem textual seja diferente.
+`datas_dos_atos_texto` é uma coluna adicional que preserva o conteúdo original
+antes da conversão. Se qualquer parte da célula for inválida, a data resumida
+é `NA` e a leitura emite aviso. O resumo da célula não identifica, por si só,
+a data de cada ato citado. Veja as demais mudanças no [NEWS.md](NEWS.md).
 
 ## Outras informações
 

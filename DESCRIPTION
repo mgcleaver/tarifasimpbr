@@ -1,6 +1,6 @@
 Package: tarifasimpbr
 Title: Ferramentas para trabalhar com dados de tarifas de importação brasileiras
-Version: 0.8.0
+Version: 0.9.0
 Depends: R (>= 4.2.0)
 Authors@R: 
     person("Miguel", "Cleaver", , "miguelmdic@outlook.com", role = c("aut", "cre"))

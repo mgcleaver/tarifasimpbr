@@ -1,26 +1,60 @@
-# tarifasimpbr (desenvolvimento)
+# tarifasimpbr 0.9.0
+
+## Novidades
 
 - Inclui o Anexo XI (Letec+) em `listar_anexos()` e `ler_anexo()`.
 - Integra o XI às consultas por NCM e ato, à listagem de Ex, aos vencimentos
   e às tarifas aplicadas, usando as mesmas regras de NCM integral, Ex e quota
   das demais listas de exceção.
-- Preserva a leitura de planilhas antigas: as consultas consolidadas só
-  incluem XI quando a aba está presente. A leitura explícita do XI continua
-  informando erro se a aba não existir ou estiver duplicada.
 - Acrescenta `descricao_medida` ao fim das buscas por NCM e ato, preservando
-  a descrição específica do anexo sem substituir as descrições da NCM.
-  As descrições anteriores da NCM são preservadas.
-- Substitui `data_do_ato_de_inclusao` (e `data_do_ato` nas buscas) por
-  `data_mais_recente_dos_atos`, com o máximo cronológico das datas da célula.
-  Acrescenta `datas_dos_atos_texto`, preservando o conteúdo original, e
-  aplica o mesmo esquema às listas IV, V, VI, VIII, IX, X e XI.
-- Células com qualquer data inválida retornam `NA` com aviso, sem descartar
-  o texto original nem calcular um máximo parcial. Ausências continuam `NA`.
+  a descrição específica da medida no Anexo II ou na lista de exceção,
+  inclusive em registros sem Ex, sem substituir as descrições da NCM.
+  Quando a fonte não informa essa descrição, a coluna recebe `NA`.
+  Isso mantém, por exemplo, "Outros, exceto treonina" para 2922.50.99 Ex 002.
 - Documenta as colunas em `?colunas_tarifas`, incluindo a migração dos nomes
-  e `9999-12-31` como sentinela, não uma data real de expiração.
+  e seus tipos, com link para a documentação no README.
+
+## Mudança incompatível: datas dos atos
+
+- Renomeia `data_do_ato_de_inclusao` nas listas e tabelas derivadas, e
+  `data_do_ato` em `buscar_ncm()` e `buscar_ato()`, para
+  `data_mais_recente_dos_atos` (classe `Date`). Os nomes antigos deixam de
+  ser retornados: seleções, filtros e demais consumidores devem ser atualizados.
+  O nome da coluna na planilha de entrada permanece aceito.
+- Acrescenta `datas_dos_atos_texto` (texto), preservando o conteúdo original
+  antes da conversão, inclusive espaços e separadores. Células numéricas
+  do Excel preservam o número serial como texto, não sua formatação visual.
+- Aplica o mesmo par de colunas às listas IV, V, VI, VIII, IX, X e XI e às
+  consultas, Ex, vencimentos e tarifas detalhadas. Quando a fonte não contém
+  a coluna de datas de atos, ambas recebem `NA`. A tabela de
+  `tarifas_aplicadas(detalhar = FALSE)` mantém suas colunas anteriores.
+- Seleciona a maior data cronológica da célula, independentemente da ordem
+  textual. São aceitos formatos brasileiro e ISO, inteiros seriais do Excel
+  e múltiplas datas separadas por `e`, vírgula, ponto e vírgula, barra vertical
+  ou quebra de linha. Esse resumo não associa automaticamente cada ato à
+  sua data: em uma busca pela Resolução 705, a célula que também cita a 978
+  continua resumida pela maior data das duas.
+- Se qualquer parte for inválida, retorna `NA` com aviso, preservando o
+  texto e evitando um máximo parcial. Ausências resultam em `NA` sem aviso.
+  O aviso ocorre na conversão; a reutilização do cache não o repete.
+
+## Correções e compatibilidade
+
+- Preserva a leitura de planilhas antigas sem XI: as consultas consolidadas
+  só incluem a aba quando presente. A leitura explícita do XI informa erro
+  se a aba não existir ou estiver duplicada.
+- A Letec+ segue a mesma regra de tarifa geral das demais listas: somente
+  medida vigente para NCM integral, sem Ex e sem quota, substitui a TEB/TEC.
+  Ex e quotas continuam identificados separadamente. Metadados das tarifas
+  detalhadas pertencem ao mesmo registro integral que determina a alíquota.
+- Mantém `9999-12-31` como sentinela de ausência de prazo individual conhecido,
+  não como expiração real ou garantia de vigência indefinida. Não preenche
+  os términos individuais ausentes com o limite normativo da Letec+.
 - Rejeita explicitamente `ler_anexo(x, "vii")`, que antes retornava o VIII
   por aceitar abreviações no argumento. Documenta a ausência de suporte ao
   VII (antiga Lista Covid), encerrado em 2024 e ausente das planilhas verificadas.
+  Compatibilidade com planilhas sem XI não significa suporte histórico ao VII.
+- Mantém R >= 4.2.0 e as dependências existentes.
 
 # tarifasimpbr 0.8.0
 
