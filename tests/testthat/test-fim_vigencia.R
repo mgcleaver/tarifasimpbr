@@ -25,7 +25,7 @@ testthat::test_that("unit: fim_vigencia respeita meses, limites e inclusao de ho
     ))
   )
   testthat::local_mocked_bindings(
-    ler_anexo = function(x, n_anexo) {
+    ler_anexo_com_cache = function(x, n_anexo) {
       if (n_anexo == "iv") dados else dados[0, ]
     },
     .package = "tarifasimpbr"
@@ -71,7 +71,7 @@ testthat::test_that("unit: fim_vigencia usa meses de calendario e anos bissextos
   )
   dados <- NULL
   testthat::local_mocked_bindings(
-    ler_anexo = function(x, n_anexo) {
+    ler_anexo_com_cache = function(x, n_anexo) {
       if (n_anexo == "iv") dados else dados[0, ]
     },
     .package = "tarifasimpbr"
@@ -103,7 +103,7 @@ testthat::test_that("unit: fim_vigencia preserva colunas, tipos, duplicidades e 
     termino_de_vigencia = as.Date(c("2026-10-31", "2026-10-30", "2026-10-30"))
   )
   testthat::local_mocked_bindings(
-    ler_anexo = function(x, n_anexo) {
+    ler_anexo_com_cache = function(x, n_anexo) {
       lidos <<- c(lidos, n_anexo)
       anexo <- dados |>
         dplyr::mutate(lista = paste("Lista", n_anexo))
@@ -155,7 +155,7 @@ testthat::test_that("unit: fim_vigencia preserva colunas, tipos, duplicidades e 
 testthat::test_that("unit: fim_vigencia valida argumentos antes de ler anexos", {
   arquivo <- testthat::test_path("fixtures", "anexos-cache.xlsx")
   testthat::local_mocked_bindings(
-    ler_anexo = function(...) stop("A leitura nao deveria ser chamada"),
+    ler_anexo_com_cache = function(...) stop("A leitura nao deveria ser chamada"),
     .package = "tarifasimpbr"
   )
 
@@ -203,7 +203,7 @@ testthat::test_that("unit: fim_vigencia rejeita meses excessivos antes de calcul
 testthat::test_that("unit: fim_vigencia propaga falhas de leitura sem resultado parcial", {
   arquivo <- testthat::test_path("fixtures", "anexos-cache.xlsx")
   testthat::local_mocked_bindings(
-    ler_anexo = function(x, n_anexo) {
+    ler_anexo_com_cache = function(x, n_anexo) {
       if (n_anexo == "vi") stop("Falha ao ler Anexo VI")
       tibble::tibble(termino_de_vigencia = as.Date("2026-10-31"))
     },
@@ -226,7 +226,7 @@ testthat::test_that("unit: fim_vigencia consulta o relogio uma unica vez", {
     parent = environment(consulta)
   )
   testthat::local_mocked_bindings(
-    ler_anexo = function(x, n_anexo) {
+    ler_anexo_com_cache = function(x, n_anexo) {
       tibble::tibble(termino_de_vigencia = as.Date("2026-10-31"))
     },
     .package = "tarifasimpbr"

@@ -89,7 +89,9 @@ fim_vigencia <- function(x, meses = 0, incluir_hoje = FALSE) {
   purrr::map(
     anexos,
     function(anexo) {
-      ler_anexo(x = x, n_anexo = anexo) |>
+      # Preserva a ordem da uniao, anterior ao reposicionamento de lista
+      # feito por ler_anexo() nas leituras individuais.
+      ler_anexo_com_cache(x = x, n_anexo = anexo) |>
         dplyr::filter(
           .data$termino_de_vigencia != as.Date("9999-12-31"),
           dplyr::between(.data$termino_de_vigencia, .env$inicio, .env$limite)

@@ -140,6 +140,24 @@ nao mudam. Arquivos antigos sem XI continuam aceitos pelas consultas
 consolidadas; a leitura explicita de XI continua exigindo a aba.
 }
 
+\section{Ordem das colunas}{
+
+A ordem relativa das colunas preexistentes na 0.8.0 e preservada,
+considerando as renomeacoes de datas acima. \code{datas_dos_atos_texto} fica
+imediatamente depois de \code{data_mais_recente_dos_atos}; \code{descricao_medida}
+fica no fim das buscas. Novas colunas podem deslocar posicoes numericas.
+
+Na leitura individual com \code{\link[=ler_anexo]{ler_anexo()}}, \code{lista} permanece na ultima
+posicao. Se a fonte nao possui datas de atos, o novo par e acrescentado
+antes de \code{lista}; se possui, ocupa a regiao da coluna original de datas.
+Os filtros de vigencia preservam a ordem da entrada.
+
+As outras funcoes mantem suas ordens proprias: \code{lista} nao precisa ser
+a ultima coluna. \code{\link[=fim_vigencia]{fim_vigencia()}} preserva a ordem da uniao dos anexos,
+que pode diferir da leitura individual. Prefira selecionar colunas por
+nome, especialmente ao migrar entre versoes ou trocar a planilha.
+}
+
 \seealso{
 \code{\link[=ler_anexo]{ler_anexo()}}, \code{\link[=buscar_ncm]{buscar_ncm()}}, \code{\link[=buscar_ato]{buscar_ato()}}, \code{\link[=ex_tarifarios]{ex_tarifarios()}},
 \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}, \code{\link[=tarifas_aplicadas]{tarifas_aplicadas()}}, \code{\link[=fim_vigencia]{fim_vigencia()}}

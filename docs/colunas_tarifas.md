@@ -197,6 +197,23 @@ consumidores dessas colunas. `datas_dos_atos_texto` é uma coluna adicional.
 Os nomes na planilha de entrada continuam aceitos; não é necessário renomeá-los.
 Consulte também as [notas da versão](../NEWS.md).
 
+### Ordem das colunas
+
+A ordem relativa das colunas preexistentes na 0.8.0 é preservada, considerando
+as renomeações acima. `datas_dos_atos_texto` fica imediatamente depois de
+`data_mais_recente_dos_atos`; `descricao_medida` fica no fim das buscas.
+Novas colunas podem deslocar posições numéricas.
+
+Em `ler_anexo()`, **`lista` permanece na última posição**. Quando a fonte não
+possui datas de atos, o novo par é acrescentado antes de `lista`; quando possui,
+ocupa a região da coluna original de datas. Os filtros de vigência preservam
+a ordem da entrada.
+
+As demais funções mantêm suas ordens próprias: `lista` não precisa ser a última
+coluna. `fim_vigencia()` preserva a ordem da união dos anexos, que pode diferir
+da leitura individual. Prefira selecionar colunas por nome, especialmente ao
+migrar entre versões ou trocar a planilha.
+
 ## Fontes e manutenção
 
 Os tipos e exemplos desta página foram conferidos nas saídas do pacote com a

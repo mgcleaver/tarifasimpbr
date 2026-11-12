@@ -137,7 +137,10 @@ ler_anexo <- function(
     n_anexo
   )
 
-  ler_anexo_com_cache(x, n_anexo)
+  # A leitura individual mantem lista no fim, sem reordenar o cache usado
+  # na uniao historica de colunas de fim_vigencia().
+  ler_anexo_com_cache(x, n_anexo) |>
+    dplyr::relocate(dplyr::any_of("lista"), .after = dplyr::last_col())
 }
 
 ler_anexo_sem_cache <- function(x, n_anexo) {

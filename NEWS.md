@@ -40,6 +40,11 @@
 
 ## Correções e compatibilidade
 
+- Mantém `lista` na última posição de `ler_anexo()`, inclusive quando as novas
+  colunas de datas são criadas por ausência da coluna original na fonte.
+  Preserva a ordem relativa das colunas anteriores nas saídas públicas,
+  considerando as renomeações deliberadas de datas. As funções derivadas
+  mantêm suas ordens próprias, incluindo a união de colunas em `fim_vigencia()`.
 - Preserva a leitura de planilhas antigas sem XI: as consultas consolidadas
   só incluem a aba quando presente. A leitura explícita do XI informa erro
   se a aba não existir ou estiver duplicada.
