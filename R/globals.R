@@ -1,11 +1,9 @@
 utils::globalVariables(c(
-  "aliquota_aplicada",
   "aliquota",
-  "atos_de_inclusao",
   "resolucoes",
   "ncm",
   "descricao_tec_concatenada",
-  "descricao_tec",
+  "descricao_ncm",
   "descricao",
   "descricao_anexo_i",
   "descricao_tec_concatenada_anexo_i",

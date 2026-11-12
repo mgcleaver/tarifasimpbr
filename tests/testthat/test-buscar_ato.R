@@ -3,7 +3,8 @@ colunas_buscar_ato <- c(
   "nome_anexo",
   "ncm",
   "no_ex",
-  "descricao",
+  "descricao_medida",
+  "descricao_ncm",
   "descricao_tec_concatenada",
   "bkbit",
   "aliquota",
@@ -14,14 +15,13 @@ colunas_buscar_ato <- c(
   "ato",
   "data_mais_recente_dos_atos",
   "datas_dos_atos_texto",
-  "obs",
-  "descricao_medida"
+  "obs"
 )
 
 mock_listar_anexos_buscar_ato <- function() {
   tibble::tibble(
-    numero_anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x"),
-    nome_abreviado_anexo = c(
+    anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x"),
+    nome_anexo = c(
       "Tarifa Externa Comum",
       "Anexo II",
       "Setor Aeronautico",
@@ -40,7 +40,7 @@ mock_ler_anexo_buscar_ato <- function(x, n_anexo) {
     n_anexo,
     i = tibble::tibble(
       ncm = c("11090000", "22090000", "33090000"),
-      descricao_tec = c("Gluten de trigo", "Vinagre", "Perfumes"),
+      descricao_ncm = c("Gluten de trigo", "Vinagre", "Perfumes"),
       descricao_tec_concatenada = c(
         "Produtos vegetais. Gluten de trigo.",
         "Vinagre.",
@@ -52,10 +52,10 @@ mock_ler_anexo_buscar_ato <- function(x, n_anexo) {
     ),
     ii = tibble::tibble(
       ncm = c("11090000", "22090000"),
-      descricao = c("Descricao propria II", "Outra descricao II"),
+      descricao_medida = c("Descricao propria II", "Outra descricao II"),
       tec = c("10", "12"),
-      aliquota_aplicada = c("8", "9"),
-      atos_de_inclusao = c("068/2024", "00680/2024")
+      aliquota = c("8", "9"),
+      ato_de_inclusao = c("068/2024", "00680/2024")
     ),
     iii = tibble::tibble(
       ncm = "1109",
@@ -65,7 +65,7 @@ mock_ler_anexo_buscar_ato <- function(x, n_anexo) {
     iv = tibble::tibble(ncm = character()),
     v = tibble::tibble(
       ncm = c("11090000", "22090000"),
-      descricao = c("Descricao propria V", "Outra descricao V"),
+      descricao_medida = c("Descricao propria V", "Outra descricao V"),
       no_ex = c("001", "002"),
       aliquota = c("0", "2"),
       quota = c(NA_character_, "100"),
@@ -100,7 +100,7 @@ testthat::test_that("unit: buscar_ato retorna schema igual ao buscar_ncm", {
     c("Res. TEC 68", "068/2024", "Res. 068/2024")
   )
   testthat::expect_false("iii" %in% resultado$anexo)
-  testthat::expect_equal(resultado$descricao, rep("Gluten de trigo", 3))
+  testthat::expect_equal(resultado$descricao_ncm, rep("Gluten de trigo", 3))
 })
 
 testthat::test_that("unit: buscar_ato usa descricao do anexo i quando anexo possui descricao propria", {
@@ -113,10 +113,10 @@ testthat::test_that("unit: buscar_ato usa descricao do anexo i quando anexo poss
 
   resultado <- buscar_ato(x = "arquivo_mock.xlsx", ato = 68)
 
-  testthat::expect_equal(resultado$descricao, rep("Gluten de trigo", 3))
+  testthat::expect_equal(resultado$descricao_ncm, rep("Gluten de trigo", 3))
   testthat::expect_identical(resultado$descricao_medida, c(NA_character_, "Descricao propria II", "Descricao propria V"))
-  testthat::expect_false("Descricao propria II" %in% resultado$descricao)
-  testthat::expect_false("Descricao propria V" %in% resultado$descricao)
+  testthat::expect_false("Descricao propria II" %in% resultado$descricao_ncm)
+  testthat::expect_false("Descricao propria V" %in% resultado$descricao_ncm)
 })
 
 testthat::test_that("unit: buscar_ato busca numero com zeros a esquerda sem falsos positivos", {
@@ -148,7 +148,7 @@ testthat::test_that("unit: buscar_ato nao busca numero dentro do ano", {
         n_anexo,
         i = tibble::tibble(
           ncm = c("11090000", "22090000", "33090000"),
-          descricao_tec = c("Gluten de trigo", "Vinagre", "Perfumes"),
+          descricao_ncm = c("Gluten de trigo", "Vinagre", "Perfumes"),
           descricao_tec_concatenada = c(
             "Produtos vegetais. Gluten de trigo.",
             "Vinagre.",
@@ -186,7 +186,7 @@ testthat::test_that("unit: buscar_ato usa busca textual literal", {
         n_anexo,
         i = tibble::tibble(
           ncm = c("11090000", "22090000"),
-          descricao_tec = c("Gluten de trigo", "Vinagre"),
+          descricao_ncm = c("Gluten de trigo", "Vinagre"),
           descricao_tec_concatenada = c("Produtos vegetais. Gluten de trigo.", "Vinagre."),
           tec = c(10, 12),
           bkbit = c(NA_character_, NA_character_),
@@ -315,7 +315,7 @@ testthat::test_that("unit: busca por ato usa todos os campos com datas e preserv
     ler_anexo = function(x, n_anexo) {
       if (n_anexo == "i") return(tibble::tibble(ncm = "01012100"))
       if (n_anexo == "ii") {
-        return(tibble::tibble(ncm = "01012100", atos_de_inclusao = "068 / 2024; 800/2026"))
+        return(tibble::tibble(ncm = "01012100", ato_de_inclusao = "068 / 2024; 800/2026"))
       }
       tibble::tibble(
         ncm = "01012100",

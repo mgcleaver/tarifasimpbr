@@ -22,7 +22,7 @@ um dos:
 Para \code{n_anexo = "i"}, retorna o tibble produzido por \code{ler_anexo1}.
 
 Para \code{n_anexo = "ii"}, retorna um tibble com as colunas
-\code{ncm}, \code{tec} e \code{aliquota_aplicada}, alem de outras
+\code{ncm}, \code{tec} e \code{aliquota}, alem de outras
 colunas eventualmente presentes na aba.
 
 Para \code{n_anexo = "iii"}, retorna um tibble com as colunas
@@ -42,8 +42,8 @@ padronizado, conforme \code{formata_datas}.}
 \item{termino_de_vigencia}{Data de término de vigência em formato
 padronizado; valores \code{"-"}, vazios ou ausentes são tratados como
 ausencia de prazo individual conhecido e preenchidos com \code{"9999-12-31"}.}
-\item{datas_dos_atos_texto}{Conteudo original da coluna de datas dos atos
-de inclusao, antes da conversao. \code{NA} se a coluna nao existir na fonte.}
+\item{datas_dos_atos_texto}{Texto da celula de datas dos atos
+de inclusao, respeitando os formatos XLSX de data suportados. \code{NA} se a coluna nao existir na fonte.}
 \item{data_mais_recente_dos_atos}{Maior data cronologica da celula, de
 classe \code{Date}. Se alguma parte for invalida, recebe \code{NA} com aviso.}
 \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
@@ -64,7 +64,7 @@ enquanto caminho, tamanho e data de modificacao do arquivo forem os mesmos.
 Use \code{\link[=limpar_cache_tarifas]{limpar_cache_tarifas()}} para forcar uma nova leitura. O cache nao filtra
 vigencias. Para o Anexo I, o processamento e delegado a \code{ler_anexo1}. Para o
 Anexo II, le a aba correspondente e padroniza as colunas \code{tec} e
-\code{aliquota_aplicada}. Para o Anexo III, localiza duas tabelas de codigos NCM
+\code{aliquota}. Para o Anexo III, localiza duas tabelas de codigos NCM
 na mesma aba, empilha os codigos em uma unica coluna e adiciona \code{regra} e
 \code{obs} conforme a tabela de origem e a marcacao com asterisco. Para os anexos
 IV, V, VI, VIII, IX, X e XI, a funcao:

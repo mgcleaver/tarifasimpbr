@@ -2,7 +2,7 @@ testthat::test_that("unit: todos os anexos reutilizam a leitura real em cache", 
   limpar_cache_tarifas()
   on.exit(limpar_cache_tarifas(), add = TRUE)
   arquivo <- testthat::test_path("fixtures", "anexos-xi.xlsx")
-  anexos <- listar_anexos()$numero_anexo
+  anexos <- listar_anexos()$anexo
   leituras <- stats::setNames(integer(length(anexos)), anexos)
   leitor <- tarifasimpbr:::ler_anexo_sem_cache
   testthat::local_mocked_bindings(
@@ -64,7 +64,7 @@ testthat::test_that("unit: cache invalida todos os anexos por tamanho ou mtime",
   on.exit(unlink(arquivo), add = TRUE)
   writeBin(charToRaw("a"), arquivo)
   instante <- file.info(arquivo)$mtime
-  anexos <- listar_anexos()$numero_anexo
+  anexos <- listar_anexos()$anexo
   leituras <- 0L
   testthat::local_mocked_bindings(
     ler_anexo_sem_cache = function(x, n_anexo) {
@@ -111,7 +111,7 @@ testthat::test_that("unit: cache separa arquivos e normaliza caminhos equivalent
     },
     .package = "tarifasimpbr"
   )
-  for (anexo in listar_anexos()$numero_anexo) {
+  for (anexo in listar_anexos()$anexo) {
     primeiro <- ler_anexo(arquivos[[1]], anexo)
     segundo <- ler_anexo(arquivos[[2]], anexo)
     testthat::expect_false(identical(primeiro, segundo))
@@ -145,7 +145,7 @@ testthat::test_that("unit: falhas na chave ou leitura nao deixam cache invalido"
     cria_chave_cache_anexo_i = function(x) NA_character_,
     .package = "tarifasimpbr"
   )
-  for (anexo in listar_anexos()$numero_anexo) {
+  for (anexo in listar_anexos()$anexo) {
     primeiro <- ler_anexo(arquivo, anexo)
     segundo <- ler_anexo(arquivo, anexo)
     testthat::expect_false(identical(primeiro, segundo))

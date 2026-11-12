@@ -9,7 +9,7 @@
 #' Use [limpar_cache_tarifas()] para forcar uma nova leitura. O cache nao filtra
 #' vigencias. Para o Anexo I, o processamento e delegado a `ler_anexo1`. Para o
 #' Anexo II, le a aba correspondente e padroniza as colunas `tec` e
-#' `aliquota_aplicada`. Para o Anexo III, localiza duas tabelas de codigos NCM
+#' `aliquota`. Para o Anexo III, localiza duas tabelas de codigos NCM
 #' na mesma aba, empilha os codigos em uma unica coluna e adiciona `regra` e
 #' `obs` conforme a tabela de origem e a marcacao com asterisco. Para os anexos
 #' IV, V, VI, VIII, IX, X e XI, a funcao:
@@ -35,7 +35,7 @@
 #' Para \code{n_anexo = "i"}, retorna o tibble produzido por `ler_anexo1`.
 #'
 #' Para \code{n_anexo = "ii"}, retorna um tibble com as colunas
-#' \code{ncm}, \code{tec} e \code{aliquota_aplicada}, alem de outras
+#' \code{ncm}, \code{tec} e \code{aliquota}, alem de outras
 #' colunas eventualmente presentes na aba.
 #'
 #' Para \code{n_anexo = "iii"}, retorna um tibble com as colunas
@@ -55,8 +55,8 @@
 #'   \item{termino_de_vigencia}{Data de término de vigência em formato
 #'     padronizado; valores `"-"`, vazios ou ausentes são tratados como
 #'     ausencia de prazo individual conhecido e preenchidos com \code{"9999-12-31"}.}
-#'   \item{datas_dos_atos_texto}{Conteudo original da coluna de datas dos atos
-#'     de inclusao, antes da conversao. `NA` se a coluna nao existir na fonte.}
+#'   \item{datas_dos_atos_texto}{Texto da celula de datas dos atos
+#'     de inclusao, respeitando os formatos XLSX de data suportados. `NA` se a coluna nao existir na fonte.}
 #'   \item{data_mais_recente_dos_atos}{Maior data cronologica da celula, de
 #'     classe `Date`. Se alguma parte for invalida, recebe `NA` com aviso.}
 #'   \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
@@ -173,8 +173,8 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
   condicao6 <- FALSE
 
   nome_lista <- listar_anexos() |>
-    dplyr::filter(.data$numero_anexo == n_anexo) |>
-    dplyr::pull(.data$nome_abreviado_anexo)
+    dplyr::filter(.data$anexo == n_anexo) |>
+    dplyr::pull(.data$nome_anexo)
 
   # configuracao da leitura do anexo a partir da aba
   if(stringr::str_detect(n_anexo_lower, " ii ")) {
@@ -190,8 +190,13 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
         janitor::clean_names() |>
         dplyr::rename(
           tec = tec_percent,
-          aliquota_aplicada = aliquota_aplicada_percent
+          aliquota = aliquota_aplicada_percent
         ) |>
+        dplyr::rename(dplyr::any_of(c(
+          descricao_medida = "descricao",
+          ato_de_inclusao = "atos_de_inclusao",
+          bkbit = "bit_bk"
+        ))) |>
         dplyr::mutate(ncm = stringr::str_replace_all(.data$ncm, "\\.", ""))
     )
   } else if (stringr::str_detect(n_anexo_lower, " iii ")) {
@@ -229,7 +234,8 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
     col_types = c("text")) |>
     janitor::clean_names()
 
-  # Rele apenas esta coluna sem aparar espacos, preservando o texto da fonte.
+  # Mantem bruto e apresentacao separados: estilos nao alteram a validacao.
+  datas_visuais <- NULL
   coluna_datas <- match("data_do_ato_de_inclusao", names(anexo))
   if (!is.na(coluna_datas) && nrow(anexo) > 0) {
     anexo$data_do_ato_de_inclusao <- readxl::read_excel(
@@ -240,6 +246,9 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
       ),
       col_names = "datas_dos_atos_texto", col_types = "text", trim_ws = FALSE
     )[[1]]
+    datas_visuais <- datas_atos_excel(
+      x, numero_aba, pula_linhas + 2L, coluna_datas, anexo$data_do_ato_de_inclusao
+    )
   }
 
   if(condicao6 && "x10" %in% names(anexo)) {
@@ -339,11 +348,16 @@ ler_anexo_sem_cache <- function(x, n_anexo) {
     result$data_do_ato_de_inclusao <- rep(NA_character_, nrow(result))
   }
 
+  bruto_datas <- result$data_do_ato_de_inclusao
+  if (!is.null(datas_visuais)) result$data_do_ato_de_inclusao <- datas_visuais$texto
+
   result |>
+    dplyr::rename(descricao_medida = dplyr::any_of("descricao")) |>
     dplyr::rename(datas_dos_atos_texto = data_do_ato_de_inclusao) |>
     dplyr::mutate(
       data_mais_recente_dos_atos = formata_datas_atos(
-        .data$datas_dos_atos_texto, contexto = paste("Anexo", toupper(n_anexo))
+        if (is.null(datas_visuais)) bruto_datas else datas_visuais$calculo,
+        contexto = paste("Anexo", toupper(n_anexo))
       )
     ) |>
     dplyr::relocate(data_mais_recente_dos_atos, .before = datas_dos_atos_texto)

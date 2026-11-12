@@ -11,7 +11,7 @@ ausente ou não aplicável àquela saída, conforme as regras abaixo.
 
 | Função | Conteúdo retornado |
 | --- | --- |
-| `listar_anexos()` | Catálogo dos anexos suportados, com `numero_anexo` e `nome_abreviado_anexo`, ambos como texto. Não verifica quais abas existem em um arquivo. |
+| `listar_anexos()` | Catálogo dos anexos suportados, com `anexo` e `nome_anexo`, ambos como texto. Não verifica quais abas existem em um arquivo. |
 | `ler_anexo(x, n_anexo)` | Dados do anexo solicitado, com nomes e valores padronizados. Pode preservar colunas adicionais da planilha. A leitura não filtra vigências. |
 | `buscar_ncm(x, ncm)` | Registros da NCM nos anexos suportados; no III, também códigos raiz que a abrangem. Retorna a descrição da NCM e a descrição específica da medida em colunas separadas. Não filtra vigências. |
 | `buscar_ato(x, ato)` | Registros que correspondem ao ato nos Anexos I, II e listas de exceção suportadas. Usa as mesmas colunas de `buscar_ncm()`. Não filtra vigências. |
@@ -42,22 +42,21 @@ Gecex 592/2024. As planilhas de 04/11/2026 e 11/11/2026 verificadas não contêm
 | --- | --- | --- |
 | `ncm` | `character` | Código sem pontuação, normalmente com oito dígitos, preservando zeros iniciais. O Anexo III pode conter códigos raiz mais curtos; esses códigos também podem aparecer em `buscar_ncm()`. |
 | `no_ex` | `character` | Número do destaque Ex, padronizado com três dígitos, como `"002"`. Ausência indica que o registro não especifica destaque. |
-| `anexo` | `character` | Número romano em minúsculas nas buscas e em `fim_vigencia()`, como `"xi"`. |
-| `nome_anexo` | `character` | Nome do anexo nas buscas, conforme o catálogo de `listar_anexos()`. |
+| `anexo` | `character` | Número romano em minúsculas no catálogo, nas buscas e em `fim_vigencia()`, como `"xi"`. |
+| `nome_anexo` | `character` | Nome do anexo no catálogo e nas buscas, conforme o catálogo de `listar_anexos()`. |
 | `lista` | `character` | Nome da lista de exceção. Na consolidação e nas tarifas, pode reunir nomes separados por vírgula quando há medidas vigentes em mais de uma lista. Sua presença, por si só, não significa que a tarifa geral foi substituída. |
-| `descricao_tec` | `character` | Descrição da NCM de oito dígitos no Anexo I. |
-| `descricao_tec_concatenada` | `character` | Descrição formada com os níveis hierárquicos do Anexo I, da posição de quatro dígitos até o subitem de oito. |
-| `descricao` | `character` | Nas buscas, descrição da NCM obtida do Anexo I, quando disponível. Nas linhas do Anexo III retornadas por `buscar_ncm()`, recebe `NA`. Em `ler_anexo()` e `ex_tarifarios()`, é a descrição do registro na fonte. |
-| `descricao_medida` | `character` | Nas buscas, descrição específica do Anexo II ou da lista de exceção, inclusive restrições do produto. Não substitui `descricao` nem `descricao_tec_concatenada`. Recebe `NA` quando a fonte não fornece essa descrição; também é `NA` para os Anexos I e III. |
-| `bkbit` | `character` | Marcação como bem de capital (BK) ou de informática e telecomunicações (BIT), quando informada no Anexo I. |
+| `descricao_ncm` | `character` | Descrição da NCM de oito dígitos no Anexo I; a mesma informação nas tarifas e nas buscas, quando disponível. Nas linhas do Anexo III nas buscas, recebe `NA`. |
+| `descricao_tec_concatenada` | `character` | Descrição formada com os níveis hierárquicos do Anexo I, da posição de quatro dígitos até o subitem de oito. É informação distinta da descrição apenas do subitem. |
+| `descricao_medida` | `character` | Descrição específica do Anexo II ou da lista de exceção, inclusive restrições do produto. Mantida nas buscas, Ex e vencimentos. Nas buscas, recebe `NA` para os Anexos I e III ou quando a fonte não a fornece; não substitui `descricao_ncm`. |
+| `bkbit` | `character` | Marcação como bem de capital (BK) ou de informática e telecomunicações (BIT), informada nos Anexos I e II. Nas tarifas e buscas, vem do I. Os valores de cada fonte são preservados, sem preencher lacunas de um anexo com o outro. |
 
 Exemplo real na planilha de **11/11/2026**, ao executar
 `buscar_ncm(x, "29225099")` e selecionar as linhas do Anexo XI:
 
-| `ncm` | `no_ex` | `descricao` | `descricao_medida` |
+| `ncm` | `no_ex` | `descricao_medida` | `descricao_ncm` |
 | --- | --- | --- | --- |
 | `29225099` | `NA` | Outros | Outros |
-| `29225099` | `002` | Outros | Outros, exceto treonina |
+| `29225099` | `002` | Outros, exceto treonina | Outros |
 
 ## Alíquotas, quotas e contagens
 
@@ -68,10 +67,8 @@ e não uma fração de 0 a 1. O tipo depende da função que produz a coluna.
 | --- | --- | --- |
 | `tec` | `numeric` no Anexo I e nas tarifas; `character` na leitura do Anexo II | Alíquota da Tarifa Externa Comum. |
 | `teb` | `numeric` | Tarifa Externa Brasileira: alíquota aplicada do Anexo II, recorrendo à TEC quando não houver valor nesse anexo. |
-| `aliquota` | `character` na leitura das listas e em `fim_vigencia()`; `numeric` nas buscas | Alíquota do registro. Nas buscas, reúne a TEC para o Anexo I, a alíquota aplicada para o II e a alíquota da lista; no III, recebe `NA`. |
-| `aliquota_aplicada` | `character` | Alíquota aplicada informada no Anexo II, preservada como texto pelo leitor. |
+| `aliquota` | `character` no Anexo II, nas listas, em `ex_tarifarios()` e em `fim_vigencia()`; `numeric` nas buscas | Alíquota do registro. Nas buscas, reúne a TEC para o Anexo I, a alíquota aplicada para o II e a alíquota da lista; no III, recebe `NA`. |
 | `tarifa_aplicada` | `numeric` | Na consolidação das listas, alíquota do registro vigente para NCM integral sem quota, ou `NA` quando ele não existe. Em `tarifas_aplicadas()`, usa essa alíquota, depois a TEB e, na ausência, a TEC. |
-| `tarifa_ex` | `character` | Alíquota do destaque em `ex_tarifarios()`, proveniente da coluna `aliquota` da lista. |
 | `quota`, `unidade_quota` | `character` | Quantidade e unidade informadas na fonte. O pacote não calcula saldo disponível de quota. |
 | `contagem_quota` | `integer` | Número de registros vigentes com quota nas listas de exceção, por NCM; não é volume nem saldo. |
 | `contagem_ex` | `integer` | Número de registros vigentes com destaque Ex nas listas, por NCM. Um registro com Ex e quota pode contribuir para ambas as contagens. |
@@ -91,10 +88,9 @@ zero quando a NCM não possui registros vigentes nas listas de exceção.
 | Coluna | Tipo no R | Significado e origem |
 | --- | --- | --- |
 | `resolucoes` | `character` | Referências normativas do Anexo I. |
-| `atos_de_inclusao` | `character` | Referências normativas do Anexo II. |
-| `ato_de_inclusao` | `character` | Referências normativas das listas de exceção; também aparece nas saídas derivadas. |
+| `ato_de_inclusao` | `character` | Atos de inclusão do Anexo II e das listas de exceção; também aparece nas saídas derivadas. |
 | `ato` | `character` | Nome usado nas buscas para reunir as referências normativas dos diferentes anexos. Uma célula pode mencionar vários atos. |
-| `datas_dos_atos_texto` | `character` | Conteúdo original da coluna de datas dos atos de inclusão, antes da conversão, inclusive espaços e separadores. Uma célula numérica do Excel é preservada como texto do número serial, como `"46332"`, e não como a formatação visual `"06/11/2026"`. |
+| `datas_dos_atos_texto` | `character` | Apresentação textual da célula de datas dos atos: textos são mantidos literalmente, inclusive espaços e separadores; números com formato de data XLSX suportado são exibidos conforme esse formato. Por exemplo, `46332` com data curta resulta em `"06/11/2026"`. |
 | `data_mais_recente_dos_atos` | `Date` | Maior data cronológica entre todas as datas válidas da célula. Não é necessariamente a data do ato pesquisado, de publicação, de início ou de término da medida. |
 
 O par `datas_dos_atos_texto` / `data_mais_recente_dos_atos` está presente nas
@@ -108,10 +104,38 @@ datas dos atos e vigências vêm do mesmo registro integral sem quota que
 determina a tarifa geral**. Quando há somente Ex ou quota, esses metadados
 recebem `NA`. A saída padrão `tarifas_aplicadas(x)` não contém essas colunas.
 
+### Apresentação das células XLSX
+
+A leitura consulta o tipo e o estilo de cada célula. O formato interno 14
+(data curta, dependente da localidade do Excel) é apresentado em **pt-BR,
+`dd/mm/aaaa`**. São suportados também formatos numéricos personalizados de
+data com dia, mês e ano, separados por `/`, `-` ou `.`, inclusive ISO e
+componentes sem zero inicial. Uma data com estilo ISO continua como
+`2026-11-06`; uma célula textual, mesmo contendo um serial, permanece literal.
+Números com formato Geral ou inteiro permanecem números em texto.
+
+A validação usa o **valor bruto**, separado internamente do texto exibido.
+Assim, uma fração de serial não se torna válida por ser exibida sem hora;
+uma parte inválida de texto misto continua causando `NA` com aviso.
+Não é acrescentada uma coluna pública de valor bruto nem alterado o XLSX.
+
+Não se trata de um renderizador completo do Excel: formatos com nomes de
+meses, horas, condições ou seções múltiplas, e arquivos XLS, mantêm o texto
+bruto com aviso. Não se reproduzem largura da coluna, `#####`, formatação
+condicional ou preferências regionais individuais. Fórmulas usam o resultado
+gravado no arquivo, sem recalculá-las.
+
+Nas planilhas oficiais de 04/11 e 11/11/2026, todas as células numéricas nas
+colunas de datas dos atos usam o formato interno 14. No XI de 11/11 há
+14 células de texto misto e cinco numéricas: estas aparecem como `06/11/2026`.
+
 ### Conversão de datas dos atos
 
 São aceitos os formatos brasileiro (`d/m/aaaa` ou `dd/mm/aaaa`), ISO
-(`aaaa-mm-dd`) e números inteiros seriais do Excel, com origem em `1899-12-30`.
+(`aaaa-mm-dd`) e números inteiros seriais do Excel, com origem em `1899-12-30` quando escritos como texto. Células numéricas
+respeitam também o sistema de datas 1904 declarado no arquivo; datas numéricas
+formatadas anteriores a março de 1900 consideram a peculiaridade do Excel
+(o dia fictício 29/02/1900 não é aceito como data válida).
 Datas múltiplas podem ser separadas por `e` (sem distinguir maiúsculas), vírgula,
 ponto e vírgula, barra vertical ou quebra de linha.
 
@@ -177,7 +201,6 @@ entre anexos e arquivos. Exemplos observados, como texto, na planilha de
 | --- | --- |
 | `setor_do_produto_divisao_isic` | Classificação setorial informada nas listas de exceção. |
 | `enquadramento_anexo_res_gmc_49_19` | Campo de enquadramento informado no Anexo IV. |
-| `bit_bk` | Marcação informada no Anexo II; não é a coluna `bkbit` obtida do Anexo I. |
 | `anexo_iii_da_decisao_cmc_no_08_22_percent` | Campo percentual da planilha do Anexo II, mantido como texto. |
 | `fundamentacao_da_aliquota_aplicada` | Fundamentação informada no Anexo II. |
 
@@ -191,6 +214,13 @@ Para inspecionar a saída de uma leitura, use `names(ler_anexo(x, "xi"))` ou
 | --- | --- |
 | `data_do_ato_de_inclusao` nas listas e tabelas derivadas | `data_mais_recente_dos_atos` |
 | `data_do_ato` nas buscas | `data_mais_recente_dos_atos` |
+| `descricao_tec` em `ler_anexo(x, "i")` e tarifas | `descricao_ncm` |
+| `descricao` nas buscas | `descricao_ncm` |
+| `descricao` no Anexo II, nas listas, Ex e vencimentos | `descricao_medida` |
+| `aliquota_aplicada` no Anexo II e `tarifa_ex` nos Ex | `aliquota` |
+| `atos_de_inclusao` no Anexo II | `ato_de_inclusao` |
+| `bit_bk` no Anexo II | `bkbit` |
+| `numero_anexo` e `nome_abreviado_anexo` no catálogo | `anexo` e `nome_anexo`, respectivamente |
 
 Os nomes antigos deixam de ser retornados. Atualize seleções, filtros e demais
 consumidores dessas colunas. `datas_dos_atos_texto` é uma coluna adicional.
@@ -201,7 +231,8 @@ Consulte também as [notas da versão](../NEWS.md).
 
 A ordem relativa das colunas preexistentes na 0.8.0 é preservada, considerando
 as renomeações acima. `datas_dos_atos_texto` fica imediatamente depois de
-`data_mais_recente_dos_atos`; `descricao_medida` fica no fim das buscas.
+`data_mais_recente_dos_atos`; nas buscas, `descricao_medida` fica
+imediatamente antes de `descricao_ncm`.
 Novas colunas podem deslocar posições numéricas.
 
 Em `ler_anexo()`, **`lista` permanece na última posição**. Quando a fonte não

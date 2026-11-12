@@ -20,16 +20,16 @@
 #'   zeros a esquerda como equivalentes.
 #'
 #' @return Um `tibble` com uma linha por ocorrencia encontrada e as colunas
-#'   `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao`,
+#'   `anexo`, `nome_anexo`, `ncm`, `no_ex`, `descricao_medida`, `descricao_ncm`,
 #'   `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
 #'   `unidade_quota`, `inicio_de_vigencia`, `termino_de_vigencia`, `ato`,
-#'   `data_mais_recente_dos_atos`, `datas_dos_atos_texto`, `obs` e `descricao_medida`. Quando o ato nao e encontrado, retorna um tibble
+#'   `data_mais_recente_dos_atos`, `datas_dos_atos_texto`, `obs`. Quando o ato nao e encontrado, retorna um tibble
 #'   vazio com essas colunas.
 #'
 #' @details
-#' `descricao` e `descricao_tec_concatenada` mantem as descricoes do Anexo I.
-#' `descricao_medida`, acrescentada ao fim do resultado, preserva o texto da
-#' coluna `descricao` do anexo consultado (II ou lista de excecao), inclusive
+#' `descricao_ncm` e `descricao_tec_concatenada` mantem as descricoes do Anexo I.
+#' `descricao_medida`, imediatamente antes de `descricao_ncm`, preserva o texto
+#' especifico do anexo consultado (II ou lista de excecao), inclusive
 #' restricoes de Ex como "exceto treonina" e descricoes de medidas sem Ex.
 #' No Anexo I, ou quando a coluna de origem nao existe, recebe `NA`.
 #' Valores ausentes na origem nao sao preenchidos com a descricao da NCM.
@@ -74,7 +74,8 @@ buscar_ato <- function(x, ato) {
     "nome_anexo",
     "ncm",
     "no_ex",
-    "descricao",
+    "descricao_medida",
+    "descricao_ncm",
     "descricao_tec_concatenada",
     "bkbit",
     "aliquota",
@@ -85,8 +86,7 @@ buscar_ato <- function(x, ato) {
     "ato",
     "data_mais_recente_dos_atos",
     "datas_dos_atos_texto",
-    "obs",
-    "descricao_medida"
+    "obs"
   )
 
   resultado_vazio <- tibble::tibble(
@@ -94,7 +94,8 @@ buscar_ato <- function(x, ato) {
     nome_anexo = character(),
     ncm = character(),
     no_ex = character(),
-    descricao = character(),
+    descricao_medida = character(),
+    descricao_ncm = character(),
     descricao_tec_concatenada = character(),
     bkbit = character(),
     aliquota = numeric(),
@@ -105,8 +106,7 @@ buscar_ato <- function(x, ato) {
     ato = character(),
     data_mais_recente_dos_atos = as.Date(character()),
     datas_dos_atos_texto = character(),
-    obs = character(),
-    descricao_medida = character()
+    obs = character()
   )
 
   if (busca_numerica) {
@@ -122,8 +122,8 @@ buscar_ato <- function(x, ato) {
 
   nomes_anexos <- listar_anexos()
   nome_anexo <- stats::setNames(
-    nomes_anexos$nome_abreviado_anexo,
-    nomes_anexos$numero_anexo
+    nomes_anexos$nome_anexo,
+    nomes_anexos$anexo
   )
 
   anexo_i <- ler_anexo(x, "i")
@@ -131,8 +131,8 @@ buscar_ato <- function(x, ato) {
   if (!"ncm" %in% names(anexo_i)) {
     anexo_i$ncm <- rep(NA_character_, nrow(anexo_i))
   }
-  if (!"descricao_tec" %in% names(anexo_i)) {
-    anexo_i$descricao_tec <- rep(NA_character_, nrow(anexo_i))
+  if (!"descricao_ncm" %in% names(anexo_i)) {
+    anexo_i$descricao_ncm <- rep(NA_character_, nrow(anexo_i))
   }
   if (!"descricao_tec_concatenada" %in% names(anexo_i)) {
     anexo_i$descricao_tec_concatenada <- rep(NA_character_, nrow(anexo_i))
@@ -150,7 +150,7 @@ buscar_ato <- function(x, ato) {
   descricoes_anexo_i <- anexo_i |>
     dplyr::select(
       ncm,
-      descricao_anexo_i = descricao_tec,
+      descricao_anexo_i = descricao_ncm,
       descricao_tec_concatenada_anexo_i = descricao_tec_concatenada,
       bkbit_anexo_i = bkbit
     )
@@ -161,7 +161,7 @@ buscar_ato <- function(x, ato) {
       nome_anexo = nome_anexo[["i"]],
       ncm = ncm,
       no_ex = NA_character_,
-      descricao = descricao_tec,
+      descricao_ncm = descricao_ncm,
       descricao_tec_concatenada = descricao_tec_concatenada,
       bkbit = bkbit,
       aliquota = as.numeric(tec),
@@ -181,14 +181,14 @@ buscar_ato <- function(x, ato) {
   if (!"ncm" %in% names(anexo_ii)) {
     anexo_ii$ncm <- rep(NA_character_, nrow(anexo_ii))
   }
-  if (!"descricao" %in% names(anexo_ii)) {
-    anexo_ii$descricao <- rep(NA_character_, nrow(anexo_ii))
+  if (!"descricao_medida" %in% names(anexo_ii)) {
+    anexo_ii$descricao_medida <- rep(NA_character_, nrow(anexo_ii))
   }
-  if (!"aliquota_aplicada" %in% names(anexo_ii)) {
-    anexo_ii$aliquota_aplicada <- rep(NA_real_, nrow(anexo_ii))
+  if (!"aliquota" %in% names(anexo_ii)) {
+    anexo_ii$aliquota <- rep(NA_real_, nrow(anexo_ii))
   }
-  if (!"atos_de_inclusao" %in% names(anexo_ii)) {
-    anexo_ii$atos_de_inclusao <- rep(NA_character_, nrow(anexo_ii))
+  if (!"ato_de_inclusao" %in% names(anexo_ii)) {
+    anexo_ii$ato_de_inclusao <- rep(NA_character_, nrow(anexo_ii))
   }
 
   resultado <- dplyr::bind_rows(
@@ -196,20 +196,20 @@ buscar_ato <- function(x, ato) {
     anexo_ii |>
       dplyr::left_join(descricoes_anexo_i, by = "ncm") |>
       dplyr::transmute(
-        descricao_medida = as.character(.data$descricao),
+        descricao_medida = as.character(.data$descricao_medida),
         anexo = "ii",
         nome_anexo = nome_anexo[["ii"]],
         ncm = ncm,
         no_ex = NA_character_,
-        descricao = descricao_anexo_i,
+        descricao_ncm = descricao_anexo_i,
         descricao_tec_concatenada = descricao_tec_concatenada_anexo_i,
         bkbit = bkbit_anexo_i,
-        aliquota = as.numeric(aliquota_aplicada),
+        aliquota = as.numeric(aliquota),
         quota = NA_character_,
         unidade_quota = NA_character_,
         inicio_de_vigencia = as.Date(NA_character_),
         termino_de_vigencia = as.Date(NA_character_),
-        ato = atos_de_inclusao,
+        ato = ato_de_inclusao,
         data_mais_recente_dos_atos = as.Date(NA_character_),
         datas_dos_atos_texto = NA_character_,
         obs = NA_character_
@@ -222,8 +222,8 @@ buscar_ato <- function(x, ato) {
     if (!"ncm" %in% names(anexo_lista)) {
       anexo_lista$ncm <- rep(NA_character_, nrow(anexo_lista))
     }
-    if (!"descricao" %in% names(anexo_lista)) {
-      anexo_lista$descricao <- rep(NA_character_, nrow(anexo_lista))
+    if (!"descricao_medida" %in% names(anexo_lista)) {
+      anexo_lista$descricao_medida <- rep(NA_character_, nrow(anexo_lista))
     }
     if (!"no_ex" %in% names(anexo_lista)) {
       anexo_lista$no_ex <- rep(NA_character_, nrow(anexo_lista))
@@ -261,12 +261,12 @@ buscar_ato <- function(x, ato) {
       anexo_lista |>
         dplyr::left_join(descricoes_anexo_i, by = "ncm") |>
         dplyr::transmute(
-          descricao_medida = as.character(.data$descricao),
+          descricao_medida = as.character(.data$descricao_medida),
           anexo = anexo_atual,
           nome_anexo = nome_anexo[[anexo_atual]],
           ncm = ncm,
           no_ex = no_ex,
-          descricao = descricao_anexo_i,
+          descricao_ncm = descricao_anexo_i,
           descricao_tec_concatenada = descricao_tec_concatenada_anexo_i,
           bkbit = bkbit_anexo_i,
           aliquota = as.numeric(aliquota),

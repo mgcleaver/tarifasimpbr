@@ -56,8 +56,8 @@ expect_colunas_anexo_lista <- function(df) {
 
 expect_lista_correta <- function(df, n_anexo) {
   nome_lista_esperado <- listar_anexos() |>
-    dplyr::filter(.data$numero_anexo == n_anexo) |>
-    dplyr::pull(.data$nome_abreviado_anexo)
+    dplyr::filter(.data$anexo == n_anexo) |>
+    dplyr::pull(.data$nome_anexo)
 
   testthat::expect_true(all(df$lista == nome_lista_esperado))
 }

@@ -16,3 +16,22 @@ para a mesma NCM, uma NCM com quota, uma somente com Ex e outra com Ex e
 quota. O cabecalho do XI fica na quinta linha, como na planilha de 11/11/2026.
 As aliquotas, descricoes e codigos sao ficticios. A base anterior permanece
 sem XI para testar compatibilidade historica.
+
+
+# Datas e estilos de células
+
+`datas-visuais.xlsx` é sintética e contém as abas V e XI com 18 registros
+idênticos. Combina números com o formato curto interno 14, formatos
+personalizados brasileiros e ISO, separadores literais e marca de localidade;
+texto misto (inclusive inválido e com espaços), número Geral, serial como
+texto, ausências, formato com nome de mês não suportado, fração de serial e
+o dia fictício 29/02/1900. Colunas de origem conservam os cabeçalhos oficiais.
+
+`datas-visuais-1904.xlsx` usa o sistema de datas 1904 e contém quatro linhas
+no XI: serial 44870 formatado e Geral, texto "46332" e serial zero. As duas
+primeiras linhas devem representar 06/11/2026; o texto mantém a convenção do
+parser de textos, independente da base numérica da pasta.
+
+As duas fixtures foram geradas com openpyxl 3.1.5, sem dados pessoais ou cópia
+de planilhas oficiais. Os testes usam somente os XLSX; Python não é necessário
+para executar o pacote ou os testes.

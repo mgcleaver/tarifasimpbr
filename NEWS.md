@@ -6,13 +6,30 @@
 - Integra o XI às consultas por NCM e ato, à listagem de Ex, aos vencimentos
   e às tarifas aplicadas, usando as mesmas regras de NCM integral, Ex e quota
   das demais listas de exceção.
-- Acrescenta `descricao_medida` ao fim das buscas por NCM e ato, preservando
+- Acrescenta `descricao_medida` imediatamente antes de `descricao_ncm` nas buscas por NCM e ato, preservando
   a descrição específica da medida no Anexo II ou na lista de exceção,
   inclusive em registros sem Ex, sem substituir as descrições da NCM.
   Quando a fonte não informa essa descrição, a coluna recebe `NA`.
   Isso mantém, por exemplo, "Outros, exceto treonina" para 2922.50.99 Ex 002.
 - Documenta as colunas em `?colunas_tarifas`, incluindo a migração dos nomes
   e seus tipos, com link para a documentação no README.
+
+## Mudanças incompatíveis: nomes de colunas
+
+- Unifica a descrição da NCM do Anexo I em `descricao_ncm`: substitui
+  `descricao_tec` na leitura do I e nas tarifas, e `descricao` nas buscas.
+  Mantém `descricao_tec_concatenada`, que contém informação hierárquica distinta.
+- Usa `descricao_medida` para a descrição do Anexo II, das listas, Ex e
+  vencimentos, substituindo `descricao` nessas saídas. Nas buscas, coloca-a
+  imediatamente antes de `descricao_ncm`, inclusive quando vazias.
+- Unifica `aliquota_aplicada` do II e `tarifa_ex` dos Ex em `aliquota`.
+  Mantém `tec`, `teb` e `tarifa_aplicada`, com significados próprios.
+- No II, padroniza `atos_de_inclusao` para `ato_de_inclusao` e `bit_bk`
+  para `bkbit`, preservando valores e tipos. `resolucoes` no I e `ato` nas
+  buscas mantêm os nomes, pois têm escopo normativo mais amplo.
+- Em `listar_anexos()`, usa `anexo` e `nome_anexo` em lugar de `numero_anexo`
+  e `nome_abreviado_anexo`, como nas buscas. Os nomes anteriores deixam de
+  ser retornados. Veja o dicionário de colunas para migrar seleções e filtros.
 
 ## Mudança incompatível: datas dos atos
 
@@ -22,12 +39,16 @@
   ser retornados: seleções, filtros e demais consumidores devem ser atualizados.
   O nome da coluna na planilha de entrada permanece aceito.
 - Acrescenta `datas_dos_atos_texto` (texto), preservando o conteúdo original
-  antes da conversão, inclusive espaços e separadores. Células numéricas
-  do Excel preservam o número serial como texto, não sua formatação visual.
+  textual, inclusive espaços e separadores. Células numéricas XLSX com data
+  curta passam a mostrar `06/11/2026`, por exemplo, em lugar de `46332`.
+  Consulta os estilos, suporta formatos numéricos de data brasileiros e ISO,
+  e considera a base 1904 quando declarada. O formato interno 14 usa pt-BR.
+  Formatos visuais não suportados preservam o texto bruto com aviso.
+  A validação continua usando o valor bruto separado do texto exibido.
 - Aplica o mesmo par de colunas às listas IV, V, VI, VIII, IX, X e XI e às
   consultas, Ex, vencimentos e tarifas detalhadas. Quando a fonte não contém
   a coluna de datas de atos, ambas recebem `NA`. A tabela de
-  `tarifas_aplicadas(detalhar = FALSE)` mantém suas colunas anteriores.
+  `tarifas_aplicadas(detalhar = FALSE)` não recebe esse par de datas.
 - Seleciona a maior data cronológica da célula, independentemente da ordem
   textual. São aceitos formatos brasileiro e ISO, inteiros seriais do Excel
   e múltiplas datas separadas por `e`, vírgula, ponto e vírgula, barra vertical
@@ -43,7 +64,7 @@
 - Mantém `lista` na última posição de `ler_anexo()`, inclusive quando as novas
   colunas de datas são criadas por ausência da coluna original na fonte.
   Preserva a ordem relativa das colunas anteriores nas saídas públicas,
-  considerando as renomeações deliberadas de datas. As funções derivadas
+  considerando as renomeações deliberadas e a posição de `descricao_medida` nas buscas. As funções derivadas
   mantêm suas ordens próprias, incluindo a união de colunas em `fim_vigencia()`.
 - Preserva a leitura de planilhas antigas sem XI: as consultas consolidadas
   só incluem a aba quando presente. A leitura explícita do XI informa erro
@@ -59,7 +80,8 @@
   por aceitar abreviações no argumento. Documenta a ausência de suporte ao
   VII (antiga Lista Covid), encerrado em 2024 e ausente das planilhas verificadas.
   Compatibilidade com planilhas sem XI não significa suporte histórico ao VII.
-- Mantém R >= 4.2.0 e as dependências existentes.
+- Mantém R >= 4.2.0 e acrescenta `xml2` às dependências diretas para ler
+  os estilos XLSX (já era dependência indireta via `rvest`).
 
 # tarifasimpbr 0.8.0
 

@@ -55,7 +55,7 @@ testthat::test_that("unit: detalhamento nao transforma tarifas ausentes em zero"
         return(
           tibble::tibble(
             ncm = c("00000000", "11111111"),
-            descricao_tec = c("Ausente", "Preenchida"),
+            descricao_ncm = c("Ausente", "Preenchida"),
             descricao_tec_concatenada = c("Ausente.", "Preenchida."),
             tec = c(NA_real_, 10),
             bkbit = NA_character_,
@@ -66,7 +66,7 @@ testthat::test_that("unit: detalhamento nao transforma tarifas ausentes em zero"
 
       tibble::tibble(
         ncm = character(),
-        aliquota_aplicada = numeric()
+        aliquota = numeric()
       )
     },
     detalhar_listas_excecao_vigentes = function(x) {
@@ -191,7 +191,7 @@ testthat::test_that("unit: tarifas detalhadas incluem metadados integrais", {
         return(
           tibble::tibble(
             ncm = c("10000000", "20000000"),
-            descricao_tec = c("Integral", "Sem excecao"),
+            descricao_ncm = c("Integral", "Sem excecao"),
             descricao_tec_concatenada = c("Integral.", "Sem excecao."),
             tec = c(14, 16),
             bkbit = NA_character_,
@@ -202,7 +202,7 @@ testthat::test_that("unit: tarifas detalhadas incluem metadados integrais", {
 
       tibble::tibble(
         ncm = character(),
-        aliquota_aplicada = numeric()
+        aliquota = numeric()
       )
     },
     detalhar_listas_excecao_vigentes = function(x) {

@@ -50,7 +50,7 @@ x_local <- download_tarifas(file.path("dados", "tarifas_raw.xlsx"))
 ```
 
 Com a função `listar_anexos()` é possível obter uma tabela com as referências para cada
-um dos anexos. A coluna `numero_anexo` que resulta de `listar_anexos()` deve ser utilizada
+um dos anexos. A coluna `anexo` que resulta de `listar_anexos()` deve ser utilizada
 para consultar um anexo específico na função `ler_anexo()`.
 
 O pacote suporta I, II, III, IV, V, VI, VIII, IX, X e XI. O XI (Letec+)
@@ -101,18 +101,27 @@ Consulte o [dicionário das colunas](docs/colunas_tarifas.md), também disponív
 no R com `?colunas_tarifas`. Ele explica as descrições, alíquotas, datas,
 quotas e a sentinela de ausência de prazo individual.
 
-A versão 0.9.0 altera os nomes das colunas de datas de atos de forma
+A versão 0.9.0 padroniza os nomes das colunas de forma
 incompatível com seleções e filtros que utilizem os nomes anteriores:
 
 | Nome até 0.8.0 | Nome a partir de 0.9.0 |
 | --- | --- |
 | `data_do_ato_de_inclusao` nas listas e tabelas derivadas | `data_mais_recente_dos_atos` |
 | `data_do_ato` nas buscas | `data_mais_recente_dos_atos` |
+| `descricao_tec` em `ler_anexo(x, "i")` e tarifas | `descricao_ncm` |
+| `descricao` nas buscas | `descricao_ncm` |
+| `descricao` no Anexo II, nas listas, Ex e vencimentos | `descricao_medida` |
+| `aliquota_aplicada` no Anexo II e `tarifa_ex` nos Ex | `aliquota` |
+| `atos_de_inclusao` no Anexo II | `ato_de_inclusao` |
+| `bit_bk` no Anexo II | `bkbit` |
+| `numero_anexo` e `nome_abreviado_anexo` no catálogo | `anexo` e `nome_anexo`, respectivamente |
 
-Os nomes antigos deixam de ser retornados. A nova coluna é `Date` e contém
+Os nomes antigos deixam de ser retornados. `data_mais_recente_dos_atos` é `Date` e contém
 a maior data cronológica da célula, mesmo que a ordem textual seja diferente.
 `datas_dos_atos_texto` é uma coluna adicional que preserva o conteúdo original
-antes da conversão. Se qualquer parte da célula for inválida, a data resumida
+e a apresentação das datas numéricas nos formatos XLSX suportados, como
+`06/11/2026`. Nas buscas, `descricao_medida` fica imediatamente antes de
+`descricao_ncm`; as demais colunas mantêm sua ordem relativa. Se qualquer parte da célula for inválida, a data resumida
 é `NA` e a leitura emite aviso. O resumo da célula não identifica, por si só,
 a data de cada ato citado. Veja as demais mudanças no [NEWS.md](NEWS.md).
 

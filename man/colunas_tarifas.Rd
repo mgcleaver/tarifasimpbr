@@ -15,20 +15,21 @@ Colunas adicionais da planilha podem ser preservadas por \code{\link[=ler_anexo]
 pode conter codigos raiz mais curtos. Zeros iniciais sao preservados.}
 \item{no_ex}{Texto com o numero do destaque Ex, padronizado com tres
 digitos. Ausencia indica que o registro nao especifica destaque.}
-\item{anexo, nome_anexo}{Numero romano em minusculas e nome do anexo nas
-buscas. \code{fim_vigencia()} acrescenta somente \code{anexo}.}
+\item{anexo, nome_anexo}{Numero romano em minusculas e nome do anexo no
+catalogo e nas buscas. \code{fim_vigencia()} acrescenta somente \code{anexo}.}
 \item{lista}{Nome da lista de excecao; na consolidacao, nomes separados
 por virgula quando houver medidas em mais de uma lista.}
-\item{descricao_tec}{Descricao da NCM de oito digitos do Anexo I.}
+\item{descricao_ncm}{Descricao da NCM de oito digitos do Anexo I,
+tambem usada nas tarifas e buscas. Nas buscas do Anexo III, recebe \code{NA}.}
 \item{descricao_tec_concatenada}{Descricao formada com os niveis
 hierarquicos do Anexo I, a partir da posicao.}
-\item{descricao}{Nas buscas, descricao da NCM no Anexo I; em
-\code{ler_anexo()} e \code{ex_tarifarios()}, descricao do registro na fonte.}
-\item{descricao_medida}{Nas buscas, texto especifico do Anexo II ou da
+\item{descricao_medida}{Texto especifico do Anexo II ou da
 lista de excecao, incluindo restricoes como "exceto treonina". Nao
-substitui a descricao da NCM. Ausente quando a fonte nao a informa.}
+substitui a descricao da NCM. Mantido nas buscas, Ex e vencimentos.
+Nas buscas, ausente para I e III ou quando a fonte nao o informa.}
 \item{bkbit}{Marcacao da NCM como bem de capital (BK) ou de informatica e
-telecomunicacoes (BIT), quando informada no Anexo I.}
+telecomunicacoes (BIT), quando informada nos Anexos I e II. Nas tarifas
+e buscas vem do I; os valores de cada fonte permanecem preservados.}
 }
 }
 
@@ -37,12 +38,11 @@ telecomunicacoes (BIT), quando informada no Anexo I.}
 \describe{
 \item{tec, teb}{Aliquotas percentuais da TEC e da Tarifa Externa
 Brasileira. Na tabela de tarifas aplicadas sao numericas.}
-\item{aliquota, aliquota_aplicada}{Percentuais da lista ou do Anexo II.
-O leitor mantem esses valores como texto; \code{aliquota} nas buscas e numerica.}
+\item{aliquota}{Percentual da lista ou do Anexo II, como texto no leitor,
+Ex e vencimentos. Nas buscas e numerica e pode representar a TEC do I.}
 \item{tarifa_aplicada}{Percentual numerico consolidado: lista de excecao
 vigente para NCM integral sem quota, depois TEB e, na ausencia, TEC.
 Nao representa automaticamente a tarifa especifica de cada Ex ou quota.}
-\item{tarifa_ex}{Aliquota do destaque, como texto, em \code{ex_tarifarios()}.}
 \item{quota, unidade_quota}{Quantidade e unidade informadas na fonte,
 como texto. O pacote nao calcula o saldo disponivel da quota.}
 \item{contagem_quota, contagem_ex}{Numero de registros vigentes com
@@ -55,13 +55,15 @@ Um registro integral com quota nao substitui a tarifa geral.}
 \section{Atos e suas datas}{
 
 \describe{
-\item{ato_de_inclusao, atos_de_inclusao, resolucoes, ato}{Textos com
-referencias normativas. Os nomes variam entre listas, Anexo II, Anexo I
-e buscas, respectivamente. Uma celula pode mencionar varios atos.}
-\item{datas_dos_atos_texto}{Texto original da coluna de datas dos atos de
-inclusao, preservado antes da conversao, inclusive espacos e separadores.
-Uma celula numerica do Excel e preservada como texto do numero serial:
-por exemplo, \code{"46332"}, e nao a formatacao visual \code{"06/11/2026"}.}
+\item{ato_de_inclusao}{Atos de inclusao do Anexo II e listas de excecao.}
+\item{resolucoes}{Referencias normativas do Anexo I, nao necessariamente
+atos de inclusao.}
+\item{ato}{Campo das buscas que reune essas referencias normativas.
+Uma celula pode mencionar varios atos.}
+\item{datas_dos_atos_texto}{Texto das datas dos atos de inclusao: textos
+sao mantidos literalmente, inclusive espacos e separadores; numeros com
+formato de data XLSX suportado sao apresentados conforme esse formato.
+Por exemplo, \code{46332} com data curta resulta em \code{"06/11/2026"}.}
 \item{data_mais_recente_dos_atos}{Coluna de classe \code{Date} com o maior
 valor cronologico entre todas as datas da celula. Nao e necessariamente
 a data do ato pesquisado, de publicacao, de inicio ou fim da medida.}
@@ -84,9 +86,26 @@ significa cobertura da antiga Lista Covid. Nao ha coluna VII a migrar
 nas planilhas verificadas; eventual suporte historico exigiria adaptacao
 e validacao especificas.
 
+A apresentacao consulta tipo e estilo de cada celula XLSX. O formato interno
+14 (data curta, dependente da localidade do Excel) usa pt-BR, \code{dd/mm/aaaa}.
+Formatos personalizados numericos de dia, mes e ano com \code{/}, \code{-} ou \code{.}
+sao suportados, inclusive ISO e componentes sem zero inicial. Texto misto
+permanece literal; numeros com formato Geral ou inteiro permanecem como texto
+numerico. A validacao usa o valor bruto separado internamente: uma fracao
+de serial continua invalida mesmo quando exibida sem hora.
+
+Formatos com nomes de meses, horas, condicoes ou secoes multiplas, e arquivos
+XLS, mantem o texto bruto com aviso. Nao se reproduzem largura de coluna,
+\verb{#####}, formatacao condicional ou preferencias regionais individuais.
+Formulas usam o resultado salvo, sem recalculo. Nao e criada uma coluna
+publica adicional de valor bruto e o arquivo de origem nao e modificado.
+
 Sao aceitas datas brasileiras (\code{d/m/aaaa} ou \code{dd/mm/aaaa}), ISO
 (\code{aaaa-mm-dd}) e numeros inteiros seriais do Excel, com origem
-\code{1899-12-30}. Datas multiplas podem usar \code{e} (sem distinguir maiusculas),
+\code{1899-12-30} quando escritos como texto. Celulas numericas respeitam tambem
+o sistema 1904 da pasta; datas formatadas anteriores a marco de 1900
+consideram a peculiaridade do Excel, rejeitando o dia ficticio 29/02/1900.
+Datas multiplas podem usar \code{e} (sem distinguir maiusculas),
 ponto e virgula, virgula, barra vertical ou quebra de linha como separador.
 A ordem textual nao altera o resultado. Nao se associam atos e datas
 automaticamente pela posicao em suas respectivas celulas.
@@ -138,14 +157,22 @@ ser retornados; selecoes e filtros externos precisam usar o novo nome.
 \code{datas_dos_atos_texto} e uma coluna adicional. Os nomes na planilha de entrada
 nao mudam. Arquivos antigos sem XI continuam aceitos pelas consultas
 consolidadas; a leitura explicita de XI continua exigindo a aba.
+
+Outras renomeacoes: \code{descricao_tec} no I e nas tarifas, e \code{descricao} nas
+buscas, passam a \code{descricao_ncm}. \code{descricao} no II, nas listas, Ex e
+vencimentos passa a \code{descricao_medida}. \code{aliquota_aplicada} no II e
+\code{tarifa_ex} nos Ex passam a \code{aliquota}. No II, \code{atos_de_inclusao} passa a
+\code{ato_de_inclusao} e \code{bit_bk} a \code{bkbit}. No catalogo, \code{numero_anexo} e
+\code{nome_abreviado_anexo} passam a \code{anexo} e \code{nome_anexo}. Os nomes antigos
+deixam de ser retornados. Tipos e valores dessas colunas sao preservados.
 }
 
 \section{Ordem das colunas}{
 
 A ordem relativa das colunas preexistentes na 0.8.0 e preservada,
-considerando as renomeacoes de datas acima. \code{datas_dos_atos_texto} fica
+considerando as renomeacoes acima. \code{datas_dos_atos_texto} fica
 imediatamente depois de \code{data_mais_recente_dos_atos}; \code{descricao_medida}
-fica no fim das buscas. Novas colunas podem deslocar posicoes numericas.
+fica imediatamente antes de \code{descricao_ncm} nas buscas. Novas colunas podem deslocar posicoes numericas.
 
 Na leitura individual com \code{\link[=ler_anexo]{ler_anexo()}}, \code{lista} permanece na ultima
 posicao. Se a fonte nao possui datas de atos, o novo par e acrescentado

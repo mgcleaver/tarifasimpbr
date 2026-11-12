@@ -8,7 +8,7 @@
 #'
 #' @param x Objeto retornado pela funcao `download_tarifas`
 #'
-#' @return Um tibble que retorna as colunas ncm, descricao_tec,
+#' @return Um tibble que retorna as colunas ncm, descricao_ncm,
 #' descricao_tec_concatenada, tec, bkbit, resolucoes.
 #'
 #' @details
@@ -164,7 +164,7 @@ ler_anexo1 <- function(x) {
     dplyr::rowwise() |>
     dplyr::transmute(
       .data$ncm,
-      descricao_tec = .data$descricao_8,
+      descricao_ncm = .data$descricao_8,
       descricao_tec_concatenada = concatena_texto(
         .data$descricao_4,
         .data$descricao_5,

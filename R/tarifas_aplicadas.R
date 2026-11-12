@@ -14,7 +14,7 @@
 #' 1. Lê o anexo I por meio de [ler_anexo()] com `n_anexo = "i"`,
 #'    removendo a coluna `resolucoes`;
 #' 2. Lê o anexo II por meio de [ler_anexo()] com `n_anexo = "ii"`,
-#'    obtendo a Tarifa Externa Brasileira (`aliquota_aplicada`)
+#'    obtendo a Tarifa Externa Brasileira (`aliquota` no Anexo II)
 #'    como coluna numérica `teb`;
 #' 3. Processa os demais anexos de exceção por meio de
 #'    [detalhar_listas_excecao_vigentes()], obtendo, entre outros, a coluna
@@ -53,7 +53,7 @@
 #' @return Um `tibble` (ou `data.frame`) com, no mínimo, as colunas:
 #'
 #' * `ncm`: código NCM;
-#' * `descricao_tec`: descrição da NCM (descrição no nível de oito dígitos)
+#' * `descricao_ncm`: descrição da NCM (descrição no nível de oito dígitos)
 #' * `descricao_tec_concatenada`: descrição da NCM a partir da posição;
 #' * `bkbit`: indica se a NCM é grafada como bem de capital/bem de informática
 #' * `lista`: lista de exceção associada a uma NCM (quando aplicável);
@@ -96,7 +96,7 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
     )
 
   anexoii <- ler_anexo(x, "ii") |>
-    dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota_aplicada))
+    dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota))
 
   message("Processando anexos de listas de excecao...")
   listas_excecao <- detalhar_listas_excecao_vigentes(x)

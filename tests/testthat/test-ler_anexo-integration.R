@@ -8,7 +8,7 @@ testthat::test_that("integration: ler_anexo i retorna estrutura esperada", {
     all(
       c(
         "ncm",
-        "descricao_tec",
+        "descricao_ncm",
         "descricao_tec_concatenada",
         "tec",
         "bkbit",
@@ -32,7 +32,7 @@ testthat::test_that("integration: ler_anexo ii padroniza estrutura e ncm", {
   testthat::expect_s3_class(anexo_ii, "tbl_df")
   testthat::expect_gt(nrow(anexo_ii), 0)
   testthat::expect_true(
-    all(c("ncm", "tec", "aliquota_aplicada") %in% names(anexo_ii))
+    all(c("ncm", "tec", "aliquota") %in% names(anexo_ii))
   )
   testthat::expect_false(
     any(c("tec_percent", "aliquota_aplicada_percent") %in% names(anexo_ii))

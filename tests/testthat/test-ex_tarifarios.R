@@ -7,7 +7,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
           tibble::tibble(
             ncm = c("12345678", "87654321"),
             no_ex = c("001", NA_character_),
-            descricao = c("Produto A", "Produto B"),
+            descricao_medida = c("Produto A", "Produto B"),
             aliquota = c("2", "4"),
             quota = c("100", NA_character_),
             unidade_quota = c("kg", NA_character_),
@@ -24,7 +24,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
           tibble::tibble(
             ncm = c("99999999"),
             no_ex = c(NA_character_),
-            descricao = c("Sem ex"),
+            descricao_medida = c("Sem ex"),
             aliquota = c("8"),
             inicio_de_vigencia = as.Date("2020-01-01"),
             termino_de_vigencia = as.Date("2100-12-31"),
@@ -36,7 +36,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
       tibble::tibble(
         ncm = c("11112222"),
         no_ex = c("007"),
-        descricao = c("Produto C"),
+        descricao_medida = c("Produto C"),
         aliquota = c("0"),
         quota = c(NA_character_),
         unidade_quota = c(NA_character_),
@@ -60,9 +60,9 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
       c(
         "lista",
         "ncm",
-        "descricao",
+        "descricao_medida",
         "no_ex",
-        "tarifa_ex",
+        "aliquota",
         "quota",
         "unidade_quota",
         "ato_de_inclusao",
@@ -75,7 +75,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
   )
   testthat::expect_equal(ex_tarifarios$lista, c("Desabastecimento", "Letec"))
   testthat::expect_equal(ex_tarifarios$no_ex, c("001", "007"))
-  testthat::expect_equal(ex_tarifarios$tarifa_ex, c("2", "0"))
+  testthat::expect_equal(ex_tarifarios$aliquota, c("2", "0"))
   testthat::expect_equal(ex_tarifarios$quota, c("100", NA_character_))
   testthat::expect_true(is.na(ex_tarifarios$data_mais_recente_dos_atos[[1]]))
   testthat::expect_equal(ex_tarifarios$obs[[2]], "Observacao")
@@ -104,6 +104,6 @@ testthat::test_that("integration: ex_tarifarios retorna ex-tarifarios dos anexos
       )
     )
   )
-  testthat::expect_true(all(!is.na(ex_tarifarios$tarifa_ex)))
+  testthat::expect_true(all(!is.na(ex_tarifarios$aliquota)))
   testthat::expect_true(all(ex_tarifarios$inicio_de_vigencia <= ex_tarifarios$termino_de_vigencia))
 })

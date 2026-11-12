@@ -160,7 +160,7 @@ testthat::test_that("unit: ler_anexo ii padroniza nomes e ncm", {
 
   testthat::expect_s3_class(anexo_ii, "tbl_df")
   testthat::expect_gt(nrow(anexo_ii), 0)
-  testthat::expect_true(all(c("ncm", "tec", "aliquota_aplicada") %in% names(anexo_ii)))
+  testthat::expect_true(all(c("ncm", "tec", "aliquota") %in% names(anexo_ii)))
   testthat::expect_false(
     any(c("tec_percent", "aliquota_aplicada_percent") %in% names(anexo_ii))
   )
@@ -248,8 +248,8 @@ testthat::test_that("unit: ler_anexo iv aplica regras de padronizacao", {
   testthat::local_mocked_bindings(
     listar_anexos = function() {
       tibble::tibble(
-        numero_anexo = c("iv"),
-        nome_abreviado_anexo = c("Desabastecimento")
+        anexo = c("iv"),
+        nome_anexo = c("Desabastecimento")
       )
     },
     obter_linha_cabecalho = function(...) 0L,
@@ -292,8 +292,8 @@ testthat::test_that("unit: ler_anexo vi remove coluna x10", {
   testthat::local_mocked_bindings(
     listar_anexos = function() {
       tibble::tibble(
-        numero_anexo = c("vi"),
-        nome_abreviado_anexo = c("Lebitbk")
+        anexo = c("vi"),
+        nome_anexo = c("Lebitbk")
       )
     },
     obter_linha_cabecalho = function(...) 0L,
@@ -348,8 +348,8 @@ testthat::test_that("unit: ler_anexo aceita hifen sem espacos no nome da aba", {
   testthat::local_mocked_bindings(
     listar_anexos = function() {
       tibble::tibble(
-        numero_anexo = "iv",
-        nome_abreviado_anexo = "Desabastecimento"
+        anexo = "iv",
+        nome_anexo = "Desabastecimento"
       )
     },
     obter_linha_cabecalho = function(...) 0L,

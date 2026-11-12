@@ -10,7 +10,7 @@ ler_anexo1(x)
 \item{x}{Objeto retornado pela funcao \code{download_tarifas}}
 }
 \value{
-Um tibble que retorna as colunas ncm, descricao_tec,
+Um tibble que retorna as colunas ncm, descricao_ncm,
 descricao_tec_concatenada, tec, bkbit, resolucoes.
 }
 \description{

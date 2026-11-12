@@ -19,7 +19,7 @@ e os metadados da alteração tarifária aplicável à NCM integralmente.}
 Um \code{tibble} (ou \code{data.frame}) com, no mínimo, as colunas:
 \itemize{
 \item \code{ncm}: código NCM;
-\item \code{descricao_tec}: descrição da NCM (descrição no nível de oito dígitos)
+\item \code{descricao_ncm}: descrição da NCM (descrição no nível de oito dígitos)
 \item \code{descricao_tec_concatenada}: descrição da NCM a partir da posição;
 \item \code{bkbit}: indica se a NCM é grafada como bem de capital/bem de informática
 \item \code{lista}: lista de exceção associada a uma NCM (quando aplicável);
@@ -51,7 +51,7 @@ A função:
 \item Lê o anexo I por meio de \code{\link[=ler_anexo]{ler_anexo()}} com \code{n_anexo = "i"},
 removendo a coluna \code{resolucoes};
 \item Lê o anexo II por meio de \code{\link[=ler_anexo]{ler_anexo()}} com \code{n_anexo = "ii"},
-obtendo a Tarifa Externa Brasileira (\code{aliquota_aplicada})
+obtendo a Tarifa Externa Brasileira (\code{aliquota} no Anexo II)
 como coluna numérica \code{teb};
 \item Processa os demais anexos de exceção por meio de
 \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_listas_excecao_vigentes()}}, obtendo, entre outros, a coluna

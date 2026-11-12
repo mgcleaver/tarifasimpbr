@@ -20,7 +20,7 @@ testthat::test_that("unit: leitura individual mantem lista por ultimo com ou sem
   )
   testthat::local_mocked_bindings(obter_linha_cabecalho = function(...) 0L, .package = "tarifasimpbr")
   anteriores <- c(
-    "ncm", "no_ex", "descricao", "aliquota", "quota", "unidade_quota",
+    "ncm", "no_ex", "descricao_medida", "aliquota", "quota", "unidade_quota",
     "inicio_de_vigencia", "termino_de_vigencia", "ato_de_inclusao"
   )
   datas <- c("data_mais_recente_dos_atos", "datas_dos_atos_texto")
@@ -66,7 +66,10 @@ testthat::test_that("unit: saidas derivadas preservam ordem da 0.8.0 com renomea
     vencimentos = c("anexo", lista),
     busca_ncm = busca, busca_ato = busca, busca_vazia = busca
   )
-  renomear <- function(nomes) {
+  renomear <- function(nomes, saida) {
+    mapa <- c(descricao_tec = "descricao_ncm", numero_anexo = "anexo", nome_abreviado_anexo = "nome_anexo", tarifa_ex = "aliquota")
+    for (antigo in names(mapa)) nomes[nomes == antigo] <- mapa[[antigo]]
+    nomes[nomes == "descricao"] <- if (startsWith(saida, "busca")) "descricao_ncm" else "descricao_medida"
     nomes[nomes %in% c("data_do_ato", "data_do_ato_de_inclusao")] <- "data_mais_recente_dos_atos"
     nomes
   }
@@ -81,14 +84,14 @@ testthat::test_that("unit: saidas derivadas preservam ordem da 0.8.0 com renomea
     )
     for (nome in names(resultados)) {
       atuais <- names(resultados[[nome]])
-      anteriores <- renomear(esquemas[[nome]])
+      anteriores <- renomear(esquemas[[nome]], nome)
       testthat::expect_identical(
         atuais[atuais %in% anteriores], anteriores, info = paste(arquivo, nome)
       )
       if ("datas_dos_atos_texto" %in% atuais) {
         testthat::expect_identical(match("datas_dos_atos_texto", atuais), match("data_mais_recente_dos_atos", atuais) + 1L)
       }
-      if ("descricao_medida" %in% atuais) testthat::expect_identical(tail(atuais, 1), "descricao_medida")
+      if (startsWith(nome, "busca")) testthat::expect_identical(match("descricao_medida", atuais) + 1L, match("descricao_ncm", atuais))
     }
   }
 })

@@ -15,14 +15,14 @@ Um \code{tibble} com uma linha por ex-tarifario e, no minimo, as colunas:
 \describe{
 \item{lista}{Nome abreviado da lista de excecao.}
 \item{ncm}{Codigo NCM padronizado com 8 digitos.}
-\item{descricao}{Descricao do produto associada ao ex.}
+\item{descricao_medida}{Descricao do produto associada ao ex.}
 \item{no_ex}{Numero do ex padronizado com 3 digitos.}
-\item{tarifa_ex}{Aliquota associada ao ex-tarifario.}
+\item{aliquota}{Aliquota associada ao ex-tarifario.}
 \item{quota}{Volume de quota, quando houver.}
 \item{unidade_quota}{Unidade da quota, quando houver.}
 \item{ato_de_inclusao}{Ato normativo informado no anexo, quando houver.}
 \item{data_mais_recente_dos_atos}{Maior data informada na celula dos atos.}
-\item{datas_dos_atos_texto}{Conteudo original da celula de datas dos atos.}
+\item{datas_dos_atos_texto}{Texto da celula de datas dos atos; consulte \link{colunas_tarifas}.}
 \item{inicio_de_vigencia}{Inicio da vigencia do registro.}
 \item{termino_de_vigencia}{Termino da vigencia do registro.}
 \item{obs}{Observacoes presentes no anexo, quando houver.}
