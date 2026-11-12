@@ -20,8 +20,16 @@
 #'   O resultado contém as colunas `anexo`, `nome_anexo`, `ncm`, `no_ex`,
 #'   `descricao`, `descricao_tec_concatenada`, `bkbit`, `aliquota`, `quota`,
 #'   `unidade_quota`, `inicio_de_vigencia`, `termino_de_vigencia`, `ato`,
-#'   `data_do_ato` e `obs`. Quando a NCM nao e encontrada, retorna um tibble
+#'   `data_do_ato`, `obs` e `descricao_medida`. Quando a NCM nao e encontrada, retorna um tibble
 #'   vazio com essas colunas e emite um aviso.
+#'
+#' @details
+#' `descricao` e `descricao_tec_concatenada` mantem as descricoes do Anexo I.
+#' `descricao_medida`, acrescentada ao fim do resultado, preserva o texto da
+#' coluna `descricao` do anexo consultado (II ou lista de excecao), inclusive
+#' restricoes de Ex como "exceto treonina" e descricoes de medidas sem Ex.
+#' Nos Anexos I e III, ou quando a coluna de origem nao existe, recebe `NA`.
+#' Valores ausentes na origem nao sao preenchidos com a descricao da NCM.
 #'
 #' @examples
 #' \dontrun{
@@ -60,7 +68,8 @@ buscar_ncm <- function(x, ncm) {
     "termino_de_vigencia",
     "ato",
     "data_do_ato",
-    "obs"
+    "obs",
+    "descricao_medida"
   )
 
   resultado_vazio <- tibble::tibble(
@@ -78,7 +87,8 @@ buscar_ncm <- function(x, ncm) {
     termino_de_vigencia = as.Date(character()),
     ato = character(),
     data_do_ato = as.Date(character()),
-    obs = character()
+    obs = character(),
+    descricao_medida = character()
   )
 
   nomes_anexos <- listar_anexos()
@@ -140,12 +150,16 @@ buscar_ncm <- function(x, ncm) {
       termino_de_vigencia = as.Date(NA_character_),
       ato = .data$resolucoes,
       data_do_ato = as.Date(NA_character_),
-      obs = NA_character_
+      obs = NA_character_,
+      descricao_medida = NA_character_
     )
 
   anexo_ii <- ler_anexo(x, "ii") |>
     dplyr::filter(.data$ncm == ncm_pesquisada)
 
+  if (!"descricao" %in% names(anexo_ii)) {
+    anexo_ii$descricao <- rep(NA_character_, nrow(anexo_ii))
+  }
   if (!"aliquota_aplicada" %in% names(anexo_ii)) {
     anexo_ii$aliquota_aplicada <- rep(NA_real_, nrow(anexo_ii))
   }
@@ -157,6 +171,7 @@ buscar_ncm <- function(x, ncm) {
     resultado,
     anexo_ii |>
       dplyr::transmute(
+        descricao_medida = as.character(.data$descricao),
         anexo = "ii",
         nome_anexo = nome_anexo[["ii"]],
         ncm = .data$ncm,
@@ -187,6 +202,7 @@ buscar_ncm <- function(x, ncm) {
     resultado,
     anexo_iii |>
       dplyr::transmute(
+        descricao_medida = NA_character_,
         anexo = "iii",
         nome_anexo = nome_anexo[["iii"]],
         ncm = .data$ncm,
@@ -209,6 +225,9 @@ buscar_ncm <- function(x, ncm) {
     anexo_lista <- ler_anexo(x, anexo_atual) |>
       dplyr::filter(.data$ncm == ncm_pesquisada)
 
+    if (!"descricao" %in% names(anexo_lista)) {
+      anexo_lista$descricao <- rep(NA_character_, nrow(anexo_lista))
+    }
     if (!"no_ex" %in% names(anexo_lista)) {
       anexo_lista$no_ex <- rep(NA_character_, nrow(anexo_lista))
     }
@@ -241,6 +260,7 @@ buscar_ncm <- function(x, ncm) {
       resultado,
       anexo_lista |>
         dplyr::transmute(
+          descricao_medida = as.character(.data$descricao),
           anexo = anexo_atual,
           nome_anexo = nome_anexo[[anexo_atual]],
           ncm = .data$ncm,

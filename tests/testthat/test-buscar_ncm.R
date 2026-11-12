@@ -13,7 +13,8 @@ colunas_buscar_ncm <- c(
   "termino_de_vigencia",
   "ato",
   "data_do_ato",
-  "obs"
+  "obs",
+  "descricao_medida"
 )
 
 mock_listar_anexos_buscar_ncm <- function() {
@@ -71,6 +72,7 @@ testthat::test_that("unit: buscar_ncm retorna anexo i e ii padronizados", {
   testthat::expect_s3_class(resultado, "tbl_df")
   testthat::expect_identical(names(resultado), colunas_buscar_ncm)
   testthat::expect_equal(resultado$anexo, c("i", "ii"))
+  testthat::expect_identical(resultado$descricao_medida, rep(NA_character_, 2))
   testthat::expect_equal(resultado$nome_anexo, c("Tarifa Externa Comum", "Anexo II"))
   testthat::expect_equal(resultado$ncm, c("11090000", "11090000"))
   testthat::expect_equal(resultado$aliquota, c(10, 8))
@@ -183,6 +185,7 @@ testthat::test_that("unit: buscar_ncm usa descricao do anexo i nos anexos de exc
     dplyr::filter(.data$anexo == "ix")
 
   testthat::expect_equal(resultado_ix$descricao, "Descricao do Anexo I")
+  testthat::expect_equal(resultado_ix$descricao_medida, "Descricao propria do Anexo IX")
   testthat::expect_equal(
     resultado_ix$descricao_tec_concatenada,
     "Descricao concatenada do Anexo I."
@@ -235,6 +238,7 @@ testthat::test_that("unit: buscar_ncm inclui codigos raiz do anexo iii", {
   testthat::expect_equal(nrow(resultado_anexo_iii), 2L)
   testthat::expect_equal(resultado_anexo_iii$nome_anexo, rep("Setor Aeronautico", 2))
   testthat::expect_true(all(is.na(resultado_anexo_iii$descricao)))
+  testthat::expect_identical(resultado_anexo_iii$descricao_medida, rep(NA_character_, 2))
   testthat::expect_true(all(is.na(resultado_anexo_iii$descricao_tec_concatenada)))
   testthat::expect_true(all(is.na(resultado_anexo_iii$aliquota)))
 })
@@ -284,4 +288,50 @@ testthat::test_that("unit: buscar_ncm falha para ncm invalida", {
     buscar_ncm(x = "arquivo_mock.xlsx", ncm = "1109AB00"),
     "ncm deve conter exatamente 8 digitos"
   )
+})
+
+testthat::test_that("integration: buscas preservam treonina e descricao integral da fonte", {
+  x <- get_tarifas_path()
+  anexo <- if ("xi" %in% tarifasimpbr:::anexos_excecao_disponiveis(x)) "xi" else "v"
+  fonte <- ler_anexo(x, anexo) |>
+    dplyr::filter(.data$ncm == "29225099")
+  testthat::skip_if(!any(fonte$no_ex == "002", na.rm = TRUE), "Ex 002 ausente nesta publicacao")
+  por_ncm <- buscar_ncm(x, "2922.50.99") |>
+    dplyr::filter(.data$anexo == .env$anexo)
+  por_ato <- buscar_ato(x, 705) |>
+    dplyr::filter(.data$anexo == .env$anexo, .data$ncm == "29225099")
+
+  for (resultado in list(por_ncm, por_ato)) {
+    testthat::expect_identical(resultado$descricao_medida, fonte$descricao)
+    testthat::expect_identical(resultado$descricao, rep("Outros", nrow(fonte)))
+    testthat::expect_identical(tail(names(resultado), 1), "descricao_medida")
+    ex <- resultado |> dplyr::filter(.data$no_ex == "002")
+    integral <- resultado |> dplyr::filter(is.na(.data$no_ex))
+    testthat::expect_identical(ex$descricao_medida, "Outros, exceto treonina")
+    testthat::expect_equal(ex$aliquota, 0)
+    testthat::expect_identical(integral$descricao_medida, "Outros")
+    testthat::expect_equal(integral$aliquota, 10.8)
+    testthat::expect_true(all(resultado$termino_de_vigencia == as.Date("9999-12-31")))
+  }
+})
+
+testthat::test_that("unit: buscas preservam medida mesmo sem NCM correspondente no I", {
+  testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) "xi",
+    ler_anexo = function(x, n_anexo) {
+      if (n_anexo == "xi") {
+        return(tibble::tibble(
+          ncm = "29225099", no_ex = "002",
+          descricao = "Outros, exceto treonina", ato_de_inclusao = "Res. 705/2025"
+        ))
+      }
+      tibble::tibble(ncm = character())
+    },
+    .package = "tarifasimpbr"
+  )
+  for (resultado in list(buscar_ncm("mock", "29225099"), buscar_ato("mock", 705))) {
+    testthat::expect_identical(resultado$descricao_medida, "Outros, exceto treonina")
+    testthat::expect_identical(resultado$descricao, NA_character_)
+    testthat::expect_identical(resultado$descricao_tec_concatenada, NA_character_)
+  }
 })

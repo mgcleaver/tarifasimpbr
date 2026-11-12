@@ -7,7 +7,10 @@
 - Preserva a leitura de planilhas antigas: as consultas consolidadas só
   incluem XI quando a aba está presente. A leitura explícita do XI continua
   informando erro se a aba não existir ou estiver duplicada.
-- Mantém o tratamento existente das datas e das descrições nas consultas.
+- Acrescenta `descricao_medida` ao fim das buscas por NCM e ato, preservando
+  a descrição específica do anexo sem substituir as descrições da NCM.
+  As colunas anteriores mantêm nomes, posições, tipos e conteúdo.
+- Mantém o tratamento existente das datas nas consultas.
 
 # tarifasimpbr 0.8.0
 

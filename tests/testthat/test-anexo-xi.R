@@ -71,9 +71,14 @@ testthat::test_that("unit: consultas por NCM, ato, Ex e vencimento incluem XI", 
   local_data_xi(function() as.Date("2026-11-12"))
   ncm <- buscar_ncm(x, "0101.29.00")
   testthat::expect_equal(ncm$aliquota[ncm$anexo == "xi"], c(20, 22, 0))
+  testthat::expect_identical(
+    ncm$descricao_medida[ncm$anexo == "xi"],
+    c("Produto B", "Produto B", "Produto B, exceto tipo especial")
+  )
   ato <- buscar_ato(x, 978)
   testthat::expect_equal(nrow(ato), 6L)
   testthat::expect_true(all(ato$anexo == "xi"))
+  testthat::expect_identical(ato$descricao_medida, ler_anexo(x, "xi")$descricao)
   testthat::expect_equal(buscar_ato(x, 705)$no_ex, "002")
   ex <- ex_tarifarios(x)
   testthat::expect_equal(ex$no_ex[ex$lista == "Letec+"], c("002", "003", "004"))

@@ -13,7 +13,8 @@ colunas_buscar_ato <- c(
   "termino_de_vigencia",
   "ato",
   "data_do_ato",
-  "obs"
+  "obs",
+  "descricao_medida"
 )
 
 mock_listar_anexos_buscar_ato <- function() {
@@ -112,6 +113,7 @@ testthat::test_that("unit: buscar_ato usa descricao do anexo i quando anexo poss
   resultado <- buscar_ato(x = "arquivo_mock.xlsx", ato = 68)
 
   testthat::expect_equal(resultado$descricao, rep("Gluten de trigo", 3))
+  testthat::expect_identical(resultado$descricao_medida, c(NA_character_, "Descricao propria II", "Descricao propria V"))
   testthat::expect_false("Descricao propria II" %in% resultado$descricao)
   testthat::expect_false("Descricao propria V" %in% resultado$descricao)
 })
