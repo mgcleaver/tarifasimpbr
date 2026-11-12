@@ -42,3 +42,8 @@ indisponível. Consulte os testes pulados no log antes de considerar validada a
 integração com os dados oficiais. O ambiente registra as versões usadas, mas não
 as congela: `--atualizar` consulta o CRAN, e a CI acompanha as versões atuais das
 dependências.
+
+Para executar os testes de integração com uma planilha oficial já baixada,
+defina `TARIFASIMPBR_TEST_XLSX` com seu caminho absoluto antes da verificação.
+Essa opção dispensa o download nos testes e permite comparar arquivos antigos
+sem XI com arquivos novos que o contenham. Um caminho inválido causa erro.

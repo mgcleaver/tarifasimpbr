@@ -334,6 +334,11 @@ testthat::test_that("unit: download_tarifas substitui destino existente apos val
 })
 
 testthat::test_that("unit: integracao nao repete download indisponivel", {
+  arquivo_local <- Sys.getenv("TARIFASIMPBR_TEST_XLSX", unset = NA_character_)
+  Sys.unsetenv("TARIFASIMPBR_TEST_XLSX")
+  on.exit({
+    if (!is.na(arquivo_local)) Sys.setenv(TARIFASIMPBR_TEST_XLSX = arquivo_local)
+  }, add = TRUE)
   ambiente_helper <- environment(get_tarifas_path)
   tarifas_path_anterior <- ambiente_helper$tarifas_path
   erro_anterior <- ambiente_helper$tarifas_download_error

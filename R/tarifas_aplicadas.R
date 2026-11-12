@@ -2,7 +2,7 @@
 #' as tarifas aplicadas
 #'
 #' @description
-#' Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X para calcular
+#' Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X e XI (quando presente) para calcular
 #'  a \emph{tarifa aplicada} por código NCM. Opcionalmente,
 #' pode retornar um resultado detalhado por NCM com contagem de quota e de
 #' destaque (Ex), além de indicar se a NCM se encontra integralmente em uma lista
@@ -98,7 +98,7 @@ tarifas_aplicadas <- function(x, detalhar = FALSE) {
   anexoii <- ler_anexo(x, "ii") |>
     dplyr::transmute(.data$ncm, teb = as.numeric(.data$aliquota_aplicada))
 
-  message("Processando anexos IV, V, VI, VIII, IX, X...")
+  message("Processando anexos de listas de excecao...")
   listas_excecao <- detalhar_listas_excecao_vigentes(x)
 
   base <- anexoi |>

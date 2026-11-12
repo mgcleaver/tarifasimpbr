@@ -4,7 +4,10 @@
 \alias{ler_anexo}
 \title{Ler anexos do arquivo excel obtido por meio da funcao \code{download_tarifas}.}
 \usage{
-ler_anexo(x, n_anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x"))
+ler_anexo(
+  x,
+  n_anexo = c("i", "ii", "iii", "iv", "v", "vi", "viii", "ix", "x", "xi")
+)
 }
 \arguments{
 \item{x}{Objeto retornado por \code{download_tarifas}, que no caso e o caminho
@@ -13,7 +16,7 @@ temporario do arquivo de tarifas de importacao vigentes baixado.}
 \item{n_anexo}{String indicando qual anexo deve ser lido. Deve ser
 um dos:
 \code{"i"}, \code{"ii"}, \code{"iii"}, \code{"iv"}, \code{"v"},
-\code{"vi"}, \code{"viii"}, \code{"ix"}, \code{"x"}.}
+\code{"vi"}, \code{"viii"}, \code{"ix"}, \code{"x"}, \code{"xi"}.}
 }
 \value{
 Para \code{n_anexo = "i"}, retorna o tibble produzido por \code{ler_anexo1}.
@@ -30,7 +33,7 @@ A coluna \code{obs} recebe a mensagem "Exceto os compreendidos no subitem
 tabela.
 
 Para os anexos \code{"iv"}, \code{"v"}, \code{"vi"}, \code{"viii"},
-\code{"ix"} e \code{"x"}, retorna um tibble com, no minimo, as colunas:
+\code{"ix"}, \code{"x"} e \code{"xi"}, retorna um tibble com, no minimo, as colunas:
 \describe{
 \item{ncm}{Codigo NCM, como texto.}
 \item{no_ex}{Numero do \emph{ex} padronizado com 3 digitos}
@@ -43,7 +46,7 @@ vigência sem término e preenchidos com \code{"9999-12-31"}.}
 tambem formatada por \code{formata_datas}.}
 \item{lista}{(Coluna criada para indicar a presenca de uma NCM nos anexos
 IV (Desabastecimento), V (Letec), VI (Lebitbk), VIII (Concessoes OMC), IX
-(DCC) e X (Automotivo))}
+(DCC), X (Automotivo) e XI (Letec+))}
 }
 Outras colunas presentes no anexo original sao mantidas, podendo variar
 conforme o tipo de anexo.
@@ -62,7 +65,7 @@ Anexo II, le a aba correspondente e padroniza as colunas \code{tec} e
 \code{aliquota_aplicada}. Para o Anexo III, localiza duas tabelas de codigos NCM
 na mesma aba, empilha os codigos em uma unica coluna e adiciona \code{regra} e
 \code{obs} conforme a tabela de origem e a marcacao com asterisco. Para os anexos
-IV, V, VI, VIII, IX e X, a funcao:
+IV, V, VI, VIII, IX, X e XI, a funcao:
 \itemize{
 \item identifica uma única aba com base no nome do anexo;
 \item pula linhas de cabecalho conforme o tipo de anexo;
@@ -79,6 +82,10 @@ qualquer separador apos o numeral (hifen com ou sem espacos, travessao,
 espaco simples ou fim do nome). A leitura exige exatamente uma aba
 correspondente e informa explicitamente quando nenhuma ou mais de uma aba
 e encontrada.
+
+As consultas consolidadas incluem o Anexo XI somente quando a aba existe,
+permitindo usar planilhas antigas. A chamada explicita \code{ler_anexo(x, "xi")}
+continua exigindo a presenca de uma unica aba do XI.
 
 Para o Anexo VI, caso exista uma coluna \code{x10}, ela e removida
 automaticamente antes do processamento.
@@ -103,6 +110,7 @@ Se existir a coluna \code{inicio_da_vigencia}, ela e renomeada para
 \item \code{"viii"}: le o Anexo VIII - Concessoes OMC.
 \item \code{"ix"}: le o Anexo IX - DCC.
 \item \code{"x"}: le o Anexo X - Automotivo.
+\item \code{"xi"}: le o Anexo XI - Letec+.
 }
 }
 

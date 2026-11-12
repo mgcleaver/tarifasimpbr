@@ -33,7 +33,8 @@ a integralidade da NCM. Permanecem \code{NA} quando nao houver esse registro.
 \description{
 Itera sobre as seguintes listas de excecao tarifaria: desabastecimento
 (\strong{IV}), Letec (\strong{V}), Lebitbk (\strong{VI}), Concessoes OMC
-(\strong{VIII}), DCC (\strong{IX}) e Automotivos ACE-14 (\strong{X}) e produz
+(\strong{VIII}), DCC (\strong{IX}), Automotivos ACE-14 (\strong{X}) e
+Letec+ (\strong{XI}, quando presente no arquivo) e produz
 um resumo contendo todos os codigos NCM vigentes nessas listas com contagem
 de quota e de destaques (Ex), indicador de NCM integral, lista(s) de excecao
 e tarifa aplicada quando uma NCM for incluída integralmente em uma lista sem

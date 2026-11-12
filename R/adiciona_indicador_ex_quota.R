@@ -3,12 +3,12 @@
 #' Usada dentro da função principal `detalhar_listas_excecao_vigentes` para
 #' adicionar, por NCM, a contagem de destaques (ex), a contagem de quotas, um indicador de presença
 #' integral de NCM em lista de exceção e um indicador de alteração de tarifa aplicada
-#' nos anexos iv, v, vi, viii, ix e x.
+#' nos anexos iv, v, vi, viii, ix, x e xi.
 #'
 #' @param x deve ser o resultado de `download_tarifas()`.
 #'
 #' @param n_anexo é o número romano de um anexo relacionado com uma lista de
-#'    exceção. As opções possíveis são iv, v, vi, viii, ix, x.
+#'    exceção. As opções possíveis são iv, v, vi, viii, ix, x, xi.
 #'
 #' @return um tibble com as colunas originais e as colunas adicionadas
 #' tem_quota, tem_destaque_ex, ncm_integral e altera_tarifa_aplicada.
@@ -17,7 +17,7 @@
 #' @noRd
 adiciona_indicador_ex_quota <- function(
     x,
-    n_anexo = c("iv", "v", "vi", "viii", "ix", "x")
+    n_anexo = c("iv", "v", "vi", "viii", "ix", "x", "xi")
 ) {
   n_anexo <- match.arg(
     n_anexo

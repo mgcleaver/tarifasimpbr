@@ -83,6 +83,7 @@ mock_ler_anexo_buscar_ato <- function(x, n_anexo) {
 
 testthat::test_that("unit: buscar_ato retorna schema igual ao buscar_ncm", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ato,
     ler_anexo = mock_ler_anexo_buscar_ato,
     .package = "tarifasimpbr"
@@ -102,6 +103,7 @@ testthat::test_that("unit: buscar_ato retorna schema igual ao buscar_ncm", {
 
 testthat::test_that("unit: buscar_ato usa descricao do anexo i quando anexo possui descricao propria", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ato,
     ler_anexo = mock_ler_anexo_buscar_ato,
     .package = "tarifasimpbr"
@@ -116,6 +118,7 @@ testthat::test_that("unit: buscar_ato usa descricao do anexo i quando anexo poss
 
 testthat::test_that("unit: buscar_ato busca numero com zeros a esquerda sem falsos positivos", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ato,
     ler_anexo = mock_ler_anexo_buscar_ato,
     .package = "tarifasimpbr"
@@ -135,6 +138,7 @@ testthat::test_that("unit: buscar_ato busca numero com zeros a esquerda sem fals
 
 testthat::test_that("unit: buscar_ato nao busca numero dentro do ano", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ato,
     ler_anexo = function(x, n_anexo) {
       switch(
@@ -172,6 +176,7 @@ testthat::test_that("unit: buscar_ato nao busca numero dentro do ano", {
 
 testthat::test_that("unit: buscar_ato usa busca textual literal", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ato,
     ler_anexo = function(x, n_anexo) {
       switch(
@@ -204,6 +209,7 @@ testthat::test_that("unit: buscar_ato usa busca textual literal", {
 
 testthat::test_that("unit: buscar_ato retorna vazio com warning quando ato nao existe", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ato,
     ler_anexo = mock_ler_anexo_buscar_ato,
     .package = "tarifasimpbr"
@@ -264,6 +270,7 @@ testthat::test_that("unit: busca numerica distingue numeros de atos e datas", {
     "Incluido em 2024 / 2026"
   )
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     ler_anexo = function(x, n_anexo) {
       if (n_anexo == "i") {
         return(tibble::tibble(ncm = sprintf("%08d", seq_along(atos)), resolucoes = atos))
@@ -301,6 +308,7 @@ testthat::test_that("unit: busca numerica distingue numeros de atos e datas", {
 
 testthat::test_that("unit: busca por ato usa todos os campos com datas e preserva texto", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     ler_anexo = function(x, n_anexo) {
       if (n_anexo == "i") return(tibble::tibble(ncm = "01012100"))
       if (n_anexo == "ii") {

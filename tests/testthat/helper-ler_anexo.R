@@ -2,6 +2,12 @@ tarifas_path <- NULL
 tarifas_download_error <- NULL
 
 get_tarifas_path <- function() {
+  arquivo_local <- Sys.getenv("TARIFASIMPBR_TEST_XLSX")
+  if (nzchar(arquivo_local)) {
+    if (!file.exists(arquivo_local)) stop("TARIFASIMPBR_TEST_XLSX nao existe.")
+    return(arquivo_local)
+  }
+
   testthat::skip_on_cran()
   testthat::skip_if_offline()
 

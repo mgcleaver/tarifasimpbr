@@ -28,7 +28,7 @@ Sem correspondências, retorna uma tabela vazia com as mesmas colunas,
 sem aviso.
 }
 \description{
-Retorna os registros dos Anexos IV, V, VI, VIII, IX e X cujo
+Retorna os registros dos Anexos IV, V, VI, VIII, IX, X e XI (quando presente) cujo
 \code{termino_de_vigencia} está no intervalo entre a data da consulta e o fim
 do mês indicado por \code{meses}.
 }
@@ -41,7 +41,7 @@ excluídos.
 
 A função reutiliza a leitura e o cache de \code{\link[=ler_anexo]{ler_anexo()}}. Cada anexo é
 filtrado antes da consolidação, reduzindo o volume intermediário em memória.
-Na primeira consulta, as seis abas ainda precisam ser lidas por completo.
+Na primeira consulta, as abas das listas ainda precisam ser lidas por completo.
 }
 \examples{
 \dontrun{

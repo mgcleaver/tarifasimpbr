@@ -140,6 +140,7 @@ testthat::test_that("unit: metadados pertencem somente a NCMs integrais", {
   )
 
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     adiciona_indicador_ex_quota = function(x, n_anexo) {
       dados_listas |>
         dplyr::filter(.data$n_anexo == .env$n_anexo) |>
@@ -247,6 +248,7 @@ testthat::test_that("unit: NCM integral vigente duplicada gera erro", {
   )
 
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     adiciona_indicador_ex_quota = function(x, n_anexo) {
       dados_duplicados |>
         dplyr::filter(.data$n_anexo == .env$n_anexo) |>
@@ -264,7 +266,7 @@ testthat::test_that("unit: NCM integral vigente duplicada gera erro", {
 
 testthat::test_that("integration: metadados detalhados correspondem aos anexos", {
   x <- get_tarifas_path()
-  anexos <- c("iv", "v", "vi", "viii", "ix", "x")
+  anexos <- tarifasimpbr:::anexos_excecao_disponiveis(x)
   metadados <- c(
     "inicio_de_vigencia",
     "termino_de_vigencia",

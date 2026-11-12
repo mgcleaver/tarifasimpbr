@@ -2,7 +2,7 @@
 #'
 #' Consulta um ato nos anexos tarifarios e retorna as ocorrencias encontradas em
 #' formato padronizado. A busca considera os campos de atos disponiveis nos
-#' Anexos I, II, IV, V, VI, VIII, IX e X. Entradas numericas buscam o numero do
+#' Anexos I, II, IV, V, VI, VIII, IX, X e XI (quando presente). Entradas numericas buscam o numero do
 #' ato com equivalencia de zeros a esquerda, sem buscar dentro do ano do ato.
 #' Na busca numerica, o ano apos a barra e as datas numericas ou por extenso
 #' sao ignorados, inclusive em `68 / 2024` e `68, de 1 de janeiro de 2024`.
@@ -10,6 +10,8 @@
 #' de atos com quatro digitos, como `2024/2026`.
 #' Entradas textuais mistas sao pesquisadas de forma literal, sem diferenciar
 #' maiusculas e minusculas.
+#'
+#' O Anexo XI (Letec+) e incluido quando presente no arquivo.
 #'
 #' @param x Caminho do arquivo de tarifas, normalmente o objeto retornado por
 #'   [download_tarifas()].
@@ -193,7 +195,7 @@ buscar_ato <- function(x, ato) {
       )
   )
 
-  for (anexo_atual in c("iv", "v", "vi", "viii", "ix", "x")) {
+  for (anexo_atual in anexos_excecao_disponiveis(x)) {
     anexo_lista <- ler_anexo(x, anexo_atual)
 
     if (!"ncm" %in% names(anexo_lista)) {

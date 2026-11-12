@@ -39,7 +39,7 @@ conforme descrito em \code{\link[=detalhar_listas_excecao_vigentes]{detalhar_lis
 }
 }
 \description{
-Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X para calcular
+Combina as informações dos anexos I, II, IV, V, VI, VIII, IX, X e XI (quando presente) para calcular
 a \emph{tarifa aplicada} por código NCM. Opcionalmente,
 pode retornar um resultado detalhado por NCM com contagem de quota e de
 destaque (Ex), além de indicar se a NCM se encontra integralmente em uma lista

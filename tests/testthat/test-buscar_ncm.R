@@ -35,6 +35,7 @@ mock_listar_anexos_buscar_ncm <- function() {
 
 testthat::test_that("unit: buscar_ncm retorna anexo i e ii padronizados", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ncm,
     ler_anexo = function(x, n_anexo) {
       switch(
@@ -83,6 +84,7 @@ testthat::test_that("unit: buscar_ncm retorna anexo i e ii padronizados", {
 
 testthat::test_that("unit: buscar_ncm preserva multiplas linhas em anexos de excecao", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ncm,
     ler_anexo = function(x, n_anexo) {
       switch(
@@ -138,6 +140,7 @@ testthat::test_that("unit: buscar_ncm preserva multiplas linhas em anexos de exc
 
 testthat::test_that("unit: buscar_ncm usa descricao do anexo i nos anexos de excecao", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ncm,
     ler_anexo = function(x, n_anexo) {
       switch(
@@ -188,6 +191,7 @@ testthat::test_that("unit: buscar_ncm usa descricao do anexo i nos anexos de exc
 
 testthat::test_that("unit: buscar_ncm inclui codigos raiz do anexo iii", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ncm,
     ler_anexo = function(x, n_anexo) {
       switch(
@@ -257,6 +261,7 @@ testthat::test_that("integration: buscar_ncm deduplica raiz 851714 do anexo iii"
 
 testthat::test_that("unit: buscar_ncm retorna vazio com warning quando ncm nao existe", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     listar_anexos = mock_listar_anexos_buscar_ncm,
     ler_anexo = function(x, n_anexo) {
       tibble::tibble(ncm = character())

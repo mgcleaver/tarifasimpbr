@@ -1,7 +1,7 @@
 testthat::test_that("unit: todos os anexos reutilizam a leitura real em cache", {
   limpar_cache_tarifas()
   on.exit(limpar_cache_tarifas(), add = TRUE)
-  arquivo <- testthat::test_path("fixtures", "anexos-cache.xlsx")
+  arquivo <- testthat::test_path("fixtures", "anexos-xi.xlsx")
   anexos <- listar_anexos()$numero_anexo
   leituras <- stats::setNames(integer(length(anexos)), anexos)
   leitor <- tarifasimpbr:::ler_anexo_sem_cache
@@ -49,7 +49,7 @@ testthat::test_that("unit: consultas publicas sao equivalentes com cache frio e 
   testthat::expect_identical(
     trimws(mensagens),
     c(
-      "Processando anexos IV, V, VI, VIII, IX, X...",
+      "Processando anexos de listas de excecao...",
       "Tarifas aplicadas geradas com sucesso"
     )
   )
@@ -118,7 +118,7 @@ testthat::test_that("unit: cache separa arquivos e normaliza caminhos equivalent
     alias <- file.path(dirname(arquivos[[1]]), ".", basename(arquivos[[1]]))
     testthat::expect_identical(ler_anexo(alias, anexo), primeiro)
   }
-  testthat::expect_equal(leituras, 18L)
+  testthat::expect_equal(leituras, 2L * nrow(listar_anexos()))
 })
 
 testthat::test_that("unit: falhas na chave ou leitura nao deixam cache invalido", {
@@ -150,7 +150,7 @@ testthat::test_that("unit: falhas na chave ou leitura nao deixam cache invalido"
     segundo <- ler_anexo(arquivo, anexo)
     testthat::expect_false(identical(primeiro, segundo))
   }
-  testthat::expect_equal(chamadas, 20L)
+  testthat::expect_equal(chamadas, 2L + 2L * nrow(listar_anexos()))
 })
 
 testthat::test_that("unit: dados em cache preservam vigencias para consultas posteriores", {

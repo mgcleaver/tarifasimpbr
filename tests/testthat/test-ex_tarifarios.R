@@ -1,5 +1,6 @@
 testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza colunas", {
   testthat::local_mocked_bindings(
+    anexos_excecao_disponiveis = function(x) c("iv", "v", "vi", "viii", "ix", "x"),
     ler_anexo = function(x, n_anexo) {
       if (n_anexo == "iv") {
         return(
@@ -81,7 +82,7 @@ testthat::test_that("unit: ex_tarifarios filtra linhas com ex e padroniza coluna
   testthat::expect_true(is.na(ex_tarifarios$obs[[1]]))
 })
 
-testthat::test_that("integration: ex_tarifarios retorna ex-tarifarios dos anexos IV a X", {
+testthat::test_that("integration: ex_tarifarios retorna ex-tarifarios dos anexos IV a XI", {
   x <- get_tarifas_path()
 
   ex_tarifarios <- ex_tarifarios(x)
@@ -98,7 +99,8 @@ testthat::test_that("integration: ex_tarifarios retorna ex-tarifarios dos anexos
         "Lebitbk",
         "Concessoes OMC",
         "DCC",
-        "Automotivos ACE-14"
+        "Automotivos ACE-14",
+        "Letec+"
       )
     )
   )

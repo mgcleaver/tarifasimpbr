@@ -1,3 +1,14 @@
+# tarifasimpbr (desenvolvimento)
+
+- Inclui o Anexo XI (Letec+) em `listar_anexos()` e `ler_anexo()`.
+- Integra o XI às consultas por NCM e ato, à listagem de Ex, aos vencimentos
+  e às tarifas aplicadas, usando as mesmas regras de NCM integral, Ex e quota
+  das demais listas de exceção.
+- Preserva a leitura de planilhas antigas: as consultas consolidadas só
+  incluem XI quando a aba está presente. A leitura explícita do XI continua
+  informando erro se a aba não existir ou estiver duplicada.
+- Mantém o tratamento existente das datas e das descrições nas consultas.
+
 # tarifasimpbr 0.8.0
 
 ## Compatibilidade

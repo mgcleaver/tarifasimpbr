@@ -2,7 +2,7 @@
 % Please edit documentation in R/ex_tarifarios.R
 \name{ex_tarifarios}
 \alias{ex_tarifarios}
-\title{Tabela com todos os ex-tarifarios presentes nos anexos IV a X}
+\title{Tabela com todos os ex-tarifarios presentes nos anexos IV a XI}
 \usage{
 ex_tarifarios(x)
 }
@@ -29,7 +29,7 @@ Um \code{tibble} com uma linha por ex-tarifario e, no minimo, as colunas:
 }
 \description{
 Consolida, em uma unica tabela, os registros de ex-tarifarios lidos por
-\code{\link[=ler_anexo]{ler_anexo()}} nos anexos IV, V, VI, VIII, IX e X. A identificacao de
+\code{\link[=ler_anexo]{ler_anexo()}} nos anexos IV, V, VI, VIII, IX, X e XI (quando presente no arquivo). A identificacao de
 ex-tarifario e feita a partir da presenca de valor na coluna \code{no_ex}.
 }
 \details{

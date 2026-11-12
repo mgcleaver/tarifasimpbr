@@ -8,6 +8,8 @@
 #' correspondencia exata no Anexo I, suas descricoes sao usadas como referencia
 #' para os demais anexos.
 #'
+#' O Anexo XI (Letec+) e incluido quando presente no arquivo.
+#'
 #' @param x Caminho do arquivo de tarifas, normalmente o objeto retornado por
 #'   [download_tarifas()].
 #' @param ncm Codigo NCM com 8 digitos. Pontos, hifens e espacos sao aceitos e
@@ -203,7 +205,7 @@ buscar_ncm <- function(x, ncm) {
       )
   )
 
-  for (anexo_atual in c("iv", "v", "vi", "viii", "ix", "x")) {
+  for (anexo_atual in anexos_excecao_disponiveis(x)) {
     anexo_lista <- ler_anexo(x, anexo_atual) |>
       dplyr::filter(.data$ncm == ncm_pesquisada)
 

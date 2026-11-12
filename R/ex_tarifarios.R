@@ -1,8 +1,8 @@
-#' Tabela com todos os ex-tarifarios presentes nos anexos IV a X
+#' Tabela com todos os ex-tarifarios presentes nos anexos IV a XI
 #'
 #' @description
 #' Consolida, em uma unica tabela, os registros de ex-tarifarios lidos por
-#' [ler_anexo()] nos anexos IV, V, VI, VIII, IX e X. A identificacao de
+#' [ler_anexo()] nos anexos IV, V, VI, VIII, IX, X e XI (quando presente no arquivo). A identificacao de
 #' ex-tarifario e feita a partir da presenca de valor na coluna `no_ex`.
 #'
 #' @param x Objeto retornado por [download_tarifas()], que no caso e o caminho
@@ -39,7 +39,7 @@
 #'
 #' @export
 ex_tarifarios <- function(x) {
-  anexos <- c("iv", "v", "vi", "viii", "ix", "x")
+  anexos <- anexos_excecao_disponiveis(x)
 
   adiciona_colunas_ausentes <- function(df) {
     colunas_texto <- c(

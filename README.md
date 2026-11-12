@@ -53,6 +53,11 @@ Com a função `listar_anexos()` é possível obter uma tabela com as referênci
 um dos anexos. A coluna `numero_anexo` que resulta de `listar_anexos()` deve ser utilizada
 para consultar um anexo específico na função `ler_anexo()`.
 
+O pacote suporta I, II, III, IV, V, VI, VIII, IX, X e XI. O XI (Letec+)
+é incluído nas consultas consolidadas somente quando existe no arquivo;
+planilhas antigas sem essa aba continuam funcionando. A leitura explícita
+com `ler_anexo(x, "xi")` exige que a aba esteja presente.
+
 ```
 # consultar os anexos tarifários disponíveis para leitura
 listar_anexos()
@@ -62,6 +67,9 @@ tec <- ler_anexo(x, "i")
 
 # ler letec formatada
 letec <- ler_anexo(x, "v")
+
+# ler Letec+ em uma planilha que contenha o Anexo XI
+letec_mais <- ler_anexo(x, "xi")
 
 # ler dcc formatada
 dcc <- ler_anexo(x, "ix")
@@ -73,7 +81,7 @@ dcc |>
 # obter tabela completa das tarifas aplicadas vigentes
 tarifas <- tarifas_aplicadas(x)
 
-# obter lista com todos os ex-tarifários presentes nos anexos entre iv e x.
+# obter todos os ex-tarifários das listas suportadas, incluindo XI quando presente
 lista_ex <- ex_tarifarios(x)
 
 # consultar vencimentos futuros até o fim do mês corrente
@@ -90,9 +98,14 @@ porcentagem.
 
 A tarifa_aplicada é obtida a partir da teb e das listas de exceção. As
 listas de exceção têm prioridade sobre a teb somente quando a tarifa da
-NCM foi alterada integralmente pela lista. No caso de uma lista que altera
+NCM foi alterada integralmente pela lista e não está sujeita a quota. No caso de uma lista que altera
 somente parte do código (por meio de destaque), constará
 a teb no resultado da tarifa_aplicada.
+
+A Letec+ segue essas mesmas regras. Términos individuais ausentes continuam
+representados por `9999-12-31`, conforme o leitor existente. Esse valor indica
+ausência de término informado na planilha, não uma garantia de vigência futura;
+não substitui o limite normativo de utilização da lista.
 
 Por sua vez, a teb é formada entre a combinação do anexo ii com o anexo i. O anexo ii
 tem prioridade sobre o anexo i.

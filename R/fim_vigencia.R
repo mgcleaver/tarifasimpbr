@@ -1,6 +1,6 @@
 #' Consultar próximos vencimentos das listas de exceção
 #'
-#' Retorna os registros dos Anexos IV, V, VI, VIII, IX e X cujo
+#' Retorna os registros dos Anexos IV, V, VI, VIII, IX, X e XI (quando presente) cujo
 #' `termino_de_vigencia` está no intervalo entre a data da consulta e o fim
 #' do mês indicado por `meses`.
 #'
@@ -22,7 +22,7 @@
 #'
 #' A função reutiliza a leitura e o cache de [ler_anexo()]. Cada anexo é
 #' filtrado antes da consolidação, reduzindo o volume intermediário em memória.
-#' Na primeira consulta, as seis abas ainda precisam ser lidas por completo.
+#' Na primeira consulta, as abas das listas ainda precisam ser lidas por completo.
 #'
 #' @return Um `tibble` com todas as colunas fornecidas por [ler_anexo()] e a
 #'   coluna `anexo`, com o numeral romano em minúsculas. Colunas inexistentes
@@ -83,7 +83,7 @@ fim_vigencia <- function(x, meses = 0, incluir_hoje = FALSE) {
     stop("meses produz um limite de data invalido.", call. = FALSE)
   }
 
-  anexos <- c("iv", "v", "vi", "viii", "ix", "x")
+  anexos <- anexos_excecao_disponiveis(x)
   names(anexos) <- anexos
 
   purrr::map(

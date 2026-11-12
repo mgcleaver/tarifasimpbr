@@ -31,6 +31,9 @@ uma vez no resultado, mesmo que conste em mais de uma tabela. Quando houver
 correspondencia exata no Anexo I, suas descricoes sao usadas como referencia
 para os demais anexos.
 }
+\details{
+O Anexo XI (Letec+) e incluido quando presente no arquivo.
+}
 \examples{
 \dontrun{
 x <- download_tarifas()
